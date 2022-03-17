@@ -1,0 +1,81 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2022 2021 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+# decrypt the bootstrap token, asking the password to the sys admin
+# --setup check for SETUP_CONSUL_TOKEN env. variable and uses it
+# to avoid re-asking for the password
+if [[ $(id -u) -ne 0 ]]; then
+  echo "Please run as root"
+  exit 1
+fi
+
+if [[ "$1" != "setup" ]]; then
+  echo "Syntax: 'carbonio-messaging setup' to automatically configure the service"
+  exit 1;
+fi
+
+# Decrypt the bootstrap token, asking the password to the sys admin
+# --setup check for SETUP_CONSUL_TOKEN env. variable and uses it
+# to avoid re-asking for the password
+echo -n "Insert the cluster credential password: "
+export CONSUL_HTTP_TOKEN=$(service-discover bootstrap-token --setup)
+EXIT_CODE="$?"
+echo ""
+if [[ "${EXIT_CODE}" != "0" ]]; then
+  echo "Cannot access to bootstrap token"
+  exit 1;
+fi
+# Limit secret visibility as much as possible
+export -n SETUP_CONSUL_TOKEN
+
+POLICY_NAME='carbonio-messaging-policy'
+POLICY_DESCRIPTION='Carbonio messaging policy for service and sidecar proxy'
+
+# Create or update policy for the specific service (this will be shared across cluster)
+consul acl policy create -name "${POLICY_NAME}" -description "${POLICY_DESCRIPTION}" -rules  @/etc/carbonio/messaging/service-discover/policies.json >/dev/null 2>&1
+if [[ "$?" != "0" ]]; then
+    consul acl policy update -no-merge -name "${POLICY_NAME}" -description "${POLICY_DESCRIPTION}" -rules @/etc/carbonio/messaging/service-discover/policies.json
+    if [[ "$?" != "0" ]]; then
+      echo "Setup failed: Cannot update policy for ${POLICY_NAME}"
+      exit 1
+    fi
+fi
+
+trap 'echo Script for messaging terminated with error' EXIT
+set -e
+# Declare the service as http
+consul config write /etc/carbonio/messaging/service-discover/service-protocol.json
+
+# Allow other services to contact this service
+consul config write /etc/carbonio/messaging/service-discover/intentions.json
+
+if [[ ! -f "/etc/carbonio/messaging/service-discover/token" ]]; then
+    # Create the token
+    consul acl token create -format json -policy-name "${POLICY_NAME}" -description "Token for
+    carbonio-messaging/$(hostname -A)" |
+      jq -r '.SecretID' > /etc/carbonio/messaging/service-discover/token;
+    chown carbonio-messaging:carbonio-messaging /etc/carbonio/messaging/service-discover/token
+    chmod 0600 /etc/carbonio/messaging/service-discover/token
+
+    # To pass the token to consul we need to inject it to a env. variable
+    # since it doesn't accept a file as an argument
+    mkdir -p /etc/systemd/system/carbonio-messaging.service.d/
+    cat >/etc/systemd/system/carbonio-messaging.service.d/override.conf <<EOF
+[Service]
+Environment="CONSUL_HTTP_TOKEN=$(cat /etc/carbonio/messaging/service-discover/token)"
+EOF
+    chmod 0600 /etc/systemd/system/carbonio-messaging.service.d/override.conf
+    systemctl daemon-reload
+fi
+
+consul reload
+
+# Limit token visibility as much as possible
+export -n CONSUL_HTTP_TOKEN
+
+systemctl restart carbonio-messaging.service
+systemctl restart carbonio-messaging-sidecar.service
+trap - EXIT

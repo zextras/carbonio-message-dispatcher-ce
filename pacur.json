@@ -1,0 +1,11 @@
+{
+  "name": "carbonio-messaging",
+  "description": "Messaging component for carbonio CE",
+  "build_dir": "/tmp/",
+  "output": "artifacts",
+  "projects": [
+    {
+      "name": "package"
+    }
+  ]
+}

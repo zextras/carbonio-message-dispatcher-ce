@@ -1,0 +1,114 @@
+[general]
+  loglevel = "debug"
+  hosts = ["carbonio"]
+  default_server_domain = "carbonio"
+  language = "en"
+  rdbms_server_type = "pgsql"
+
+[auth]
+  methods = ["rdbms"]
+  password.format = "plain"
+[s2s]
+  default_policy = "deny"
+[outgoing_pools.rdbms.default]
+  scope = "global"
+  workers = 5
+
+  [outgoing_pools.rdbms.default.connection]
+    driver = "pgsql"
+    host = "127.78.0.10"
+    port = 20000
+    database = "carbonio-chats-db"
+    username = "root"
+    password = "root"
+
+#[outgoing_pools.http.push_pool]
+#  scope = "global"
+#  workers = 50
+#
+#  [outgoing_pools.http.push_pool.connection]
+#    host = "http://172.17.0.4:1080"
+#    path_prefix = "/push"
+    
+[listen]
+  [[listen.c2s]]
+    port = 5222
+
+  [[listen.http]]
+    port = 10000
+    ip_address = "127.78.0.10"
+    transport.num_acceptors = 10
+    transport.max_connections = 1024
+
+    [[listen.http.handlers.mod_bosh]]
+      host = "_"
+      path = "/http-bind"
+
+    [[listen.http.handlers.mod_websockets]]
+      host = "_"
+      path = "/ws-xmpp"
+      ping_rate = 30_000
+
+    [[listen.http.handlers.mongoose_api_admin]]
+      host = "_"
+      path = "/admin"
+
+    [[listen.http.handlers.mongoose_client_api_messages]]
+      host = "_"
+      path = "/api/messages/[:with]"
+
+    [[listen.http.handlers.mongoose_client_api_contacts]]
+      host = "_"
+      path = "/api/contacts/[:jid]"
+
+    [[listen.http.handlers.mongoose_client_api_rooms]]
+      host = "_"
+      path = "/api/rooms/[:id]"
+
+    [[listen.http.handlers.mongoose_client_api_rooms_config]]
+      host = "_"
+      path = "/api/rooms/[:id]/config"
+
+    [[listen.http.handlers.mongoose_client_api_rooms_users]]
+      host = "_"
+      path = "/api/rooms/:id/users/[:user]"
+
+    [[listen.http.handlers.mongoose_client_api_rooms_messages]]
+      host = "_"
+      path = "/api/rooms/[:id]/messages"
+
+[modules.mod_muc]
+  backend = "rdbms"
+[modules.mod_muc_light]
+  backend = "rdbms"
+  host = "muclight.@HOST@"
+  equal_occupants = true
+  all_can_configure = true
+  all_can_invite = true  
+[modules.mod_disco]
+  users_can_see_hidden_services = true
+[modules.mod_mam_meta]
+  backend = "rdbms"
+  pm.backend = "rdbms"
+  pm.archive_groupchats = true
+  muc.backend = "rdbms"
+  muc.host = "muclight.@HOST@"
+  rdbms_message_format = "simple"
+
+[modules.mod_commands]
+[modules.mod_muc_commands]
+[modules.mod_muc_light_commands]
+[modules.mod_inbox]
+  reset_markers = ["displayed"]
+  groupchat = ["muclight"]
+[modules.mod_last]
+  backend = "rdbms"
+[modules.mod_offline_stub]
+[modules.mod_roster]
+  backend = "rdbms"
+[modules.mod_carboncopy]
+[modules.mod_event_pusher.backend.http]
+  pool_name = "push_pool"
+  path = "/notifications"
+  callback_module = "mod_event_pusher_http_defaults"
+[modules.mod_ping]

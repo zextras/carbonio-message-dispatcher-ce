@@ -1,0 +1,21 @@
+[Unit]
+Description=Carbonio messaging daemon
+Documentation=https://docs.zextras.com/zextras-suite-documentation/latest/
+Wants=network.target
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/mongooseimctl foreground
+ExecStop=/usr/bin/mongooseimctl stop
+Environment="HOME=/var/lib/mongooseim"
+User=carbonio-messaging
+Group=carbonio-messaging
+Restart=on-failure
+RestartSec=15
+TimeoutSec=60
+TimeoutStopSec=120
+
+[Install]
+WantedBy=multi-user.target

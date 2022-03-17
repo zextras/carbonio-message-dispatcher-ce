@@ -1,0 +1,149 @@
+targets=(
+  "ubuntu"
+  "centos"
+)
+pkgname="carbonio-messaging"
+pkgver="0.1.0"
+pkgrel="1"
+pkgdesc="Carbonio messaging"
+pkgdesclong=(
+  "Carbonio messaging"
+)
+maintainer="Zextras <packages@zextras.com>"
+arch="amd64"
+license=("spdx:AGPL-3.0-only")
+section="admin"
+priority="optional"
+url="https://www.zextras.com/"
+makedepends:apt=(
+  "git"
+  "make"
+  "zlib1g-dev"
+  "libssl-dev"
+  "unixodbc-dev"
+  "gcc"
+  "g++"
+)
+makedepends:yum=(
+  "git"
+  "make"
+  "zlib-devel"
+  "openssl"
+  "openssl-devel"
+  "unixODBC-devel"
+  "gcc"
+  "gcc-c++"
+)
+depends=(
+  "service-discover"
+  "pending-setups"
+  "jq"
+)
+sources=(
+  "https://github.com/esl/MongooseIM/archive/fba12ff9557b9b738f33ca1792fab74d57ed6c60.tar.gz"
+  "carbonio-messaging"
+  "carbonio-messaging.hcl"
+  "carbonio-messaging.service"
+  "carbonio-messaging-sidecar.service"
+  "carbonio-messaging-setup.sh"
+  "mongooseim.toml"
+  "intentions.json"
+  "policies.json"
+  "service-protocol.json"
+)
+backup=(
+  "etc/zextras/service-discover/carbonio-messaging.hcl"
+  "etc/mongooseim/mongooseim.toml"
+)
+hashsums=(
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+)
+
+build:apt() {
+  #Installing erlang
+  curl https://packages.erlang-solutions.com/erlang/debian/pool/esl-erlang_24.0-1~ubuntu~focal_amd64.deb > erlang.deb
+  apt update && apt install --no-install-recommends -y ./erlang.deb
+  #Building MongooseIm, check build steps from the official repo, especially from scripts in tools/pkg
+  cd MongooseIM-fba12ff9557b9b738f33ca1792fab74d57ed6c60
+  ./tools/configure with-pgsql system=yes prefix=""
+  #Trick to let executables have no prefix but still allowing to install them to a specific directory
+  sed -i 's#PREFIX=""#PREFIX="${pkgdir}"#' configure.out
+  make rel
+}
+
+build:yum() {
+  #Installing erlang
+  curl https://packages.erlang-solutions.com/erlang/rpm/centos/8/x86_64/esl-erlang_24.0-1~centos~8_amd64.rpm > erlang.rpm
+  yum install -y ./erlang.rpm
+  #Building MongooseIm, check build steps from the official repo, especially from scripts in tools/pkg
+  cd MongooseIM-fba12ff9557b9b738f33ca1792fab74d57ed6c60
+  ./tools/configure with-pgsql system=yes prefix=""
+  #Trick to let executables have no prefix but still allowing to install them to a specific directory
+  sed -i 's#PREFIX=""#PREFIX="${pkgdir}"#' configure.out
+  make rel
+}
+
+package() {
+  cd "${srcdir}/MongooseIM-fba12ff9557b9b738f33ca1792fab74d57ed6c60"
+  make install
+  cd "${srcdir}"
+
+  #Overwriting mongoose files with ours
+  install -Dm 644 mongooseim.toml "${pkgdir}/etc/mongooseim/mongooseim.toml"
+
+  #Our files
+  install -Dm 755 carbonio-messaging "${pkgdir}/usr/bin/carbonio-messaging"
+  install -Dm 644 carbonio-messaging.service "${pkgdir}/lib/systemd/system/carbonio-messaging.service"
+  install -Dm 644 carbonio-messaging-sidecar.service "${pkgdir}/lib/systemd/system/carbonio-messaging-sidecar.service"
+  install -Dm 644 carbonio-messaging.hcl "${pkgdir}/etc/zextras/service-discover/carbonio-messaging.hcl"
+  install -Dm 644 carbonio-messaging-setup.sh "${pkgdir}/etc/zextras/pending-setups.d/carbonio-messaging.sh"
+  install -Dm 644 intentions.json "${pkgdir}/etc/carbonio/messaging/service-discover/intentions.json"
+  install -Dm 644 policies.json "${pkgdir}/etc/carbonio/messaging/service-discover/policies.json"
+  install -Dm 644 service-protocol.json "${pkgdir}/etc/carbonio/messaging/service-discover/service-protocol.json"
+}
+
+postinst() {
+  getent group 'carbonio-messaging' >/dev/null ||
+    groupadd -r 'carbonio-messaging'
+  getent passwd 'carbonio-messaging' >/dev/null ||
+    useradd -r -M -g 'carbonio-messaging' -s /sbin/nologin 'carbonio-messaging'
+
+  chown carbonio-messaging:carbonio-messaging /var/log/mongooseim
+  chown carbonio-messaging:carbonio-messaging /var/lib/mongooseim
+
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
+    systemctl enable carbonio-messaging.service >/dev/null 2>&1 || :
+    systemctl enable carbonio-messaging-sidecar.service >/dev/null 2>&1 || :
+  fi
+
+  echo "======================================================"
+  echo "Carbonio messaging installed successfully!"
+  echo "You must run pending-setups to configure it correctly."
+  echo "======================================================"
+}
+
+prerm() {
+  if [ -d /run/systemd/system ]; then
+    systemctl --no-reload disable carbonio-messaging.service >/dev/null 2>&1 || :
+    systemctl --no-reload disable carbonio-messaging-sidecar.service >/dev/null 2>&1 || :
+    systemctl stop carbonio-messaging.service >/dev/null 2>&1 || :
+    systemctl stop carbonio-messaging-sidecar.service >/dev/null 2>&1 || :
+  fi
+}
+
+postrm() {
+  rm -f /etc/carbonio/messaging/service-discover/token
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
+  fi
+}
