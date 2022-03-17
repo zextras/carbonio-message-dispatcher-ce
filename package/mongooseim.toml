@@ -18,9 +18,9 @@
     driver = "pgsql"
     host = "127.78.0.10"
     port = 20000
-    database = "carbonio-chats-db"
-    username = "root"
-    password = "root"
+    database = "carbonio-messaging-db"
+    username = "carbonio-messaging-db"
+    password = "<insert-password>"
 
 #[outgoing_pools.http.push_pool]
 #  scope = "global"
