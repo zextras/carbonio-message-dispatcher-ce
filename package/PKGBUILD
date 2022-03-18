@@ -40,7 +40,7 @@ depends=(
   "jq"
 )
 sources=(
-  "https://github.com/esl/MongooseIM/archive/fba12ff9557b9b738f33ca1792fab74d57ed6c60.tar.gz"
+  "https://github.com/esl/MongooseIM/archive/88102c2b34a50bc5d28431772374b89d1ed7aa73.tar.gz"
   "carbonio-messaging"
   "carbonio-messaging.hcl"
   "carbonio-messaging.service"
@@ -76,9 +76,9 @@ build:apt() {
   curl https://packages.erlang-solutions.com/erlang/debian/pool/esl-erlang_24.0-1~ubuntu~focal_amd64.deb > erlang.deb
   apt update && apt install --no-install-recommends -y ./erlang.deb
   #Building MongooseIm, check build steps from the official repo, especially from scripts in tools/pkg
-  cd MongooseIM-fba12ff9557b9b738f33ca1792fab74d57ed6c60
+  cd MongooseIM-88102c2b34a50bc5d28431772374b89d1ed7aa73
   ./tools/configure with-pgsql system=yes prefix=""
-  #Trick to let executables have no prefix but still allowing to install them to a specific directory
+  #Trick to let executables have no prefix but still allowing them to install to a specific directory
   sed -i 's#PREFIX=""#PREFIX="${pkgdir}"#' configure.out
   make rel
 }
@@ -88,15 +88,15 @@ build:yum() {
   curl https://packages.erlang-solutions.com/erlang/rpm/centos/8/x86_64/esl-erlang_24.0-1~centos~8_amd64.rpm > erlang.rpm
   yum install -y ./erlang.rpm
   #Building MongooseIm, check build steps from the official repo, especially from scripts in tools/pkg
-  cd MongooseIM-fba12ff9557b9b738f33ca1792fab74d57ed6c60
+  cd MongooseIM-88102c2b34a50bc5d28431772374b89d1ed7aa73
   ./tools/configure with-pgsql system=yes prefix=""
-  #Trick to let executables have no prefix but still allowing to install them to a specific directory
+  #Trick to let executables have no prefix but still allowing them to install to a specific directory
   sed -i 's#PREFIX=""#PREFIX="${pkgdir}"#' configure.out
   make rel
 }
 
 package() {
-  cd "${srcdir}/MongooseIM-fba12ff9557b9b738f33ca1792fab74d57ed6c60"
+  cd "${srcdir}/MongooseIM-88102c2b34a50bc5d28431772374b89d1ed7aa73"
   make install
   cd "${srcdir}"
 
