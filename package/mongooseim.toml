@@ -1,5 +1,5 @@
 [general]
-  loglevel = "debug"
+  loglevel = "notice"
   hosts = ["carbonio"]
   default_server_domain = "carbonio"
   language = "en"
@@ -21,14 +21,6 @@
     database = "carbonio-messaging-db"
     username = "carbonio-messaging-db"
     password = "<insert-password>"
-
-#[outgoing_pools.http.push_pool]
-#  scope = "global"
-#  workers = 50
-#
-#  [outgoing_pools.http.push_pool.connection]
-#    host = "http://172.17.0.4:1080"
-#    path_prefix = "/push"
     
 [listen]
   [[listen.http]]
