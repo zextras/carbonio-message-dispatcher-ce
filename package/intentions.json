@@ -5,6 +5,10 @@
     {
       "Name": "carbonio-proxy",
       "Action": "allow"
+    },
+    {
+      "Name": "carbonio-chats",
+      "Action": "allow"
     }
   ]
 }

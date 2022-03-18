@@ -47,6 +47,7 @@ sources=(
   "carbonio-messaging-sidecar.service"
   "carbonio-messaging-setup.sh"
   "mongooseim.toml"
+  "app.config"
   "intentions.json"
   "policies.json"
   "service-protocol.json"
@@ -54,8 +55,10 @@ sources=(
 backup=(
   "etc/zextras/service-discover/carbonio-messaging.hcl"
   "etc/mongooseim/mongooseim.toml"
+  "etc/mongooseim/app.config"
 )
 hashsums=(
+  "skip"
   "skip"
   "skip"
   "skip"
@@ -99,6 +102,7 @@ package() {
 
   #Overwriting mongoose files with ours
   install -Dm 644 mongooseim.toml "${pkgdir}/etc/mongooseim/mongooseim.toml"
+  install -Dm 644 app.config "${pkgdir}/etc/mongooseim/app.config"
 
   #Our files
   install -Dm 755 carbonio-messaging "${pkgdir}/usr/bin/carbonio-messaging"
