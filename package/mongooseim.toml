@@ -31,9 +31,6 @@
 #    path_prefix = "/push"
     
 [listen]
-  [[listen.c2s]]
-    port = 5222
-
   [[listen.http]]
     port = 10000
     ip_address = "127.78.0.10"
