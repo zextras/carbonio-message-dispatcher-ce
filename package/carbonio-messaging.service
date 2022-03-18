@@ -9,7 +9,6 @@ After=network-online.target
 Type=simple
 ExecStart=/usr/bin/mongooseimctl foreground
 ExecStop=/usr/bin/mongooseimctl stop
-Environment="HOME=/var/lib/mongooseim"
 User=carbonio-messaging
 Group=carbonio-messaging
 Restart=on-failure

@@ -119,10 +119,11 @@ postinst() {
   getent group 'carbonio-messaging' >/dev/null ||
     groupadd -r 'carbonio-messaging'
   getent passwd 'carbonio-messaging' >/dev/null ||
-    useradd -r -M -g 'carbonio-messaging' -s /sbin/nologin 'carbonio-messaging'
+    useradd -r -M -g 'carbonio-messaging' -d /var/lib/mongooseim -s /sbin/nologin 'carbonio-messaging'
 
   chown carbonio-messaging:carbonio-messaging /var/log/mongooseim
   chown carbonio-messaging:carbonio-messaging /var/lib/mongooseim
+  chown carbonio-messaging:carbonio-messaging /var/lock/mongooseim
 
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
