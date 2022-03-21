@@ -6,8 +6,12 @@
   rdbms_server_type = "pgsql"
 
 [auth]
-  methods = ["rdbms"]
+  methods = ["http", "dummy"] # DUMMY MUST BE REMOVED AS SOON AS AUTH INTEGRATION IS IN PLACE!
   password.format = "plain"
+  sasl_mechanisms = ["plain"]
+  [auth.http]
+  [auth.rdbms]
+  [auth.dummy]
 [s2s]
   default_policy = "deny"
 [outgoing_pools.rdbms.default]
@@ -21,6 +25,9 @@
     database = "carbonio-messaging-db"
     username = "carbonio-messaging-db"
     password = "<insert-password>"
+[outgoing_pools.http.auth.connection]
+  host = "http://127.78.0.10:20001"
+  path_prefix = "/mongooseim/"
     
 [listen]
   [[listen.c2s]]
