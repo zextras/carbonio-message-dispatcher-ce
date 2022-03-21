@@ -15,10 +15,16 @@
   ],
   "service": [
     {
-      "carbonio-messaging": {
+      "carbonio-messaging-xmpp": {
         "policy": "write"
       },
-      "carbonio-messaging-sidecar-proxy": {
+      "carbonio-messaging-http": {
+        "policy": "write"
+      },
+      "carbonio-messaging-http-sidecar-proxy": {
+        "policy": "write"
+      },
+      "carbonio-messaging-xmpp-sidecar-proxy": {
         "policy": "write"
       }
     }

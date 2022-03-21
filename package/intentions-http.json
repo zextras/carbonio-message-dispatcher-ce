@@ -3,11 +3,7 @@
   "Name": "carbonio-messaging",
   "Sources": [
     {
-      "Name": "carbonio-proxy",
-      "Action": "allow"
-    },
-    {
-      "Name": "carbonio-chats",
+      "Name": "carbonio-chats-ce",
       "Action": "allow"
     }
   ]

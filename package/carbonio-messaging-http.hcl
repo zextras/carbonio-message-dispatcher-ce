@@ -24,6 +24,6 @@ services {
     }
   }
 
-  name = "carbonio-messaging"
+  name = "carbonio-messaging-http"
   port = 10000
 }

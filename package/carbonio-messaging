@@ -17,6 +17,12 @@ if [[ "$1" != "setup" ]]; then
   exit 1;
 fi
 
+config_variant() {
+  VARIANT=$1
+  consul config write /etc/carbonio/messaging/service-discover/service-protocol-"${VARIANT}".json
+  consul config write /etc/carbonio/messaging/service-discover/intentions-"${VARIANT}".json
+}
+
 # Decrypt the bootstrap token, asking the password to the sys admin
 # --setup check for SETUP_CONSUL_TOKEN env. variable and uses it
 # to avoid re-asking for the password
@@ -46,14 +52,12 @@ fi
 
 trap 'echo Script for messaging terminated with error' EXIT
 set -e
-# Declare the service as http
-consul config write /etc/carbonio/messaging/service-discover/service-protocol.json
 
-# Allow other services to contact this service
-consul config write /etc/carbonio/messaging/service-discover/intentions.json
+config_variant "http"
+config_variant "xmpp"
 
 if [[ ! -f "/etc/carbonio/messaging/service-discover/token" ]]; then
-    # Create the token
+    # Create the token, this is unique for every variant
     consul acl token create -format json -policy-name "${POLICY_NAME}" -description "Token for
     carbonio-messaging/$(hostname -A)" |
       jq -r '.SecretID' > /etc/carbonio/messaging/service-discover/token;
@@ -77,5 +81,6 @@ consul reload
 export -n CONSUL_HTTP_TOKEN
 
 systemctl restart carbonio-messaging.service
-systemctl restart carbonio-messaging-sidecar.service
+systemctl restart carbonio-messaging-http-sidecar.service
+systemctl restart carbonio-messaging-xmpp-sidecar.service
 trap - EXIT

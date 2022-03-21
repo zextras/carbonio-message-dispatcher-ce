@@ -42,22 +42,31 @@ depends=(
 sources=(
   "https://github.com/esl/MongooseIM/archive/88102c2b34a50bc5d28431772374b89d1ed7aa73.tar.gz"
   "carbonio-messaging"
-  "carbonio-messaging.hcl"
+  "carbonio-messaging-http.hcl"
+  "carbonio-messaging-xmpp.hcl"
   "carbonio-messaging.service"
-  "carbonio-messaging-sidecar.service"
+  "carbonio-messaging-http-sidecar.service"
+  "carbonio-messaging-xmpp-sidecar.service"
   "carbonio-messaging-setup.sh"
   "mongooseim.toml"
   "app.config"
-  "intentions.json"
+  "intentions-http.json"
+  "intentions-xmpp.json"
   "policies.json"
-  "service-protocol.json"
+  "service-protocol-http.json"
+  "service-protocol-xmpp.json"
 )
 backup=(
-  "etc/zextras/service-discover/carbonio-messaging.hcl"
+  "etc/zextras/service-discover/carbonio-messaging-http.hcl"
+  "etc/zextras/service-discover/carbonio-messaging-xmpp.hcl"
   "etc/mongooseim/mongooseim.toml"
   "etc/mongooseim/app.config"
 )
 hashsums=(
+  "skip"
+  "skip"
+  "skip"
+  "skip"
   "skip"
   "skip"
   "skip"
@@ -107,12 +116,16 @@ package() {
   #Our files
   install -Dm 755 carbonio-messaging "${pkgdir}/usr/bin/carbonio-messaging"
   install -Dm 644 carbonio-messaging.service "${pkgdir}/lib/systemd/system/carbonio-messaging.service"
-  install -Dm 644 carbonio-messaging-sidecar.service "${pkgdir}/lib/systemd/system/carbonio-messaging-sidecar.service"
-  install -Dm 644 carbonio-messaging.hcl "${pkgdir}/etc/zextras/service-discover/carbonio-messaging.hcl"
+  install -Dm 644 carbonio-messaging-http-sidecar.service "${pkgdir}/lib/systemd/system/carbonio-messaging-http-sidecar.service"
+  install -Dm 644 carbonio-messaging-xmpp-sidecar.service "${pkgdir}/lib/systemd/system/carbonio-messaging-xmpp-sidecar.service"
+  install -Dm 644 carbonio-messaging-http.hcl "${pkgdir}/etc/zextras/service-discover/carbonio-messaging-http.hcl"
+  install -Dm 644 carbonio-messaging-xmpp.hcl "${pkgdir}/etc/zextras/service-discover/carbonio-messaging-xmpp.hcl"
   install -Dm 644 carbonio-messaging-setup.sh "${pkgdir}/etc/zextras/pending-setups.d/carbonio-messaging.sh"
-  install -Dm 644 intentions.json "${pkgdir}/etc/carbonio/messaging/service-discover/intentions.json"
+  install -Dm 644 intentions-http.json "${pkgdir}/etc/carbonio/messaging/service-discover/intentions-http.json"
+  install -Dm 644 intentions-xmpp.json "${pkgdir}/etc/carbonio/messaging/service-discover/intentions-xmpp.json"
   install -Dm 644 policies.json "${pkgdir}/etc/carbonio/messaging/service-discover/policies.json"
-  install -Dm 644 service-protocol.json "${pkgdir}/etc/carbonio/messaging/service-discover/service-protocol.json"
+  install -Dm 644 service-protocol-http.json "${pkgdir}/etc/carbonio/messaging/service-discover/service-protocol-http.json"
+  install -Dm 644 service-protocol-xmpp.json "${pkgdir}/etc/carbonio/messaging/service-discover/service-protocol-xmpp.json"
 }
 
 postinst() {
@@ -124,11 +137,13 @@ postinst() {
   chown carbonio-messaging:carbonio-messaging /var/log/mongooseim
   chown carbonio-messaging:carbonio-messaging /var/lib/mongooseim
   chown carbonio-messaging:carbonio-messaging /var/lock/mongooseim
+  chown carbonio-messaging:carbonio-messaging /usr/lib/mongooseim
 
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
     systemctl enable carbonio-messaging.service >/dev/null 2>&1 || :
-    systemctl enable carbonio-messaging-sidecar.service >/dev/null 2>&1 || :
+    systemctl enable carbonio-messaging-http-sidecar.service >/dev/null 2>&1 || :
+    systemctl enable carbonio-messaging-xmpp-sidecar.service >/dev/null 2>&1 || :
   fi
 
   echo "======================================================"
@@ -140,9 +155,11 @@ postinst() {
 prerm() {
   if [ -d /run/systemd/system ]; then
     systemctl --no-reload disable carbonio-messaging.service >/dev/null 2>&1 || :
-    systemctl --no-reload disable carbonio-messaging-sidecar.service >/dev/null 2>&1 || :
+    systemctl --no-reload disable carbonio-messaging-http-sidecar.service >/dev/null 2>&1 || :
+    systemctl --no-reload disable carbonio-messaging-xmpp-sidecar.service >/dev/null 2>&1 || :
     systemctl stop carbonio-messaging.service >/dev/null 2>&1 || :
-    systemctl stop carbonio-messaging-sidecar.service >/dev/null 2>&1 || :
+    systemctl stop carbonio-messaging-http-sidecar.service >/dev/null 2>&1 || :
+    systemctl stop carbonio-messaging-xmpp-sidecar.service >/dev/null 2>&1 || :
   fi
 }
 
