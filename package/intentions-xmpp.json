@@ -1,6 +1,6 @@
 {
   "Kind": "service-intentions",
-  "Name": "carbonio-messaging",
+  "Name": "carbonio-messaging-xmpp",
   "Sources": [
     {
       "Name": "carbonio-proxy",

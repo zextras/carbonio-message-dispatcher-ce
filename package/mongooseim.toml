@@ -10,7 +10,6 @@
   password.format = "plain"
   sasl_mechanisms = ["plain"]
   [auth.http]
-  [auth.rdbms]
   [auth.dummy]
 [s2s]
   default_policy = "deny"
