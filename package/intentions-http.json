@@ -3,7 +3,7 @@
   "Name": "carbonio-chats-messaging-http",
   "Sources": [
     {
-      "Name": "carbonio-chats-ce",
+      "Name": "carbonio-chats",
       "Action": "allow"
     }
   ]
