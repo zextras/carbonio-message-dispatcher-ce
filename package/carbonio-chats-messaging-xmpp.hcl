@@ -13,6 +13,6 @@ services {
     }
   }
 
-  name = "carbonio-messaging-xmpp"
+  name = "carbonio-chats-messaging-xmpp"
   port = 10000
 }

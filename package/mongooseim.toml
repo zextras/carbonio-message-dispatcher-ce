@@ -21,8 +21,8 @@
     driver = "pgsql"
     host = "127.78.0.10"
     port = 20000
-    database = "carbonio-messaging-db"
-    username = "carbonio-messaging-db"
+    database = "carbonio-chats-messaging-db"
+    username = "carbonio-chats-messaging-db"
     password = "<insert-password>"
 [outgoing_pools.http.auth.connection]
   host = "http://127.78.0.10:20001"

@@ -1,6 +1,6 @@
 {
   "Kind": "service-intentions",
-  "Name": "carbonio-messaging-http",
+  "Name": "carbonio-chats-messaging-http",
   "Sources": [
     {
       "Name": "carbonio-chats-ce",

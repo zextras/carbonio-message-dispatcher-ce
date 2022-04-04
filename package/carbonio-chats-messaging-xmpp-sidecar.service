@@ -1,5 +1,5 @@
 [Unit]
-Description=Carbonio messaging XMPP sidecar proxy
+Description=Carbonio chats messaging XMPP sidecar proxy
 Documentation=https://docs.zextras.com/zextras-suite-documentation/latest/
 Requires=network-online.target
 After=network-online.target
@@ -7,12 +7,12 @@ After=network-online.target
 [Service]
 Type=simple
 ExecStart=/usr/bin/consul connect envoy \
-    -token-file /etc/carbonio/messaging/service-discover/token \
+    -token-file /etc/carbonio/chats-messaging/service-discover/token \
     -admin-bind localhost:0 \
-    -sidecar-for carbonio-messaging-xmpp
+    -sidecar-for carbonio-chats-messaging-xmpp
 Restart=on-failure
 RestartSec=15
-User=carbonio-messaging
+User=carbonio-chats-messaging
 KillMode=process
 KillSignal=SIGKILL
 LimitNOFILE=65536

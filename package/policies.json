@@ -1,7 +1,7 @@
 {
   "key_prefix": [
     {
-      "carbonio-messaging/": {
+      "carbonio-chats-messaging/": {
         "policy": "read"
       }
     }
@@ -15,16 +15,16 @@
   ],
   "service": [
     {
-      "carbonio-messaging-xmpp": {
+      "carbonio-chats-messaging-xmpp": {
         "policy": "write"
       },
-      "carbonio-messaging-http": {
+      "carbonio-chats-messaging-http": {
         "policy": "write"
       },
-      "carbonio-messaging-http-sidecar-proxy": {
+      "carbonio-chats-messaging-http-sidecar-proxy": {
         "policy": "write"
       },
-      "carbonio-messaging-xmpp-sidecar-proxy": {
+      "carbonio-chats-messaging-xmpp-sidecar-proxy": {
         "policy": "write"
       }
     }

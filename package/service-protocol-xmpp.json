@@ -1,5 +1,5 @@
 {
   "Kind": "service-defaults",
-  "Name": "carbonio-messaging-xmpp",
+  "Name": "carbonio-chats-messaging-xmpp",
   "Protocol": "tcp"
 }

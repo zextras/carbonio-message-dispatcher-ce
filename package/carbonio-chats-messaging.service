@@ -1,5 +1,5 @@
 [Unit]
-Description=Carbonio messaging daemon
+Description=Carbonio chats messaging daemon
 Documentation=https://docs.zextras.com/zextras-suite-documentation/latest/
 Wants=network.target
 Requires=network-online.target
@@ -9,8 +9,8 @@ After=network-online.target
 Type=simple
 ExecStart=/usr/bin/mongooseimctl foreground
 ExecStop=/usr/bin/mongooseimctl stop
-User=carbonio-messaging
-Group=carbonio-messaging
+User=carbonio-chats-messaging
+Group=carbonio-chats-messaging
 Restart=on-failure
 RestartSec=15
 TimeoutSec=60

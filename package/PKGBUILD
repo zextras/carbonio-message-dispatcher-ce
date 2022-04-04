@@ -2,12 +2,12 @@ targets=(
   "ubuntu"
   "centos"
 )
-pkgname="carbonio-messaging"
+pkgname="carbonio-chats-messaging"
 pkgver="0.1.0"
 pkgrel="1"
-pkgdesc="Carbonio messaging"
+pkgdesc="Carbonio chats messaging component"
 pkgdesclong=(
-  "Carbonio messaging"
+  "Carbonio chats messaging component"
 )
 maintainer="Zextras <packages@zextras.com>"
 arch="amd64"
@@ -41,13 +41,13 @@ depends=(
 )
 sources=(
   "https://github.com/esl/MongooseIM/archive/88102c2b34a50bc5d28431772374b89d1ed7aa73.tar.gz"
-  "carbonio-messaging"
-  "carbonio-messaging-http.hcl"
-  "carbonio-messaging-xmpp.hcl"
-  "carbonio-messaging.service"
-  "carbonio-messaging-http-sidecar.service"
-  "carbonio-messaging-xmpp-sidecar.service"
-  "carbonio-messaging-setup.sh"
+  "carbonio-chats-messaging"
+  "carbonio-chats-messaging-http.hcl"
+  "carbonio-chats-messaging-xmpp.hcl"
+  "carbonio-chats-messaging.service"
+  "carbonio-chats-messaging-http-sidecar.service"
+  "carbonio-chats-messaging-xmpp-sidecar.service"
+  "carbonio-chats-messaging-setup.sh"
   "mongooseim.toml"
   "app.config"
   "intentions-http.json"
@@ -57,8 +57,8 @@ sources=(
   "service-protocol-xmpp.json"
 )
 backup=(
-  "etc/zextras/service-discover/carbonio-messaging-http.hcl"
-  "etc/zextras/service-discover/carbonio-messaging-xmpp.hcl"
+  "etc/zextras/service-discover/carbonio-chats-messaging-http.hcl"
+  "etc/zextras/service-discover/carbonio-chats-messaging-xmpp.hcl"
   "etc/mongooseim/mongooseim.toml"
   "etc/mongooseim/app.config"
 )
@@ -114,57 +114,57 @@ package() {
   install -Dm 644 app.config "${pkgdir}/etc/mongooseim/app.config"
 
   #Our files
-  install -Dm 755 carbonio-messaging "${pkgdir}/usr/bin/carbonio-messaging"
-  install -Dm 644 carbonio-messaging.service "${pkgdir}/lib/systemd/system/carbonio-messaging.service"
-  install -Dm 644 carbonio-messaging-http-sidecar.service "${pkgdir}/lib/systemd/system/carbonio-messaging-http-sidecar.service"
-  install -Dm 644 carbonio-messaging-xmpp-sidecar.service "${pkgdir}/lib/systemd/system/carbonio-messaging-xmpp-sidecar.service"
-  install -Dm 644 carbonio-messaging-http.hcl "${pkgdir}/etc/zextras/service-discover/carbonio-messaging-http.hcl"
-  install -Dm 644 carbonio-messaging-xmpp.hcl "${pkgdir}/etc/zextras/service-discover/carbonio-messaging-xmpp.hcl"
-  install -Dm 644 carbonio-messaging-setup.sh "${pkgdir}/etc/zextras/pending-setups.d/carbonio-messaging.sh"
-  install -Dm 644 intentions-http.json "${pkgdir}/etc/carbonio/messaging/service-discover/intentions-http.json"
-  install -Dm 644 intentions-xmpp.json "${pkgdir}/etc/carbonio/messaging/service-discover/intentions-xmpp.json"
-  install -Dm 644 policies.json "${pkgdir}/etc/carbonio/messaging/service-discover/policies.json"
-  install -Dm 644 service-protocol-http.json "${pkgdir}/etc/carbonio/messaging/service-discover/service-protocol-http.json"
-  install -Dm 644 service-protocol-xmpp.json "${pkgdir}/etc/carbonio/messaging/service-discover/service-protocol-xmpp.json"
+  install -Dm 755 carbonio-chats-messaging "${pkgdir}/usr/bin/carbonio-chats-messaging"
+  install -Dm 644 carbonio-chats-messaging.service "${pkgdir}/lib/systemd/system/carbonio-chats-messaging.service"
+  install -Dm 644 carbonio-chats-messaging-http-sidecar.service "${pkgdir}/lib/systemd/system/carbonio-chats-messaging-http-sidecar.service"
+  install -Dm 644 carbonio-chats-messaging-xmpp-sidecar.service "${pkgdir}/lib/systemd/system/carbonio-chats-messaging-xmpp-sidecar.service"
+  install -Dm 644 carbonio-chats-messaging-http.hcl "${pkgdir}/etc/zextras/service-discover/carbonio-chats-messaging-http.hcl"
+  install -Dm 644 carbonio-chats-messaging-xmpp.hcl "${pkgdir}/etc/zextras/service-discover/carbonio-chats-messaging-xmpp.hcl"
+  install -Dm 644 carbonio-chats-messaging-setup.sh "${pkgdir}/etc/zextras/pending-setups.d/carbonio-chats-messaging.sh"
+  install -Dm 644 intentions-http.json "${pkgdir}/etc/carbonio/chats-messaging/service-discover/intentions-http.json"
+  install -Dm 644 intentions-xmpp.json "${pkgdir}/etc/carbonio/chats-messaging/service-discover/intentions-xmpp.json"
+  install -Dm 644 policies.json "${pkgdir}/etc/carbonio/chats-messaging/service-discover/policies.json"
+  install -Dm 644 service-protocol-http.json "${pkgdir}/etc/carbonio/chats-messaging/service-discover/service-protocol-http.json"
+  install -Dm 644 service-protocol-xmpp.json "${pkgdir}/etc/carbonio/chats-messaging/service-discover/service-protocol-xmpp.json"
 }
 
 postinst() {
-  getent group 'carbonio-messaging' >/dev/null ||
-    groupadd -r 'carbonio-messaging'
-  getent passwd 'carbonio-messaging' >/dev/null ||
-    useradd -r -M -g 'carbonio-messaging' -d /var/lib/mongooseim -s /sbin/nologin 'carbonio-messaging'
+  getent group 'carbonio-chats-messaging' >/dev/null ||
+    groupadd -r 'carbonio-chats-messaging'
+  getent passwd 'carbonio-chats-messaging' >/dev/null ||
+    useradd -r -M -g 'carbonio-chats-messaging' -d /var/lib/mongooseim -s /sbin/nologin 'carbonio-chats-messaging'
 
-  chown carbonio-messaging:carbonio-messaging /var/log/mongooseim
-  chown carbonio-messaging:carbonio-messaging /var/lib/mongooseim
-  chown carbonio-messaging:carbonio-messaging /var/lock/mongooseim
-  chown carbonio-messaging:carbonio-messaging /usr/lib/mongooseim
+  chown carbonio-chats-messaging:carbonio-chats-messaging /var/log/mongooseim
+  chown carbonio-chats-messaging:carbonio-chats-messaging /var/lib/mongooseim
+  chown carbonio-chats-messaging:carbonio-chats-messaging /var/lock/mongooseim
+  chown carbonio-chats-messaging:carbonio-chats-messaging /usr/lib/mongooseim
 
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
-    systemctl enable carbonio-messaging.service >/dev/null 2>&1 || :
-    systemctl enable carbonio-messaging-http-sidecar.service >/dev/null 2>&1 || :
-    systemctl enable carbonio-messaging-xmpp-sidecar.service >/dev/null 2>&1 || :
+    systemctl enable carbonio-chats-messaging.service >/dev/null 2>&1 || :
+    systemctl enable carbonio-chats-messaging-http-sidecar.service >/dev/null 2>&1 || :
+    systemctl enable carbonio-chats-messaging-xmpp-sidecar.service >/dev/null 2>&1 || :
   fi
 
   echo "======================================================"
-  echo "Carbonio messaging installed successfully!"
+  echo "Carbonio chats messaging installed successfully!"
   echo "You must run pending-setups to configure it correctly."
   echo "======================================================"
 }
 
 prerm() {
   if [ -d /run/systemd/system ]; then
-    systemctl --no-reload disable carbonio-messaging.service >/dev/null 2>&1 || :
-    systemctl --no-reload disable carbonio-messaging-http-sidecar.service >/dev/null 2>&1 || :
-    systemctl --no-reload disable carbonio-messaging-xmpp-sidecar.service >/dev/null 2>&1 || :
-    systemctl stop carbonio-messaging.service >/dev/null 2>&1 || :
-    systemctl stop carbonio-messaging-http-sidecar.service >/dev/null 2>&1 || :
-    systemctl stop carbonio-messaging-xmpp-sidecar.service >/dev/null 2>&1 || :
+    systemctl --no-reload disable carbonio-chats-messaging.service >/dev/null 2>&1 || :
+    systemctl --no-reload disable carbonio-chats-messaging-http-sidecar.service >/dev/null 2>&1 || :
+    systemctl --no-reload disable carbonio-chats-messaging-xmpp-sidecar.service >/dev/null 2>&1 || :
+    systemctl stop carbonio-chats-messaging.service >/dev/null 2>&1 || :
+    systemctl stop carbonio-chats-messaging-http-sidecar.service >/dev/null 2>&1 || :
+    systemctl stop carbonio-chats-messaging-xmpp-sidecar.service >/dev/null 2>&1 || :
   fi
 }
 
 postrm() {
-  rm -f /etc/carbonio/messaging/service-discover/token
+  rm -f /etc/carbonio/chats-messaging/service-discover/token
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
   fi
