@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <packaging>pom</packaging>
+  <modules>
+    <module>mongooseim-auth</module>
+  </modules>
+
+  <groupId>com.zextras.carbonio.chats</groupId>
+  <artifactId>mongooseim-package</artifactId>
+  <version>0.1.0</version>
+
+  <repositories>
+    <repository>
+      <id>artifactory</id>
+      <name>Zextras releases</name>
+      <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
+    </repository>
+    <repository>
+      <id>snapshots-repo</id>
+      <url>https://repo.zextras.io/maven/snapshot/</url>
+    </repository>
+    <repository>
+      <id>releases-repo</id>
+      <url>https://repo.zextras.io/maven/release/</url>
+    </repository>
+  </repositories>
+
+  <properties>
+    <com.fasterxml.jackson.version>2.13.0</com.fasterxml.jackson.version>
+    <carbonio-user-management-sdk.version>0.1.1</carbonio-user-management-sdk.version>
+    <org.junit.jupiter.version>5.8.2</org.junit.jupiter.version>
+    <org.mockito.version>4.3.0</org.mockito.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.zextras.carbonio.user-management</groupId>
+        <artifactId>carbonio-user-management-sdk</artifactId>
+        <version>${carbonio-user-management-sdk.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${com.fasterxml.jackson.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${com.fasterxml.jackson.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${com.fasterxml.jackson.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>${org.junit.jupiter.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${org.mockito.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+
+</project>

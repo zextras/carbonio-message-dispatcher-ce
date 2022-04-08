@@ -38,6 +38,7 @@ depends=(
   "service-discover"
   "pending-setups"
   "jq"
+  "carbonio-openjdk"
 )
 sources=(
   "https://github.com/esl/MongooseIM/archive/88102c2b34a50bc5d28431772374b89d1ed7aa73.tar.gz"

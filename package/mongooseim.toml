@@ -6,10 +6,9 @@
   rdbms_server_type = "pgsql"
 
 [auth]
-  methods = ["http", "dummy"] # DUMMY MUST BE REMOVED AS SOON AS AUTH INTEGRATION IS IN PLACE!
+  methods = ["dummy"] # DUMMY MUST BE REMOVED AS SOON AS AUTH INTEGRATION IS IN PLACE!
   password.format = "plain"
   sasl_mechanisms = ["plain"]
-  [auth.http]
   [auth.dummy]
 [s2s]
   default_policy = "deny"
