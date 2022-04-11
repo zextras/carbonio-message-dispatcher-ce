@@ -21,6 +21,7 @@ function build-ubuntu-artifact() {
     docker run \
       --rm --entrypoint "" \
       -v "$(pwd)":/tmp/messaging \
+      -v "$HOME/.m2/settings.xml":/tmp/settings.xml \
       registry.dev.zextras.com/jenkins/pacur/ubuntu-20.04:v1 /bin/bash -c 'pacur build ubuntu /tmp/messaging'
   fi
 }
@@ -32,6 +33,7 @@ function build-rocky-8-artifact() {
     docker run \
       --rm --entrypoint "" \
       -v "$(pwd)":/tmp/messaging \
+      -v "$HOME/.m2/settings.xml":/tmp/settings.xml \
       registry.dev.zextras.com/jenkins/pacur/rocky-8:v1 /bin/bash -c 'pacur build rocky-8 /tmp/messaging'
   fi
 }

@@ -34,7 +34,15 @@ pipeline {
           }
           steps {
             unstash 'project'
-            sh 'sudo pacur build ubuntu-focal'
+            withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
+              sh 'cp $SETTINGS_PATH settings-jenkins.xml'
+              sh '''
+                mkdir /tmp/messaging
+                cp $SETTINGS_PATH /tmp/settings.xml
+                mv * /tmp/messaging
+                sudo pacur build ubuntu-focal /tmp/messaging
+              '''
+            }
             stash includes: 'artifacts/', name: 'artifacts-ubuntu-focal'
           }
           post {
@@ -58,7 +66,15 @@ pipeline {
           }
           steps {
             unstash 'project'
-            sh 'sudo pacur build rocky-8'
+            withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
+              sh 'cp $SETTINGS_PATH settings-jenkins.xml'
+              sh '''
+                mkdir /tmp/messaging
+                cp $SETTINGS_PATH /tmp/settings.xml
+                mv * /tmp/messaging
+                sudo pacur build rocky-8 /tmp/messaging
+              '''
+            }
             stash includes: 'artifacts/', name: 'artifacts-rocky-8'
           }
           post {
