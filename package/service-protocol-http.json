@@ -1,5 +1,5 @@
 {
   "Kind": "service-defaults",
   "Name": "carbonio-chats-messaging-http",
-  "Protocol": "http"
+  "Protocol": "tcp"
 }
