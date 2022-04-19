@@ -97,7 +97,7 @@ build:apt() {
   cd ${srcdir}
   #Installing erlang
   curl https://packages.erlang-solutions.com/erlang/debian/pool/esl-erlang_24.0-1~ubuntu~focal_amd64.deb > erlang.deb
-  apt update && apt install --without-recommends -y ./erlang.deb
+  apt update && apt install --no-install-recommends -y ./erlang.deb
   #Building MongooseIm, check build steps from the official repo, especially from scripts in tools/pkg
   cd MongooseIM-88102c2b34a50bc5d28431772374b89d1ed7aa73
   git apply ../delete_room.patch
