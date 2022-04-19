@@ -3,7 +3,7 @@ targets=(
   "centos"
 )
 pkgname="carbonio-chats-messaging"
-pkgver="0.1.0"
+pkgver="0.2.0"
 pkgrel="1"
 pkgdesc="Carbonio chats messaging component"
 pkgdesclong=(
@@ -61,6 +61,7 @@ sources=(
   "service-protocol-http.json"
   "service-protocol-xmpp.json"
   "auth"
+  "delete_room.patch"
 )
 backup=(
   "etc/zextras/service-discover/carbonio-chats-messaging-http.hcl"
@@ -85,19 +86,21 @@ hashsums=(
   "skip"
   "skip"
   "skip"
+  "skip"
 )
 
 build:apt() {
   #Maven steps
   cd "${srcdir}/../../messaging"
-  mvn clean --settings /tmp/settings.xml install
+  mvn -T1C -B -q clean --settings /tmp/settings.xml install
 
   cd ${srcdir}
   #Installing erlang
   curl https://packages.erlang-solutions.com/erlang/debian/pool/esl-erlang_24.0-1~ubuntu~focal_amd64.deb > erlang.deb
-  apt update && apt install --no-install-recommends -y ./erlang.deb
+  apt update && apt install --without-recommends -y ./erlang.deb
   #Building MongooseIm, check build steps from the official repo, especially from scripts in tools/pkg
   cd MongooseIM-88102c2b34a50bc5d28431772374b89d1ed7aa73
+  git apply ../delete_room.patch
   ./tools/configure with-pgsql system=yes prefix=""
   #Trick to let executables have no prefix but still allowing them to install to a specific directory
   sed -i 's#PREFIX=""#PREFIX="${pkgdir}"#' configure.out
@@ -109,7 +112,7 @@ build:yum() {
   export JAVA_PATH="${JAVA_HOME}/bin"
   #Maven steps
   cd "${srcdir}/../../messaging"
-  mvn clean --settings /tmp/settings.xml install
+  mvn -T1C -B -q clean --settings /tmp/settings.xml install
 
   cd ${srcdir}
   #Installing erlang
@@ -117,6 +120,7 @@ build:yum() {
   yum install -y ./erlang.rpm
   #Building MongooseIm, check build steps from the official repo, especially from scripts in tools/pkg
   cd MongooseIM-88102c2b34a50bc5d28431772374b89d1ed7aa73
+  git apply ../delete_room.patch
   ./tools/configure with-pgsql system=yes prefix=""
   #Trick to let executables have no prefix but still allowing them to install to a specific directory
   sed -i 's#PREFIX=""#PREFIX="${pkgdir}"#' configure.out
