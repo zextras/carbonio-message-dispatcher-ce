@@ -26,7 +26,7 @@
     database = "carbonio-chats-messaging-db"
     username = "carbonio-chats-messaging-db"
     password = "<insert-password>"
-    
+
 [listen]
   [[listen.c2s]]
     port = 10000
@@ -37,10 +37,6 @@
     ip_address = "127.78.0.10"
     transport.num_acceptors = 10
     transport.max_connections = 1024
-
-    [[listen.http.handlers.mod_bosh]]
-      host = "_"
-      path = "/http-bind"
 
     [[listen.http.handlers.mod_websockets]]
       host = "_"
@@ -75,23 +71,22 @@
       host = "_"
       path = "/api/rooms/[:id]/messages"
 
-[modules.mod_muc]
-  backend = "rdbms"
 [modules.mod_muc_light]
   backend = "rdbms"
   host = "muclight.@HOST@"
   equal_occupants = true
   all_can_configure = true
-  all_can_invite = true  
+  all_can_invite = true
 [modules.mod_disco]
   users_can_see_hidden_services = true
 [modules.mod_mam_meta]
   backend = "rdbms"
-  pm.backend = "rdbms"
-  pm.archive_groupchats = true
   muc.backend = "rdbms"
   muc.host = "muclight.@HOST@"
-  rdbms_message_format = "simple"
+  #This is a plain format due to the possible future messages migration from chats to mongooseim, if you find a way to
+  #migrate them that will actually save them in other formats like mam_message_eterm or mam_message_compressed_eterm,
+  #use those
+  db_message_format="mam_message_xml"
 
 [modules.mod_commands]
 [modules.mod_muc_commands]
@@ -105,8 +100,4 @@
 [modules.mod_roster]
   backend = "rdbms"
 [modules.mod_carboncopy]
-[modules.mod_event_pusher.backend.http]
-  pool_name = "push_pool"
-  path = "/notifications"
-  callback_module = "mod_event_pusher_http_defaults"
 [modules.mod_ping]

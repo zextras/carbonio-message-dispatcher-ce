@@ -1,8 +1,8 @@
 diff --git a/src/muc_light/mod_muc_light.erl b/src/muc_light/mod_muc_light.erl
-index dcaebeab8..06ec9794f 100644
+index e3f9903fe..6e3c8ff53 100644
 --- a/src/muc_light/mod_muc_light.erl
 +++ b/src/muc_light/mod_muc_light.erl
-@@ -31,7 +31,8 @@
+@@ -30,7 +30,8 @@
  %% For Administration API
  -export([try_to_create_room/3,
           change_room_config/5,
@@ -11,7 +11,7 @@ index dcaebeab8..06ec9794f 100644
 +         equal_occupants/1]).
  
  %% gen_mod callbacks
- -export([start/2, stop/1, config_spec/0, supported_features/0]).
+ -export([start/2, stop/1, config_spec/0, supported_features/0, deps/2]).
 diff --git a/src/muc_light/mod_muc_light_commands.erl b/src/muc_light/mod_muc_light_commands.erl
 index b7f831f8e..7ccf7c8ef 100644
 --- a/src/muc_light/mod_muc_light_commands.erl

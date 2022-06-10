@@ -3,7 +3,7 @@ targets=(
   "centos"
 )
 pkgname="carbonio-chats-messaging"
-pkgver="0.2.0"
+pkgver="0.3.0"
 pkgrel="1"
 pkgdesc="Carbonio chats messaging component"
 pkgdesclong=(
@@ -45,7 +45,7 @@ depends=(
   "carbonio-openjdk"
 )
 sources=(
-  "https://github.com/esl/MongooseIM/archive/88102c2b34a50bc5d28431772374b89d1ed7aa73.tar.gz"
+  "https://github.com/esl/MongooseIM/archive/5.1.0.tar.gz"
   "carbonio-chats-messaging"
   "carbonio-chats-messaging-http.hcl"
   "carbonio-chats-messaging-xmpp.hcl"
@@ -99,7 +99,7 @@ build:apt() {
   curl https://packages.erlang-solutions.com/erlang/debian/pool/esl-erlang_24.0-1~ubuntu~focal_amd64.deb > erlang.deb
   apt update && apt install --no-install-recommends -y ./erlang.deb
   #Building MongooseIm, check build steps from the official repo, especially from scripts in tools/pkg
-  cd MongooseIM-88102c2b34a50bc5d28431772374b89d1ed7aa73
+  cd MongooseIM-5.1.0
   git apply ../delete_room.patch
   ./tools/configure with-pgsql system=yes prefix=""
   #Trick to let executables have no prefix but still allowing them to install to a specific directory
@@ -119,7 +119,7 @@ build:yum() {
   curl https://packages.erlang-solutions.com/erlang/rpm/centos/8/x86_64/esl-erlang_24.0-1~centos~8_amd64.rpm > erlang.rpm
   yum install -y ./erlang.rpm
   #Building MongooseIm, check build steps from the official repo, especially from scripts in tools/pkg
-  cd MongooseIM-88102c2b34a50bc5d28431772374b89d1ed7aa73
+  cd MongooseIM-5.1.0
   git apply ../delete_room.patch
   ./tools/configure with-pgsql system=yes prefix=""
   #Trick to let executables have no prefix but still allowing them to install to a specific directory
@@ -132,7 +132,7 @@ package() {
   cd "${srcdir}/../../messaging"
   install -Dm 644 ./mongooseim-auth/target/mongooseim-auth-shaded.jar "${pkgdir}/var/lib/mongooseim/auth.jar"
 
-  cd "${srcdir}/MongooseIM-88102c2b34a50bc5d28431772374b89d1ed7aa73"
+  cd "${srcdir}/MongooseIM-5.1.0"
   make install
   cd "${srcdir}"
 
