@@ -4,7 +4,7 @@ targets=(
 )
 pkgname="carbonio-chats-messaging"
 pkgver="0.4.0"
-pkgrel="1"
+pkgrel="2"
 pkgdesc="Carbonio chats messaging component"
 pkgdesclong=(
   "Carbonio chats messaging component"

@@ -6,13 +6,11 @@
   rdbms_server_type = "pgsql"
 
 [auth]
-  methods = ["dummy", "external"]
+  methods = ["dummy"]
   password.format = "plain"
   sasl_mechanisms = ["plain"]
   [auth.dummy]
-  [auth.external]
-    program = "/var/lib/mongooseim/auth"
-    instances = 5
+
 [s2s]
   default_policy = "deny"
 [outgoing_pools.rdbms.default]
