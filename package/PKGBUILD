@@ -3,7 +3,7 @@ targets=(
   "centos"
 )
 pkgname="carbonio-chats-messaging"
-pkgver="0.3.0"
+pkgver="0.4.0"
 pkgrel="1"
 pkgdesc="Carbonio chats messaging component"
 pkgdesclong=(
@@ -23,8 +23,6 @@ makedepends:apt=(
   "unixodbc-dev"
   "gcc"
   "g++"
-  "maven"
-  "openjdk-11-jdk-headless"
 )
 makedepends:yum=(
   "git"
@@ -35,14 +33,11 @@ makedepends:yum=(
   "unixODBC-devel"
   "gcc"
   "gcc-c++"
-  "maven"
-  "java-11-openjdk-devel"
 )
 depends=(
   "service-discover"
   "pending-setups"
   "jq"
-  "carbonio-openjdk"
 )
 sources=(
   "https://github.com/esl/MongooseIM/archive/5.1.0.tar.gz"
@@ -60,7 +55,6 @@ sources=(
   "policies.json"
   "service-protocol-http.json"
   "service-protocol-xmpp.json"
-  "auth"
   "delete_room.patch"
 )
 backup=(
@@ -86,14 +80,9 @@ hashsums=(
   "skip"
   "skip"
   "skip"
-  "skip"
 )
 
 build:apt() {
-  #Maven steps
-  cd "${srcdir}/../../messaging"
-  mvn -T1C -B -q clean --settings /tmp/settings.xml install
-
   cd ${srcdir}
   #Installing erlang
   curl https://packages.erlang-solutions.com/erlang/debian/pool/esl-erlang_24.0-1~ubuntu~focal_amd64.deb > erlang.deb
@@ -108,12 +97,6 @@ build:apt() {
 }
 
 build:yum() {
-  export JAVA_HOME="/usr/lib/jvm/java-11-openjdk"
-  export JAVA_PATH="${JAVA_HOME}/bin"
-  #Maven steps
-  cd "${srcdir}/../../messaging"
-  mvn -T1C -B -q clean --settings /tmp/settings.xml install
-
   cd ${srcdir}
   #Installing erlang
   curl https://packages.erlang-solutions.com/erlang/rpm/centos/8/x86_64/esl-erlang_24.0-1~centos~8_amd64.rpm > erlang.rpm
@@ -128,10 +111,6 @@ build:yum() {
 }
 
 package() {
-  #Installing authentication jar
-  cd "${srcdir}/../../messaging"
-  install -Dm 644 ./mongooseim-auth/target/mongooseim-auth-shaded.jar "${pkgdir}/var/lib/mongooseim/auth.jar"
-
   cd "${srcdir}/MongooseIM-5.1.0"
   make install
   cd "${srcdir}"
@@ -141,7 +120,6 @@ package() {
   install -Dm 644 app.config "${pkgdir}/etc/mongooseim/app.config"
 
   #Our files
-  install -Dm 755 auth "${pkgdir}/var/lib/mongooseim/auth"
   install -Dm 755 carbonio-chats-messaging "${pkgdir}/usr/bin/carbonio-chats-messaging"
   install -Dm 644 carbonio-chats-messaging.service "${pkgdir}/lib/systemd/system/carbonio-chats-messaging.service"
   install -Dm 644 carbonio-chats-messaging-http-sidecar.service "${pkgdir}/lib/systemd/system/carbonio-chats-messaging-http-sidecar.service"
@@ -166,8 +144,6 @@ postinst() {
   chown carbonio-chats-messaging:carbonio-chats-messaging /var/lib/mongooseim
   chown carbonio-chats-messaging:carbonio-chats-messaging /var/lock/mongooseim
   chown carbonio-chats-messaging:carbonio-chats-messaging /usr/lib/mongooseim
-  chown carbonio-chats-messaging:carbonio-chats-messaging /var/lib/mongooseim/auth
-  chown carbonio-chats-messaging:carbonio-chats-messaging /var/lib/mongooseim/auth.jar
 
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
