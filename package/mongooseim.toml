@@ -99,3 +99,5 @@
   backend = "rdbms"
 [modules.mod_carboncopy]
 [modules.mod_ping]
+[modules.mod_smart_markers]
+  backend = "rdbms"
