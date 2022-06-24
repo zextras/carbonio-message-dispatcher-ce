@@ -3,7 +3,7 @@ targets=(
   "centos"
 )
 pkgname="carbonio-chats-messaging"
-pkgver="0.5.0"
+pkgver="0.6.0"
 pkgrel="1"
 pkgdesc="Carbonio chats messaging component"
 pkgdesclong=(
@@ -56,6 +56,7 @@ sources=(
   "service-protocol-http.json"
   "service-protocol-xmpp.json"
   "delete_room.patch"
+  "affiliation_rest_api.patch"
 )
 backup=(
   "etc/zextras/service-discover/carbonio-chats-messaging-http.hcl"
@@ -64,6 +65,7 @@ backup=(
   "etc/mongooseim/app.config"
 )
 hashsums=(
+  "skip"
   "skip"
   "skip"
   "skip"
@@ -90,6 +92,8 @@ build:apt() {
   #Building MongooseIm, check build steps from the official repo, especially from scripts in tools/pkg
   cd MongooseIM-5.1.0
   git apply ../delete_room.patch
+  #The following patch should be removed when https://github.com/esl/MongooseIM/pull/3693 is merged
+  git apply ../affiliation_rest_api.patch
   ./tools/configure with-pgsql system=yes prefix=""
   #Trick to let executables have no prefix but still allowing them to install to a specific directory
   sed -i 's#PREFIX=""#PREFIX="${pkgdir}"#' configure.out
@@ -104,6 +108,8 @@ build:yum() {
   #Building MongooseIm, check build steps from the official repo, especially from scripts in tools/pkg
   cd MongooseIM-5.1.0
   git apply ../delete_room.patch
+  #The following patch should be removed when https://github.com/esl/MongooseIM/pull/3693 is merged
+  git apply ../affiliation_rest_api.patch
   ./tools/configure with-pgsql system=yes prefix=""
   #Trick to let executables have no prefix but still allowing them to install to a specific directory
   sed -i 's#PREFIX=""#PREFIX="${pkgdir}"#' configure.out

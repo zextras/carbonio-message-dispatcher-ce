@@ -1,0 +1,29 @@
+diff --git a/src/muc_light/mod_muc_light_commands.erl b/src/muc_light/mod_muc_light_commands.erl
+index b7f831f8e..e1a797b52 100644
+--- a/src/muc_light/mod_muc_light_commands.erl
++++ b/src/muc_light/mod_muc_light_commands.erl
+@@ -156,7 +156,23 @@ commands() ->
+        [{domain, binary},
+         {name, binary},
+         {owner, binary}]},
+-      {result, ok}]
++      {result, ok}],
++
++      [{name, change_affiliation},
++        {category, <<"muc-lights">>},
++        {subcategory, <<"affiliation">>},
++        {desc, <<"Changes a MUC light member affiliation">>},
++        {module, ?MODULE},
++        {function, change_affiliation},
++        {action, update},
++        {identifiers, [domain, name, owner]},
++        {args,
++          [{domain, binary},
++            {name, binary},
++            {owner, binary},
++            {target, binary},
++            {affiliation, binary}]},
++        {result, ok}]
+     ].
+ 
+ 
