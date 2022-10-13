@@ -1,0 +1,19 @@
+[Unit]
+Description=Carbonio chats messaging auth daemon
+Documentation=https://docs.zextras.com/zextras-suite-documentation/latest/
+Wants=network.target
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/opt/zextras/common/bin/java <debug-agent> -Djava.net.preferIPv4Stack=true -jar /usr/bin/carbonio/carbonio-chats-messaging/carbonio-chats-messaging-auth.jar
+User=carbonio-chats-messaging
+Group=carbonio-chats-messaging
+Restart=on-failure
+RestartSec=15
+TimeoutSec=60
+TimeoutStopSec=120
+
+[Install]
+WantedBy=multi-user.target

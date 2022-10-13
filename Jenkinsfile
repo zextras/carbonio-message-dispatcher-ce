@@ -16,9 +16,38 @@ pipeline {
   stages {
     stage('Build setup') {
       steps {
-        checkout scm
+        checkout([
+          $class: 'GitSCM',
+          branches: scm.branches,
+          extensions: [[
+            $class: 'CloneOption',
+            shallow: true,
+            depth:   2,
+            timeout: 30
+          ]],
+          userRemoteConfigs: scm.userRemoteConfigs
+        ])
+        withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
+          sh 'cp $SETTINGS_PATH settings-jenkins.xml'
+          sh 'mvn -Dmaven.repo.local=$(pwd)/m2 -N wrapper:wrapper'
+        }
       }
     }
+    stage('Compiling') {
+      steps {
+        sh './mvnw -Dmaven.repo.local=$(pwd)/m2 -T1C -B -q --settings settings-jenkins.xml compile'
+      }
+      post {
+        failure {
+          script {
+            if ("main".equals(env.BRANCH_NAME)) {
+              sendFailureEmail(STAGE_NAME)
+            }
+          }
+        }
+      }
+    }
+
     stage('Stashing for packaging') {
       steps {
         stash includes: '**', name: 'project', useDefaultExcludes: false
