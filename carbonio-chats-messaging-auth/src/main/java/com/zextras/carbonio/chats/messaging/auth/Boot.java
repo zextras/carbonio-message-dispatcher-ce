@@ -15,8 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.AuthenticationService;
 import service.impl.AuthenticationServiceImpl;
-import com.zextras.carbonio.chats.messaging.auth.servlet.CheckPasswordServlet;
-import com.zextras.carbonio.chats.messaging.auth.servlet.UserExistsServlet;
+import com.zextras.carbonio.chats.messaging.auth.web.api.CheckPasswordApi;
+import com.zextras.carbonio.chats.messaging.auth.web.api.UserExistsApi;
 
 public class Boot {
 
@@ -65,11 +65,11 @@ public class Boot {
 
     context.addServletContainerInitializer((c, ctx) -> {
       Dynamic checkPassword = ctx.addServlet("CheckPasswordServlet",
-        CheckPasswordServlet.create(authenticationService));
+        CheckPasswordApi.create(authenticationService));
       checkPassword.addMapping("/check_password");
     });
     context.addServletContainerInitializer((c, ctx) -> {
-      Dynamic userExists = ctx.addServlet("UserExistsServlet", UserExistsServlet.create(authenticationService));
+      Dynamic userExists = ctx.addServlet("UserExistsServlet", UserExistsApi.create(authenticationService));
       userExists.addMapping("/user_exists");
     });
     handlers.addHandler(context);

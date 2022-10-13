@@ -1,4 +1,4 @@
-package com.zextras.carbonio.chats.messaging.auth.servlet;
+package com.zextras.carbonio.chats.messaging.auth.web.api;
 
 
 import com.zextras.carbonio.chats.messaging.auth.exception.FailedDependencyException;
@@ -12,16 +12,16 @@ import javax.servlet.http.HttpServletResponse;
 import service.AuthenticationService;
 import com.zextras.carbonio.chats.messaging.auth.utility.Utilities;
 
-public class UserExistsServlet extends HttpServlet {
+public class UserExistsApi extends HttpServlet {
 
   private final AuthenticationService authenticationService;
 
-  public UserExistsServlet(AuthenticationService authenticationService) {
+  public UserExistsApi(AuthenticationService authenticationService) {
     this.authenticationService = authenticationService;
   }
 
-  public static CheckPasswordServlet create(AuthenticationService authenticationService) {
-    return new CheckPasswordServlet(authenticationService);
+  public static UserExistsApi create(AuthenticationService authenticationService) {
+    return new UserExistsApi(authenticationService);
   }
 
   @Override

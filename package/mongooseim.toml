@@ -6,10 +6,12 @@
   rdbms_server_type = "pgsql"
 
 [auth]
-  methods = ["dummy"]
+  methods = ["http"]
   password.format = "plain"
   sasl_mechanisms = ["plain"]
-  [auth.dummy]
+
+[outgoing_pools.http.auth]
+  connection.host = "http://127.78.0.10:10001"
 
 [s2s]
   default_policy = "deny"

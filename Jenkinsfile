@@ -11,7 +11,7 @@ pipeline {
   }
   environment {
     NETWORK_OPTS = '--network ci_agent'
-    FAILURE_EMAIL_RECIPIENTS='alberto.pontini@zextras.com, luca.gasparini@zextras.com, noman.alishaukat@zextras.com'
+    FAILURE_EMAIL_RECIPIENTS='luca.gasparini@zextras.com, noman.alishaukat@zextras.com, perla.polito@zextras.com'
   }
   stages {
     stage('Build setup') {
