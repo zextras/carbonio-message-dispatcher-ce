@@ -119,10 +119,11 @@ build:yum() {
 }
 
 package() {
-  cd "${srcdir}"/../../messaging
+  cd "${srcdir}"/../../messaging/carbonio-chats-messaging-auth
   ls -la
-  pwd
-  install -Dm 644 ./carbonio-chats-messaging-auth/target/carbonio-chats-messaging-auth-fatjar.jar \
+  cd "${srcdir}"/../../messaging/carbonio-chats-messaging-auth/target
+  ls -la
+  install -Dm 644 ./carbonio-chats-messaging-auth-fatjar.jar \
     "${pkgdir}/usr/bin/carbonio/carbonio-chats-messaging/carbonio-chats-messaging-auth.jar"
 
   cd "${srcdir}/MongooseIM-5.1.0"
