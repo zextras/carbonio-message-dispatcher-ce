@@ -14,8 +14,6 @@
 
   <artifactId>carbonio-chats-messaging-auth</artifactId>
 
-
-
   <dependencies>
 
     <!-- Carbonio User Management -->

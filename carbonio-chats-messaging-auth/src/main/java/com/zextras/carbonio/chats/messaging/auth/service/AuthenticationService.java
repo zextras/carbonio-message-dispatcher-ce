@@ -1,4 +1,4 @@
-package service;
+package com.zextras.carbonio.chats.messaging.auth.service;
 
 import java.util.Optional;
 

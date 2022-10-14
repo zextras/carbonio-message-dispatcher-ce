@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+  <appender name="FILE_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>/var/log/carbonio/chats-messaging/auth.log</file>
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <Pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} %5p %-30.30logger{29} : %m%n</Pattern>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <FileNamePattern>/var/log/carbonio/chats-messaging/auth.%d{yyyy-MM-dd}.log.gz</FileNamePattern>
+      <MaxHistory>28</MaxHistory>
+    </rollingPolicy>
+  </appender>
+
+  <appender name="CONSOLE_LOG" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} %5p %-30.30logger{29} : %m%n</pattern>
+    </encoder>
+  </appender>
+
+  <logger name="com.zextras.carbonio.chats.messaging.auth" level="INFO" additivity="false">
+    <appender-ref ref="FILE_APPENDER"/>
+    <appender-ref ref="CONSOLE_LOG"/>
+  </logger>
+
+  <root level="INFO" additivity="false">
+    <appender-ref ref="FILE_APPENDER"/>
+    <appender-ref ref="CONSOLE_LOG"/>
+  </root>
+
+</configuration>

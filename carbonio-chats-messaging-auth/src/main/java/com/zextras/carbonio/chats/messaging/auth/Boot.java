@@ -1,6 +1,8 @@
 package com.zextras.carbonio.chats.messaging.auth;
 
 import com.zextras.carbonio.chats.messaging.auth.config.Constant;
+import com.zextras.carbonio.chats.messaging.auth.service.AuthenticationService;
+import com.zextras.carbonio.chats.messaging.auth.service.impl.AuthenticationServiceImpl;
 import com.zextras.carbonio.usermanagement.UserManagementClient;
 
 import java.io.FileInputStream;
@@ -13,8 +15,6 @@ import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import service.AuthenticationService;
-import service.impl.AuthenticationServiceImpl;
 import com.zextras.carbonio.chats.messaging.auth.web.api.CheckPasswordApi;
 import com.zextras.carbonio.chats.messaging.auth.web.api.UserExistsApi;
 

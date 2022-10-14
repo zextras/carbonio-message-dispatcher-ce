@@ -9,6 +9,7 @@
   methods = ["http"]
   password.format = "plain"
   sasl_mechanisms = ["plain"]
+  [auth.http]
 
 [outgoing_pools.http.auth]
   connection.host = "http://127.78.0.10:10001"

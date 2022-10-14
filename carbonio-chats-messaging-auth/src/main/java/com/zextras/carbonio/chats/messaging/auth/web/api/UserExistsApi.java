@@ -1,16 +1,15 @@
 package com.zextras.carbonio.chats.messaging.auth.web.api;
 
-
 import com.zextras.carbonio.chats.messaging.auth.exception.FailedDependencyException;
 import com.zextras.carbonio.chats.messaging.auth.exception.UnauthorizedException;
+import com.zextras.carbonio.chats.messaging.auth.service.AuthenticationService;
+import com.zextras.carbonio.chats.messaging.auth.utility.Utilities;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import service.AuthenticationService;
-import com.zextras.carbonio.chats.messaging.auth.utility.Utilities;
 
 public class UserExistsApi extends HttpServlet {
 
