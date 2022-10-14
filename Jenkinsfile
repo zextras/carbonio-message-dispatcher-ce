@@ -13,6 +13,7 @@ pipeline {
     NETWORK_OPTS = '--network ci_agent'
     FAILURE_EMAIL_RECIPIENTS='luca.gasparini@zextras.com, noman.alishaukat@zextras.com, perla.polito@zextras.com'
   }
+
   stages {
     stage('Build setup') {
       steps {
@@ -28,6 +29,7 @@ pipeline {
           userRemoteConfigs: scm.userRemoteConfigs
         ])
         withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
+          sh 'echo "withCredentials ... $SETTINGS_PATH"'
           sh 'cp $SETTINGS_PATH settings-jenkins.xml'
           sh 'mvn -Dmaven.repo.local=$(pwd)/m2 -N wrapper:wrapper'
         }
