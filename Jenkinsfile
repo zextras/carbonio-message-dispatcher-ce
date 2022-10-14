@@ -64,6 +64,7 @@ pipeline {
           steps {
             unstash 'project'
             sh '''
+              ./mvnw package -Dmaven.main.skip -Dmaven.repo.local=$(pwd)/m2
               mkdir /tmp/messaging
               mv * /tmp/messaging
               sudo pacur build ubuntu-focal /tmp/messaging
@@ -92,6 +93,7 @@ pipeline {
           steps {
             unstash 'project'
             sh '''
+              ./mvnw package -Dmaven.main.skip -Dmaven.repo.local=$(pwd)/m2
               mkdir /tmp/messaging
               mv * /tmp/messaging
               sudo pacur build rocky-8 /tmp/messaging
