@@ -9,7 +9,7 @@
   <parent>
     <groupId>com.zextras.carbonio.chats.messaging</groupId>
     <artifactId>carbonio-chats-messaging</artifactId>
-    <version>0.1.0</version>
+    <version>0.8.0</version>
   </parent>
 
   <artifactId>carbonio-chats-messaging-auth</artifactId>
