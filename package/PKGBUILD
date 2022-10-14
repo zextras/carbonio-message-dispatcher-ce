@@ -119,16 +119,9 @@ build:yum() {
 }
 
 package() {
-  cd "${srcdir}"
-  ls -la
-  cd "${srcdir}"/..
-  ls -la
-  cd "${srcdir}"/../..
-  ls -la
-  cd "${srcdir}"/../../..
-  ls -la
-
   cd "${srcdir}"/../../messaging
+  ls -la
+  pwd
   install -Dm 644 ./carbonio-chats-messaging-auth/target/carbonio-chats-messaging-auth-fatjar.jar \
     "${pkgdir}/usr/bin/carbonio/carbonio-chats-messaging/carbonio-chats-messaging-auth.jar"
 
