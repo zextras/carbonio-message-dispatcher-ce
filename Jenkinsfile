@@ -65,7 +65,6 @@ pipeline {
             unstash 'project'
             sh '''
               mkdir /tmp/messaging
-              cp $SETTINGS_PATH /tmp/settings.xml
               mv * /tmp/messaging
               sudo pacur build ubuntu-focal /tmp/messaging
             '''
@@ -94,7 +93,6 @@ pipeline {
             unstash 'project'
             sh '''
               mkdir /tmp/messaging
-              cp $SETTINGS_PATH /tmp/settings.xml
               mv * /tmp/messaging
               sudo pacur build rocky-8 /tmp/messaging
             '''
