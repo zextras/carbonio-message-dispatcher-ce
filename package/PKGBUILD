@@ -119,11 +119,21 @@ build:yum() {
 }
 
 package() {
-  cd "${srcdir}/MongooseIM-5.1.0"
-  make install
-  cd "${srcdir}"/../../mongooseim
+  cd "${srcdir}"
+  ls -la
+  cd "${srcdir}"/..
+  ls -la
+  cd "${srcdir}"/../..
+  ls -la
+  cd "${srcdir}"/../../..
+  ls -la
+
+  cd "${srcdir}"/../../../mongooseim
   install -Dm 644 ./carbonio-chats-messaging-auth/target/carbonio-chats-messaging-auth-fatjar.jar \
     "${pkgdir}/usr/bin/carbonio/carbonio-chats-messaging/carbonio-chats-messaging-auth.jar"
+
+  cd "${srcdir}/MongooseIM-5.1.0"
+  make install
 
   cd "${srcdir}"
   #Overwriting mongoose files with ours
