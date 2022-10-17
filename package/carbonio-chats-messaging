@@ -80,6 +80,7 @@ consul reload
 # Limit token visibility as much as possible
 export -n CONSUL_HTTP_TOKEN
 
+systemctl restart carbonio-chats-messaging-auth.service
 systemctl restart carbonio-chats-messaging.service
 systemctl restart carbonio-chats-messaging-http-sidecar.service
 systemctl restart carbonio-chats-messaging-xmpp-sidecar.service
