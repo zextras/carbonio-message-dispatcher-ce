@@ -55,8 +55,6 @@ sources=(
   "policies.json"
   "service-protocol-http.json"
   "service-protocol-xmpp.json"
-  "delete_room.patch"
-  "multiple_owners_and_affiliation_api.patch"
   "carbonio-chats-messaging-auth.service"
   "config.properties"
   "logback.xml"
@@ -85,8 +83,6 @@ hashsums=(
   "e14778b194a95eebb515e15a20ea767740be857454c330dbba83475880ff7af6"
   "596f9e16fb5e9804b67a0c3132e8a7ea948c627702d14c916e7156c5a4528418"
   "68282258e612c16d6aaaaa7a36eba4f00341da0f8273de6c7f4b9aa2e6b1e05b"
-  "73aeef66a9a99ec1ade57e6726a428c05d1df39f51eed96fdf530e90a895f04b"
-  "0fedead3c2f1cdc6c77699eef7a5571df0f97b04649f9668d3c48ca32553a360"
   "b74ec402dd9f13639fedab5c95ab21431ad9a7853c9c0d14c28151f9d10188d1"
   "1c2d96268b105083d0481b8cd5286d9d4355e21266ca83286449c6ad69c139cc"
   "eb90a13da283e2f8433c464ab7c5abbcf998d771077d21bd2fbe664171f49476"
@@ -99,9 +95,6 @@ build:apt() {
   apt update && apt install --no-install-recommends -y ./erlang.deb
   #Building MongooseIm, check build steps from the official repo, especially from scripts in tools/pkg
   cd MongooseIM-master
-  git apply ../delete_room.patch
-  #The following patch should be removed when https://github.com/esl/MongooseIM/pull/3693 is merged
-  git apply ../multiple_owners_and_affiliation_api.patch
   ./tools/configure with-pgsql system=yes prefix=""
   #Trick to let executables have no prefix but still allowing them to install to a specific directory
   sed -i 's#PREFIX=""#PREFIX="${pkgdir}"#' configure.out
@@ -115,9 +108,6 @@ build:yum() {
   yum install -y ./erlang.rpm
   #Building MongooseIm, check build steps from the official repo, especially from scripts in tools/pkg
   cd MongooseIM-master
-  git apply ../delete_room.patch
-  #The following patch should be removed when https://github.com/esl/MongooseIM/pull/3693 is merged
-  git apply ../multiple_owners_and_affiliation_api.patch
   ./tools/configure with-pgsql system=yes prefix=""
   #Trick to let executables have no prefix but still allowing them to install to a specific directory
   sed -i 's#PREFIX=""#PREFIX="${pkgdir}"#' configure.out
