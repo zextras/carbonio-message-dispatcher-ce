@@ -40,7 +40,7 @@ depends=(
   "jq"
 )
 sources=(
-  "https://github.com/esl/MongooseIM/archive/5.1.0.tar.gz"
+  "https://github.com/esl/MongooseIM/archive/master.tar.gz"
   "carbonio-chats-messaging"
   "carbonio-chats-messaging-http.hcl"
   "carbonio-chats-messaging-xmpp.hcl"
@@ -98,7 +98,7 @@ build:apt() {
   curl https://packages.erlang-solutions.com/erlang/debian/pool/esl-erlang_24.0-1~ubuntu~focal_amd64.deb > erlang.deb
   apt update && apt install --no-install-recommends -y ./erlang.deb
   #Building MongooseIm, check build steps from the official repo, especially from scripts in tools/pkg
-  cd MongooseIM-5.1.0
+  cd MongooseIM-master
   git apply ../delete_room.patch
   #The following patch should be removed when https://github.com/esl/MongooseIM/pull/3693 is merged
   git apply ../multiple_owners_and_affiliation_api.patch
@@ -114,7 +114,7 @@ build:yum() {
   curl https://packages.erlang-solutions.com/erlang/rpm/centos/8/x86_64/esl-erlang_24.0-1~centos~8_amd64.rpm > erlang.rpm
   yum install -y ./erlang.rpm
   #Building MongooseIm, check build steps from the official repo, especially from scripts in tools/pkg
-  cd MongooseIM-5.1.0
+  cd MongooseIM-master
   git apply ../delete_room.patch
   #The following patch should be removed when https://github.com/esl/MongooseIM/pull/3693 is merged
   git apply ../multiple_owners_and_affiliation_api.patch
@@ -129,7 +129,7 @@ package() {
   install -Dm 644 ./carbonio-chats-messaging-auth-fatjar.jar \
     "${pkgdir}/usr/bin/carbonio/carbonio-chats-messaging/carbonio-chats-messaging-auth.jar"
 
-  cd "${srcdir}/MongooseIM-5.1.0"
+  cd "${srcdir}/MongooseIM-master"
   make install
 
   cd "${srcdir}"
