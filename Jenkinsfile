@@ -77,6 +77,7 @@ sudo mv zextras.list /etc/apt/sources.list.d/
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243E584A21
 '''
             sh '''
+              ./mvnw package -Dmaven.main.skip -Dmaven.repo.local=$(pwd)/m2
               mkdir /tmp/messaging
               mv * /tmp/messaging
               sudo pacur build ubuntu-focal /tmp/messaging
@@ -115,6 +116,7 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
                     sh 'sudo mv zextras.repo /etc/yum.repos.d/zextras.repo'
             }
             sh '''
+              ./mvnw package -Dmaven.main.skip -Dmaven.repo.local=$(pwd)/m2
               mkdir /tmp/messaging
               mv * /tmp/messaging
               sudo pacur build rocky-8 /tmp/messaging
