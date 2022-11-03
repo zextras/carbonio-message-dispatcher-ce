@@ -1,0 +1,101 @@
+#!/bin/bash
+
+if [[ $(id -u) -ne 0 ]]; then
+  echo "Please run as root"
+  exit 1
+fi
+
+initial_schema="/etc/carbonio/chats-messaging/sql-scripts/initial-schema.sql"
+migrations_folder="/etc/carbonio/chats-messaging/sql-scripts/migrations/"
+postgres_folder="/var/lib/postgresql"
+is_working=false
+db_name="carbonio-chats-messaging-db"
+db_username="postgres"
+
+initial_folder=$(pwd)
+run_script_file() {
+  sudo -u postgres bash -c "psql -U $db_username -d $db_name -f $1 -qtAX"
+  return $?
+}
+
+get_pgsql_value() {
+  pgsql_value=$(sudo -u postgres bash -c "psql -U $db_username -d $db_name -c '$1' -qtAX")
+  if [[ $1 -ne 0 ]]; then
+    pgsql_value=""
+  fi
+  return $?
+}
+
+format_version() {
+  IFS='.' read -r -a version_tokens <<< "$1"; unset IFS
+  printf -v major "%05d" "${version_tokens[0]}"
+  printf -v minor "%05d" "${version_tokens[1]}"
+  printf -v patch "%05d" "${version_tokens[2]}"
+  formatted_version="$major.$minor.$patch"
+}
+
+exit_with_error_management() {
+  exit_code=$1
+  message=$2
+  if [[ $exit_code -ne 0 ]]; then
+    echo "Failed!"
+    if [[ $message != "" ]]; then
+      echo "$message"
+    fi
+    cd "$initial_folder" || exit 1
+    exit 1
+  fi
+}
+
+printf "Checking of database schema... "
+
+cd "$postgres_folder" || exit_with_error_management $? "Cannot find '$postgres_folder' folder"
+# check if the database has been initialized
+get_pgsql_value "select count(*) from domain_events" >/dev/null 2>&1
+if [[ $pgsql_value == "" ]]; then
+  echo "Done. Database is empty!"
+  printf "Initializing database... "
+  is_working=true
+  run_script_file $initial_schema >/dev/null 2>&1; exit_with_error_management $? "Cannot run script for initial schema"
+  current_version="0.0.0"
+else
+  # gets the database current version
+  get_pgsql_value "select 'version' from chats_messaging_db_version limit 1" >/dev/null 2>&1
+  if [[ $pgsql_value == "" ]]; then
+    current_version="0.0.0"
+  else
+    current_version="$pgsql_value"
+  fi
+fi
+format_version "$current_version"; current_version=$formatted_version
+
+# gets all migration script files from the dedicated folder and puts them in an array sorted by files versions
+cd "$migrations_folder" || exit_with_error_management $? "Cannot find '$migrations_folder' folder"
+migrations_array=()
+for file_name in *; do
+  format_version "$file_name"
+  migrations_array+=("$formatted_version;$file_name")
+done
+IFS=$'\n' migrations_array=($(sort <<< "${migrations_array[*]}")); unset IFS
+
+# gets all migration script files from the dedicated folder and places them in an array sorted by file versions
+cd "$postgres_folder" || exit_with_error_management $? "Cannot find '$postgres_folder' folder"
+for migrations in "${migrations_array[@]}"; do
+  IFS=';' read -r formatted_version file_name <<< "$migrations"; unset IFS
+  if [[ $formatted_version > $current_version ]]; then
+    if [[ "$is_working" == false ]]; then
+      echo "Done. Database is to be updated!"
+      printf "Updating database... "
+      is_working=true
+    fi
+    run_script_file "$migrations_folder/$file_name" >/dev/null 2>&1
+    exit_with_error_management $? "Cannot run script file '$migrations_folder/$file_name'"
+  fi
+done
+
+if [[ "$is_working" == false ]]; then
+  echo "Done. The database is already updated."
+else
+  echo "Success. The database has been updated."
+fi
+cd "$initial_folder" || exit

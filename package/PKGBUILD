@@ -60,6 +60,9 @@ sources=(
   "carbonio-chats-messaging-auth.service"
   "config.properties"
   "logback.xml"
+  "carbonio-chats-messaging-migration"
+  "pgsql-script-initial-schema-mongooseim-5.1.0.sql"
+  "pgsql-script-migrations-5.1.0.sql"
 )
 backup=(
   "etc/zextras/service-discover/carbonio-chats-messaging-http.hcl"
@@ -90,6 +93,9 @@ hashsums=(
   "b74ec402dd9f13639fedab5c95ab21431ad9a7853c9c0d14c28151f9d10188d1"
   "1c2d96268b105083d0481b8cd5286d9d4355e21266ca83286449c6ad69c139cc"
   "eb90a13da283e2f8433c464ab7c5abbcf998d771077d21bd2fbe664171f49476"
+  "0271e2494e54b5ba3411330b2db374d1164e59d290d65bfe0f41a3e55bd8df07"
+  "f5951de96915dc501680f309da6cf259db3e40295514006ea5eee93de57c15fb"
+  "b06ac2966d6bb49afe124cc3edce4ba37711a1b2799b3e610863822e3b0ded20"
 )
 
 build:apt() {
@@ -152,7 +158,9 @@ package() {
   install -Dm 644 carbonio-chats-messaging-auth.service "${pkgdir}/lib/systemd/system/carbonio-chats-messaging-auth.service"
   install -Dm 644 config.properties "${pkgdir}/etc/carbonio/chats-messaging/config.properties"
   install -Dm 644 logback.xml "${pkgdir}/etc/carbonio/chats-messaging/logback.xml"
-
+  install -Dm 755 carbonio-chats-messaging-migration "${pkgdir}/usr/bin/carbonio-chats-messaging-migration"
+  install -Dm 644 pgsql-script-initial-schema-mongooseim-5.1.0.sql "/etc/carbonio/chats-messaging/sql-scripts/initial-schema.sql"
+  install -Dm 644 pgsql-script-migrations-5.1.0.sql "/etc/carbonio/chats-messaging/sql-scripts/migrations/5.1.0.sql"
 }
 
 postinst() {
