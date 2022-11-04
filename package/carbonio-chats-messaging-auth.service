@@ -7,7 +7,7 @@ After=network-online.target
 
 [Service]
 Type=simple
-ExecStart=/opt/zextras/common/bin/java -Djava.net.preferIPv4Stack=true -jar /usr/bin/carbonio/carbonio-chats-messaging/carbonio-chats-messaging-auth.jar
+ExecStart=/opt/zextras/common/bin/java -Djava.net.preferIPv4Stack=true -jar /opt/zextras/lib/jars/carbonio-chats-messaging-auth.jar
 User=carbonio-chats-messaging
 Group=carbonio-chats-messaging
 Restart=on-failure
