@@ -97,7 +97,7 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
             }
           }
         }
-        stage('Rocky 8') {
+        /* stage('Rocky 8') {
           agent {
             node {
               label 'pacur-agent-rocky-8-v1'
@@ -132,10 +132,10 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
               }
             }
             always {
-              archiveArtifacts artifacts: 'artifacts/*.rpm', fingerprint: true
+              archiveArtifacts artifacts: 'artifacts *//*.rpm', fingerprint: true
             }
           }
-        }
+        } */
       }
     }
     stage('Upload To Devel') {
