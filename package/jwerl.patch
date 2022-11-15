@@ -1,0 +1,15 @@
+diff -Naur a/rebar.lock b/rebar.lock
+--- a/rebar.lock	2022-11-03 10:43:25.703201185 +0000
++++ b/rebar.lock	2022-11-03 10:43:39.250231814 +0000
+@@ -57,10 +57,7 @@
+  {<<"jid">>,{pkg,<<"mongoose_jid">>,<<"2.0.0">>},0},
+  {<<"jiffy">>,{pkg,<<"jiffy">>,<<"1.1.1">>},0},
+  {<<"jsx">>,{pkg,<<"jsx">>,<<"2.9.0">>},1},
+- {<<"jwerl">>,
+-  {git,"https://gitlab.com/vkatsuba/jwerl.git",
+-       {ref,"d03607fd14a6a7556f01014af84903a3df60ff5d"}},
+-  0},
++ {<<"jwerl">>,{pkg,<<"jwerl">>,<<"1.2.0">>},0},
+  {<<"lager">>,{pkg,<<"lager">>,<<"3.9.2">>},0},
+  {<<"lasse">>,{pkg,<<"lasse">>,<<"1.2.0">>},0},
+  {<<"lhttpc">>,{pkg,<<"lhttpc">>,<<"1.6.2">>},1},

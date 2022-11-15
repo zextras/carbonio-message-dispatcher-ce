@@ -63,6 +63,19 @@ pipeline {
           }
           steps {
             unstash 'project'
+            withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted', 
+                passwordVariable: 'SECRET',
+                usernameVariable: 'USERNAME')]) {
+                    sh 'echo "machine zextras.jfrog.io" >> auth.conf'
+                    sh 'echo "login $USERNAME" >> auth.conf'
+                    sh 'echo "password $SECRET" >> auth.conf'
+                    sh 'sudo mv auth.conf /etc/apt'
+            }
+            sh '''
+sudo echo "deb https://zextras.jfrog.io/artifactory/ubuntu-playground focal main" > zextras.list
+sudo mv zextras.list /etc/apt/sources.list.d/
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243E584A21
+'''
             sh '''
               ./mvnw package -Dmaven.main.skip -Dmaven.repo.local=$(pwd)/m2
               mkdir /tmp/messaging
@@ -84,7 +97,7 @@ pipeline {
             }
           }
         }
-        stage('Rocky 8') {
+        /* stage('Rocky 8') {
           agent {
             node {
               label 'pacur-agent-rocky-8-v1'
@@ -92,6 +105,16 @@ pipeline {
           }
           steps {
             unstash 'project'
+            withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted', 
+                passwordVariable: 'SECRET',
+                usernameVariable: 'USERNAME')]) {
+                    sh 'echo "[Zextras]" > zextras.repo'
+                    sh 'echo "baseurl=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/centos8-devel/" >> zextras.repo'
+                    sh 'echo "enabled=1" >> zextras.repo'
+                    sh 'echo "gpgcheck=0" >> zextras.repo'
+                    sh 'echo "gpgkey=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/centos8-devel/repomd.xml.key" >> zextras.repo'
+                    sh 'sudo mv zextras.repo /etc/yum.repos.d/zextras.repo'
+            }
             sh '''
               ./mvnw package -Dmaven.main.skip -Dmaven.repo.local=$(pwd)/m2
               mkdir /tmp/messaging
@@ -109,10 +132,10 @@ pipeline {
               }
             }
             always {
-              archiveArtifacts artifacts: 'artifacts/*.rpm', fingerprint: true
+              archiveArtifacts artifacts: 'artifacts *//*.rpm', fingerprint: true
             }
           }
-        }
+        } */
       }
     }
     stage('Upload To Devel') {
