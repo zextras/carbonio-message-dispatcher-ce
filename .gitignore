@@ -4,6 +4,7 @@
 #     https://www.atlassian.com/git/tutorials/saving-changes/gitignore
 
 # Node artifact files
+archive/
 node_modules/
 dist/
 
@@ -50,4 +51,10 @@ Thumbs.db
 *.deb
 *.rpm
 *.iml
-
+*.deb
+*.rpm
+*.tar.gz
+.mvn/
+m2/
+mvnw
+mvnw.cmd

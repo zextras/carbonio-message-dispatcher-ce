@@ -7,8 +7,8 @@ After=network-online.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/mongooseimctl foreground
-ExecStop=/usr/bin/mongooseimctl stop
+ExecStart=/opt/zextras/common/bin/mongooseimctl foreground
+ExecStop=/opt/zextras/common/bin/mongooseimctl stop
 User=carbonio-chats-messaging
 Group=carbonio-chats-messaging
 Restart=on-failure

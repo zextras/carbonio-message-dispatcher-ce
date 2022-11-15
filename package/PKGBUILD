@@ -15,32 +15,32 @@ license=("spdx:AGPL-3.0-only")
 section="admin"
 priority="optional"
 url="https://www.zextras.com/"
+depends=(
+  "carbonio-erlang"
+  "carbonio-openssl"
+  "jq"
+  "pending-setups"
+  "service-discover"
+)
 makedepends:apt=(
-  "git"
-  "make"
-  "zlib1g-dev"
-  "libssl-dev"
+  "carbonio-elixir"
+  "carbonio-erlang"
+  "carbonio-openssl"
   "unixodbc-dev"
-  "gcc"
-  "g++"
+  "zlib1g-dev"
 )
 makedepends:yum=(
-  "git"
-  "make"
-  "zlib-devel"
-  "openssl"
-  "openssl-devel"
+  "carbonio-elixir"
+  "carbonio-erlang"
+  "carbonio-openssl"
   "unixODBC-devel"
-  "gcc"
-  "gcc-c++"
+  "zlib-devel"
 )
-depends=(
-  "service-discover"
-  "pending-setups"
-  "jq"
-)
+
 sources=(
   "https://github.com/esl/MongooseIM/archive/5.1.0.tar.gz"
+  "configure.vars.config"
+  "jwerl.patch"
   "carbonio-chats-messaging"
   "carbonio-chats-messaging-http.hcl"
   "carbonio-chats-messaging-xmpp.hcl"
@@ -64,12 +64,14 @@ sources=(
 backup=(
   "etc/zextras/service-discover/carbonio-chats-messaging-http.hcl"
   "etc/zextras/service-discover/carbonio-chats-messaging-xmpp.hcl"
-  "etc/mongooseim/mongooseim.toml"
-  "etc/mongooseim/app.config"
+  "etc/carbonio/chats-messaging/mongooseim.toml"
+  "etc/carbonio/chats-messaging/app.config"
   "etc/carbonio/chats-messaging/config.properties"
   "etc/carbonio/chats-messaging/logback.xml"
 )
 hashsums=(
+  "skip"
+  "skip"
   "skip"
   "ab1f5c390ce9afa26a8a213ecf0046221631f4f8a924a8147de7decd1ae35260"
   "bc040f39f3cd855e1fc90a615da22da1fbd482d1a3c847ca26f1d2b2baa855f0"
@@ -92,79 +94,106 @@ hashsums=(
   "eb90a13da283e2f8433c464ab7c5abbcf998d771077d21bd2fbe664171f49476"
 )
 
-build:apt() {
-  cd ${srcdir}
-  #Installing erlang
-  curl https://packages.erlang-solutions.com/erlang/debian/pool/esl-erlang_24.0-1~ubuntu~focal_amd64.deb > erlang.deb
-  apt update && apt install --no-install-recommends -y ./erlang.deb
-  #Building MongooseIm, check build steps from the official repo, especially from scripts in tools/pkg
-  cd MongooseIM-5.1.0
-  git apply ../delete_room.patch
-  #The following patch should be removed when https://github.com/esl/MongooseIM/pull/3693 is merged
-  git apply ../multiple_owners_and_affiliation_api.patch
-  ./tools/configure with-pgsql system=yes prefix=""
-  #Trick to let executables have no prefix but still allowing them to install to a specific directory
-  sed -i 's#PREFIX=""#PREFIX="${pkgdir}"#' configure.out
-  make rel
-}
+build() {
+  cd "${srcdir}/MongooseIM-5.1.0"
+  patch -Np1 -i ../delete_room.patch
 
-build:yum() {
-  cd ${srcdir}
-  #Installing erlang
-  curl https://packages.erlang-solutions.com/erlang/rpm/centos/8/x86_64/esl-erlang_24.0-1~centos~8_amd64.rpm > erlang.rpm
-  yum install -y ./erlang.rpm
-  #Building MongooseIm, check build steps from the official repo, especially from scripts in tools/pkg
-  cd MongooseIM-5.1.0
-  git apply ../delete_room.patch
   #The following patch should be removed when https://github.com/esl/MongooseIM/pull/3693 is merged
-  git apply ../multiple_owners_and_affiliation_api.patch
-  ./tools/configure with-pgsql system=yes prefix=""
-  #Trick to let executables have no prefix but still allowing them to install to a specific directory
-  sed -i 's#PREFIX=""#PREFIX="${pkgdir}"#' configure.out
+  patch -Np1 -i ../multiple_owners_and_affiliation_api.patch
+
+  # Update jwerl ref
+  patch -Np1 -i ../jwerl.patch
+
+  export PATH="/opt/zextras/common/bin/:$PATH"
+  export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
+  export CFLAGS="-I/opt/zextras/common/include"
+  export OPENSSL_LIB="/opt/zextras/common/lib"
+  export OPENSSL_INC="/opt/zextras/common/include"
+
+  cp ../configure.vars.config rel
+
+  echo 'export MONGOOSEIM_CONFIGURED="yes"' >configure.out
+  echo 'export APPS="epgsql"' >>configure.out
+  echo 'export PREFIX="/opt/zextras/common"' >>configure.out
+  echo 'export RELTOOL_VARS="rel/configure.vars.config"' >>configure.out
+  echo 'export SYSTEM="yes"' >>configure.out
+  echo "export BIN_DIR=\"${pkgdir}/opt/zextras/common/bin\"" >>configure.out
+  echo 'export ETC_DIR="/etc/carbonio/chats-messaging"' >>configure.out
+  echo "export LIB_DIR=\"${pkgdir}/opt/zextras/common/lib/mongooseim\"" >>configure.out
+  echo "export LOG_DIR=\"${pkgdir}/var/log/carbonio/chats-messaging\"" >>configure.out
+  echo 'export PID_DIR="/run"' >>configure.out
+  echo "export STATUS_DIR=\"${pkgdir}/var/lib/carbonio/chats-messaging\"" >>configure.out
+  echo "export MDB_DIR=\"${pkgdir}/var/lib/carbonio/chats-messaging\"" >>configure.out
+  echo "export LOCK_DIR=\"${pkgdir}/var/lock/carbonio/chats-messaging\"" >>configure.out
   make rel
 }
 
 package() {
+  export PATH="/opt/zextras/common/bin/:$PATH"
+
   cd "${srcdir}"/../../messaging/carbonio-chats-messaging-auth/target
   install -Dm 644 ./carbonio-chats-messaging-auth-fatjar.jar \
-    "${pkgdir}/usr/bin/carbonio/carbonio-chats-messaging/carbonio-chats-messaging-auth.jar"
+    "${pkgdir}/opt/zextras/lib/jars/carbonio-chats-messaging-auth.jar"
 
   cd "${srcdir}/MongooseIM-5.1.0"
   make install
 
   cd "${srcdir}"
   #Overwriting mongoose files with ours
-  install -Dm 644 mongooseim.toml "${pkgdir}/etc/mongooseim/mongooseim.toml"
-  install -Dm 644 app.config "${pkgdir}/etc/mongooseim/app.config"
-  #Our files
-  install -Dm 755 carbonio-chats-messaging "${pkgdir}/usr/bin/carbonio-chats-messaging"
-  install -Dm 644 carbonio-chats-messaging.service "${pkgdir}/lib/systemd/system/carbonio-chats-messaging.service"
-  install -Dm 644 carbonio-chats-messaging-http-sidecar.service "${pkgdir}/lib/systemd/system/carbonio-chats-messaging-http-sidecar.service"
-  install -Dm 644 carbonio-chats-messaging-xmpp-sidecar.service "${pkgdir}/lib/systemd/system/carbonio-chats-messaging-xmpp-sidecar.service"
-  install -Dm 644 carbonio-chats-messaging-http.hcl "${pkgdir}/etc/zextras/service-discover/carbonio-chats-messaging-http.hcl"
-  install -Dm 644 carbonio-chats-messaging-xmpp.hcl "${pkgdir}/etc/zextras/service-discover/carbonio-chats-messaging-xmpp.hcl"
-  install -Dm 644 carbonio-chats-messaging-setup.sh "${pkgdir}/etc/zextras/pending-setups.d/carbonio-chats-messaging.sh"
-  install -Dm 644 intentions-http.json "${pkgdir}/etc/carbonio/chats-messaging/service-discover/intentions-http.json"
-  install -Dm 644 intentions-xmpp.json "${pkgdir}/etc/carbonio/chats-messaging/service-discover/intentions-xmpp.json"
-  install -Dm 644 policies.json "${pkgdir}/etc/carbonio/chats-messaging/service-discover/policies.json"
-  install -Dm 644 service-protocol-http.json "${pkgdir}/etc/carbonio/chats-messaging/service-discover/service-protocol-http.json"
-  install -Dm 644 service-protocol-xmpp.json "${pkgdir}/etc/carbonio/chats-messaging/service-discover/service-protocol-xmpp.json"
-  install -Dm 644 carbonio-chats-messaging-auth.service "${pkgdir}/lib/systemd/system/carbonio-chats-messaging-auth.service"
-  install -Dm 644 config.properties "${pkgdir}/etc/carbonio/chats-messaging/config.properties"
-  install -Dm 644 logback.xml "${pkgdir}/etc/carbonio/chats-messaging/logback.xml"
+  install -Dm 644 mongooseim.toml \
+    "${pkgdir}/etc/carbonio/chats-messaging/mongooseim.toml"
+  install -Dm 644 app.config \
+    "${pkgdir}/etc/carbonio/chats-messaging/app.config"
 
+  #Our files
+  install -Dm 755 carbonio-chats-messaging \
+    "${pkgdir}/usr/bin/carbonio-chats-messaging"
+  install -Dm 644 carbonio-chats-messaging.service \
+    "${pkgdir}/lib/systemd/system/carbonio-chats-messaging.service"
+  install -Dm 644 carbonio-chats-messaging-http-sidecar.service \
+    "${pkgdir}/lib/systemd/system/carbonio-chats-messaging-http-sidecar.service"
+  install -Dm 644 carbonio-chats-messaging-xmpp-sidecar.service \
+    "${pkgdir}/lib/systemd/system/carbonio-chats-messaging-xmpp-sidecar.service"
+  install -Dm 644 carbonio-chats-messaging-http.hcl \
+    "${pkgdir}/etc/zextras/service-discover/carbonio-chats-messaging-http.hcl"
+  install -Dm 644 carbonio-chats-messaging-xmpp.hcl \
+    "${pkgdir}/etc/zextras/service-discover/carbonio-chats-messaging-xmpp.hcl"
+  install -Dm 644 carbonio-chats-messaging-setup.sh \
+    "${pkgdir}/etc/zextras/pending-setups.d/carbonio-chats-messaging.sh"
+  install -Dm 644 intentions-http.json \
+    "${pkgdir}/etc/carbonio/chats-messaging/service-discover/intentions-http.json"
+  install -Dm 644 intentions-xmpp.json \
+    "${pkgdir}/etc/carbonio/chats-messaging/service-discover/intentions-xmpp.json"
+  install -Dm 644 policies.json \
+    "${pkgdir}/etc/carbonio/chats-messaging/service-discover/policies.json"
+  install -Dm 644 service-protocol-http.json \
+    "${pkgdir}/etc/carbonio/chats-messaging/service-discover/service-protocol-http.json"
+  install -Dm 644 service-protocol-xmpp.json \
+    "${pkgdir}/etc/carbonio/chats-messaging/service-discover/service-protocol-xmpp.json"
+  install -Dm 644 carbonio-chats-messaging-auth.service \
+    "${pkgdir}/lib/systemd/system/carbonio-chats-messaging-auth.service"
+  install -Dm 644 config.properties \
+    "${pkgdir}/etc/carbonio/chats-messaging/config.properties"
+  install -Dm 644 logback.xml \
+    "${pkgdir}/etc/carbonio/chats-messaging/logback.xml"
+
+  cp "${pkgdir}/opt/zextras/common/lib/mongooseim/releases/5.1.0/vm.args" \
+    "${pkgdir}/etc/carbonio/chats-messaging/vm.args"
+
+  ln -s /etc/carbonio/chats-messaging/vm.args \
+    "${pkgdir}/etc/carbonio/chats-messaging/vm.dist.args"
 }
 
 postinst() {
   getent group 'carbonio-chats-messaging' >/dev/null ||
     groupadd -r 'carbonio-chats-messaging'
   getent passwd 'carbonio-chats-messaging' >/dev/null ||
-    useradd -r -M -g 'carbonio-chats-messaging' -d /var/lib/mongooseim -s /sbin/nologin 'carbonio-chats-messaging'
+    useradd -r -M -g 'carbonio-chats-messaging' -d /var/lib/carbonio/chats-messaging -s /sbin/nologin 'carbonio-chats-messaging'
 
-  chown carbonio-chats-messaging:carbonio-chats-messaging /var/log/mongooseim
-  chown carbonio-chats-messaging:carbonio-chats-messaging /var/lib/mongooseim
-  chown carbonio-chats-messaging:carbonio-chats-messaging /var/lock/mongooseim
-  chown carbonio-chats-messaging:carbonio-chats-messaging /usr/lib/mongooseim
+  chown carbonio-chats-messaging:carbonio-chats-messaging /var/log/carbonio/chats-messaging
+  chown carbonio-chats-messaging:carbonio-chats-messaging /var/lib/carbonio/chats-messaging
+  chown carbonio-chats-messaging:carbonio-chats-messaging /var/lock/carbonio/chats-messaging
+  chown carbonio-chats-messaging:carbonio-chats-messaging /var/lib/carbonio/chats-messaging
 
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
