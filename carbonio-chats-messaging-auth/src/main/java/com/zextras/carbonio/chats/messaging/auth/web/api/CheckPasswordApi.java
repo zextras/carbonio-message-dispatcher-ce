@@ -44,12 +44,12 @@ public class CheckPasswordApi extends HttpServlet {
         } else {
           response.getWriter().print(false);
           response.setContentLength(5);
-          response.setStatus(200);
+          response.setStatus(401);
         }
       } else {
         response.getWriter().print(false);
         response.setContentLength(5);
-        response.setStatus(200);
+        response.setStatus(401);
       }
     } catch (UnauthorizedException unauthorizedException) {
       response.setStatus(401);

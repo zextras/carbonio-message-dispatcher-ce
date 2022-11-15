@@ -87,7 +87,7 @@ EOF
     systemctl daemon-reload
 fi
 
-sed "s/<insert-password>/$DB_PASSWORD/" /etc/mongooseim/mongooseim.toml -i
+sed "s/<insert-password>/$DB_PASSWORD/" etc/carbonio/chats-messaging/mongooseim.toml -i
 
 consul reload
 
