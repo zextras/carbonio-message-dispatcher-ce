@@ -8,7 +8,7 @@
 
   <groupId>com.zextras.carbonio.chats.messaging</groupId>
   <artifactId>carbonio-chats-messaging</artifactId>
-  <version>0.8.0</version>
+  <version>0.8.1</version>
 
   <modules>
     <module>carbonio-chats-messaging-auth</module>
