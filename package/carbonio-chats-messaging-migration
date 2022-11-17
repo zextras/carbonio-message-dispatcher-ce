@@ -91,8 +91,8 @@ printf "Checking of database schema... "
 set +e
 
 # check if the database has been initialized
-get_pgsql_value "SELECT COUNT(*) FROM DOMAIN_EVENTS" >/dev/null 2>&1
-if [[ $PGSQL_VALUE == "" ]]; then
+get_pgsql_value "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLESWHERE TABLE_SCHEMA = 'public'" >/dev/null 2>&1
+if [[ $PGSQL_VALUE == "0" ]]; then
   echo "Done. Database is empty!"
   printf "Initializing database... "
   IS_WORKING=true
@@ -125,7 +125,7 @@ for MIGRATIONS in "${MIGRATIONS_ARRAY[@]}"; do
   IFS=';' read -r FORMATTED_VERSION FILE_NAME <<< "$MIGRATIONS"; unset IFS
   if [[ $FORMATTED_VERSION > $CURRENT_VERSION ]]; then
     if [[ "$IS_WORKING" == false ]]; then
-      echo "Done. Database is to be updated!"
+      echo "Done. The database needs to be updated!"
       printf "Updating database... "
       IS_WORKING=true
     fi
