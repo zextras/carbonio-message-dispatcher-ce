@@ -17,6 +17,8 @@ if [[ "$1" != "setup" ]]; then
   exit 1;
 fi
 
+MAIN_SERVICE_NAME="carbonio-chats-messaging"
+
 config_variant() {
   VARIANT=$1
   consul config write /etc/carbonio/chats-messaging/service-discover/service-protocol-"${VARIANT}".json
@@ -75,10 +77,28 @@ EOF
     systemctl daemon-reload
 fi
 
+get_consul_kv() {
+  KEY=$1
+  CONSUL_VALUE=$(consul kv get "$MAIN_SERVICE_NAME/$KEY")
+}
+get_consul_kv "db-password" >/dev/null 2>&1; DB_PASSWORD=$CONSUL_VALUE
+if [[ "$DB_PASSWORD" == "" ]]; then
+  echo "Carbonio Chats Messaging database password not found."
+  echo "Please install carbonio-chats-messaging-db and run carbonio-chats-messaging-db-bootstrap command."
+  exit 1
+fi
+sed "s/<insert-password>/$DB_PASSWORD/" /etc/carbonio/chats-messaging/mongooseim.toml -i
+
 consul reload
 
 # Limit token visibility as much as possible
 export -n CONSUL_HTTP_TOKEN
+
+echo "======================================================================================="
+echo "Carbonio chats messaging correctly set!"
+echo "You must run carbonio-chats-messaging-migration to check database consistency."
+echo "Syntax: [PGPASSWORD=password] carbonio-chats-messaging-migration username [host] [port]"
+echo "======================================================================================="
 
 systemctl restart carbonio-chats-messaging-auth.service
 systemctl restart carbonio-chats-messaging.service
