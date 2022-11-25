@@ -104,3 +104,6 @@
 [modules.mod_ping]
 [modules.mod_smart_markers]
   backend = "rdbms"
+
+[services.service_mongoose_system_metrics]
+  report = false
