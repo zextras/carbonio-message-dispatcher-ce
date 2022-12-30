@@ -99,7 +99,7 @@ hashsums=(
 build() {
   cd "${srcdir}/MongooseIM-6.0.0"
   # Update jwerl ref
-  patch -Np1 -i ../jwerl.patch
+#   patch -Np1 -i ../jwerl.patch
 
   export PATH="/opt/zextras/common/bin/:$PATH"
   export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
