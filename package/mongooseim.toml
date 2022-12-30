@@ -72,6 +72,10 @@
       host = "_"
       path = "/api/rooms/[:id]/messages"
 
+    [[listen.http.handlers.mongoose_graphql_cowboy_handler]]
+      host = "_"
+      path = "/api/graphql"
+
 [modules.mod_muc_light]
   backend = "rdbms"
   host = "muclight.@HOST@"
