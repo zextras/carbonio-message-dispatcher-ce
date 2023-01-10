@@ -44,7 +44,7 @@
       path = "/ws-xmpp"
       ping_rate = 30_000
 
-    [[listen.http.handlers.mongoose_api_admin]]
+    [[listen.http.handlers.mongoose_admin_api]]
       host = "_"
       path = "/admin"
 
@@ -72,9 +72,12 @@
       host = "_"
       path = "/api/rooms/[:id]/messages"
 
-    [[listen.http.handlers.mongoose_graphql_cowboy_handler]]
+    [[listen.http.handlers.mongoose_graphql_handler]]
       host = "_"
       path = "/api/graphql"
+      schema_endpoint = "admin"
+      username = "admin"
+      password = "assext"
 
 [modules.mod_muc_light]
   backend = "rdbms"
@@ -84,7 +87,7 @@
   all_can_invite = true
 [modules.mod_disco]
   users_can_see_hidden_services = true
-[modules.mod_mam_meta]
+[modules.mod_mam]
   backend = "rdbms"
   muc.backend = "rdbms"
   muc.host = "muclight.@HOST@"
@@ -93,9 +96,6 @@
   #use those
   db_message_format="mam_message_xml"
 
-[modules.mod_commands]
-[modules.mod_muc_commands]
-[modules.mod_muc_light_commands]
 [modules.mod_inbox]
   reset_markers = ["displayed"]
   groupchat = ["muclight"]

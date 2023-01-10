@@ -61,6 +61,7 @@ sources=(
   "carbonio-chats-messaging-migration"
   "pgsql-script-initial-schema-mongooseim-5.1.0.sql"
   "pgsql-script-migrations-5.1.0.sql"
+  "pgsql-script-migrations-6.0.0.sql"
 )
 backup=(
   "etc/zextras/service-discover/carbonio-chats-messaging-http.hcl"
@@ -94,6 +95,7 @@ hashsums=(
   "755660a08f6d424d894aa8b060739d1490b60b04b1f7ef6f6565f0ce28be32e8"
   "f5951de96915dc501680f309da6cf259db3e40295514006ea5eee93de57c15fb"
   "7d7051bad2e1c48edd7ad2b158af31538adbc12ffd1f0d10e665f3c81f777ddf"
+  "42f8fadd496c78d8e27204769672311d836b205a6e25ddd56266a4667594085c"
 )
 
 build() {
@@ -180,6 +182,8 @@ package() {
     "${pkgdir}/etc/carbonio/chats-messaging/sql-scripts/initial-schema.sql"
   install -Dm 644 pgsql-script-migrations-5.1.0.sql \
     "${pkgdir}/etc/carbonio/chats-messaging/sql-scripts/migrations/5.1.0.sql"
+  install -Dm 644 pgsql-script-migrations-6.0.0.sql \
+    "${pkgdir}/etc/carbonio/chats-messaging/sql-scripts/migrations/6.0.0.sql"
 
   cp "${pkgdir}/opt/zextras/common/lib/mongooseim/releases/6.0.0/vm.args" \
     "${pkgdir}/etc/carbonio/chats-messaging/vm.args"

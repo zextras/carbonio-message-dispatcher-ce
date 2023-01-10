@@ -2,7 +2,7 @@ services {
   checks = [
     {
       id       = "ready",
-      http     = "http://127.78.0.10:10000/admin/commands",
+      http     = "http://127.78.0.10:10000/api/graphql",
       method   = "GET",
       timeout  = "1s",
       interval = "5s"
