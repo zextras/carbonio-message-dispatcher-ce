@@ -26,7 +26,7 @@
     port = 20000
     database = "carbonio-chats-messaging-db"
     username = "carbonio-chats-messaging-db"
-    password = "<insert-password>"
+    password = "<db-password>"
 
 [listen]
   [[listen.c2s]]
@@ -76,8 +76,8 @@
       host = "_"
       path = "/api/graphql"
       schema_endpoint = "admin"
-      username = "admin"
-      password = "assext"
+      username = "<api-username>"
+      password = "<api-password>"
 
 [modules.mod_muc_light]
   backend = "rdbms"
