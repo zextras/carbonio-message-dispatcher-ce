@@ -79,7 +79,7 @@ fi
 
 get_consul_kv() {
   KEY=$1
-  CONSUL_VALUE=$(consul kv get "$MAIN_SERVICE_NAME/$KEY")
+  CONSUL_VALUE=$(consul kv get "$MAIN_SERVICE_NAME/$KEY" || echo "")
 }
 get_consul_kv "db-password" >/dev/null 2>&1; DB_PASSWORD=$CONSUL_VALUE
 if [[ "$DB_PASSWORD" == "" ]]; then
