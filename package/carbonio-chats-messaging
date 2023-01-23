@@ -79,7 +79,7 @@ fi
 
 get_consul_kv() {
   KEY=$1
-  CONSUL_VALUE=$(consul kv get "$MAIN_SERVICE_NAME/$KEY")
+  CONSUL_VALUE=$(consul kv get "$MAIN_SERVICE_NAME/$KEY" || echo "")
 }
 get_consul_kv "db-password" >/dev/null 2>&1; DB_PASSWORD=$CONSUL_VALUE
 if [[ "$DB_PASSWORD" == "" ]]; then
@@ -87,7 +87,33 @@ if [[ "$DB_PASSWORD" == "" ]]; then
   echo "Please install carbonio-chats-messaging-db and run carbonio-chats-messaging-db-bootstrap command."
   exit 1
 fi
-sed "s/<insert-password>/$DB_PASSWORD/" /etc/carbonio/chats-messaging/mongooseim.toml -i
+sed "s/<db-password>/$DB_PASSWORD/" /etc/carbonio/chats-messaging/mongooseim.toml -i
+
+get_consul_kv "api/username" >/dev/null 2>&1; API_USERNAME=$CONSUL_VALUE
+if [[ "$API_USERNAME" == "" ]]; then
+  consul kv put "${MAIN_SERVICE_NAME}/api/username" "${MAIN_SERVICE_NAME}"
+  if [[ $? != 0 ]]; then
+    echo "Cannot put a key value pair in Consul"
+    exit 1
+  fi
+  API_USERNAME="$MAIN_SERVICE_NAME"
+fi
+sed "s/<api-username>/$API_USERNAME/" /etc/carbonio/chats-messaging/mongooseim.toml -i
+
+get_consul_kv "api/password" >/dev/null 2>&1; API_PASSWORD=$CONSUL_VALUE
+if [[ "$API_PASSWORD" == "" ]]; then
+  openssl rand -hex 16 | tr -d '\n' | consul kv put "${MAIN_SERVICE_NAME}/api/password" -
+  if [[ $? != 0 ]]; then
+    echo "Cannot put a key value pair in Consul"
+    exit 1
+  fi
+  get_consul_kv "api/password" >/dev/null 2>&1; API_PASSWORD=$CONSUL_VALUE
+  if [[ $? != 0 ]]; then
+    echo "Cannot get a key value pair in Consul"
+    exit 1
+  fi
+fi
+sed "s/<api-password>/$API_PASSWORD/" /etc/carbonio/chats-messaging/mongooseim.toml -i
 
 consul reload
 

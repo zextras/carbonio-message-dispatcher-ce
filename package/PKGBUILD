@@ -38,7 +38,7 @@ makedepends:yum=(
 )
 
 sources=(
-  "https://github.com/esl/MongooseIM/archive/5.1.0.tar.gz"
+  "https://github.com/esl/MongooseIM/archive/6.0.0.tar.gz"
   "configure.vars.config"
   "jwerl.patch"
   "carbonio-chats-messaging"
@@ -55,14 +55,13 @@ sources=(
   "policies.json"
   "service-protocol-http.json"
   "service-protocol-xmpp.json"
-  "delete_room.patch"
-  "multiple_owners_and_affiliation_api.patch"
   "carbonio-chats-messaging-auth.service"
   "config.properties"
   "logback.xml"
   "carbonio-chats-messaging-migration"
   "pgsql-script-initial-schema-mongooseim-5.1.0.sql"
   "pgsql-script-migrations-5.1.0.sql"
+  "pgsql-script-migrations-6.0.0.sql"
 )
 backup=(
   "etc/zextras/service-discover/carbonio-chats-messaging-http.hcl"
@@ -74,41 +73,35 @@ backup=(
 )
 hashsums=(
   "skip"
-  "skip"
-  "skip"
-  "ab1f5c390ce9afa26a8a213ecf0046221631f4f8a924a8147de7decd1ae35260"
-  "bc040f39f3cd855e1fc90a615da22da1fbd482d1a3c847ca26f1d2b2baa855f0"
+  "6920cdf0ba44779dc8b60a47fe80181fe62c848f31ec5d15dfdd131f0b15c891"
+  "35d811dcdd6c8c176e5c5a3b5e56a8a59be0357f1a6ad83d72ff17d609cf13dd"
+  "43dd09f35089ad3453f20a1629c4fb86d59225beb64054da4aa7ac5770f8551c"
+  "b29c2a95c091269fef61a4bcd641c03c96471426d5faa534d2f61a7e9d5c91dd"
   "d8f5a4346871a31f3a300431ddb9bea2915f4576706367eb9ca6fc54342860e7"
-  "58ebb588f8157aa262aa0f244cadcd6cf3823dba7ad56d4c78718c38c4cdf89f"
+  "2aaeaae56da75582e1ec4662f4bc7dfbf7cb40065f3e7930dfa9903f2ae500ce"
   "f6f45b0d7f0cc162daf8eecaa39de1ae716d6e19d1c4ca86ce23918c388a8d50"
   "c93c459cc1c889283b61cb8ac6c21be135034d699576ca844db98c15310f6ee0"
   "5593a05a547fc1f24448bd129962be3da10937344d8e90423a1328f7daa2cda8"
-  "59384f38daab45187ad7440aca938f6a5e312c51eb3f2dcb1ce740b805ecd223"
-  "e69a3c43ed6cb1426b0556f7bcae79e80fee42cfd0baa17296ea02fe8c1b1192"
+  "e5592e8043274ccd9686901f1db8eb68e1a1517ac47ad840b4a8b1bb91b69ed3"
+  "ac592f4b8ee3e3afad7de3840707d2a2765118a6dc62692eb4cde5966fb1baad"
   "9f000fa2d1fc6adeaa63ed484a39587c88268a989d566a359ee70f75af38c63a"
   "92ba0d71994096a3a2d3ce2b74dc1847fb43b2676f72c0a39c502e12eef94ec5"
   "e14778b194a95eebb515e15a20ea767740be857454c330dbba83475880ff7af6"
   "596f9e16fb5e9804b67a0c3132e8a7ea948c627702d14c916e7156c5a4528418"
   "68282258e612c16d6aaaaa7a36eba4f00341da0f8273de6c7f4b9aa2e6b1e05b"
-  "73aeef66a9a99ec1ade57e6726a428c05d1df39f51eed96fdf530e90a895f04b"
-  "0fedead3c2f1cdc6c77699eef7a5571df0f97b04649f9668d3c48ca32553a360"
-  "b74ec402dd9f13639fedab5c95ab21431ad9a7853c9c0d14c28151f9d10188d1"
+  "1ffd893c3ce4561d4ed9450a7ceb491966071d01882fe773c324b0a07ce1a942"
   "1c2d96268b105083d0481b8cd5286d9d4355e21266ca83286449c6ad69c139cc"
   "eb90a13da283e2f8433c464ab7c5abbcf998d771077d21bd2fbe664171f49476"
-  "0271e2494e54b5ba3411330b2db374d1164e59d290d65bfe0f41a3e55bd8df07"
+  "7c532fc4bdb8b01bcf9de26051aa3ed7c268a0863f90b48f96629bf9b4aa8e73"
   "f5951de96915dc501680f309da6cf259db3e40295514006ea5eee93de57c15fb"
-  "b06ac2966d6bb49afe124cc3edce4ba37711a1b2799b3e610863822e3b0ded20"
+  "7d7051bad2e1c48edd7ad2b158af31538adbc12ffd1f0d10e665f3c81f777ddf"
+  "aad3a7f439adcbfd61fdc38c13b72677300b3ffff75fcb9449c67b0fe35b6429"
 )
 
 build() {
-  cd "${srcdir}/MongooseIM-5.1.0"
-  patch -Np1 -i ../delete_room.patch
-
-  #The following patch should be removed when https://github.com/esl/MongooseIM/pull/3693 is merged
-  patch -Np1 -i ../multiple_owners_and_affiliation_api.patch
-
+  cd "${srcdir}/MongooseIM-6.0.0"
   # Update jwerl ref
-  patch -Np1 -i ../jwerl.patch
+#   patch -Np1 -i ../jwerl.patch
 
   export PATH="/opt/zextras/common/bin/:$PATH"
   export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
@@ -141,7 +134,7 @@ package() {
   install -Dm 644 ./carbonio-chats-messaging-auth-fatjar.jar \
     "${pkgdir}/opt/zextras/lib/jars/carbonio-chats-messaging-auth.jar"
 
-  cd "${srcdir}/MongooseIM-5.1.0"
+  cd "${srcdir}/MongooseIM-6.0.0"
   make install
 
   cd "${srcdir}"
@@ -189,8 +182,10 @@ package() {
     "${pkgdir}/etc/carbonio/chats-messaging/sql-scripts/initial-schema.sql"
   install -Dm 644 pgsql-script-migrations-5.1.0.sql \
     "${pkgdir}/etc/carbonio/chats-messaging/sql-scripts/migrations/5.1.0.sql"
+  install -Dm 644 pgsql-script-migrations-6.0.0.sql \
+    "${pkgdir}/etc/carbonio/chats-messaging/sql-scripts/migrations/6.0.0.sql"
 
-  cp "${pkgdir}/opt/zextras/common/lib/mongooseim/releases/5.1.0/vm.args" \
+  cp "${pkgdir}/opt/zextras/common/lib/mongooseim/releases/6.0.0/vm.args" \
     "${pkgdir}/etc/carbonio/chats-messaging/vm.args"
 
   ln -s /etc/carbonio/chats-messaging/vm.args \

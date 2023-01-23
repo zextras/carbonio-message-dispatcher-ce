@@ -91,7 +91,7 @@ printf "Checking of database schema... "
 set +e
 
 # check if the database has been initialized
-get_pgsql_value "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLESWHERE TABLE_SCHEMA = 'public'" >/dev/null 2>&1
+get_pgsql_value "SELECT COUNT(*) FROM pg_tables WHERE 'public' = schemaname" >/dev/null 2>&1
 if [[ $PGSQL_VALUE == "0" ]]; then
   echo "Done. Database is empty!"
   printf "Initializing database... "
