@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: carbonio-chats-messaging
+  title: Carbonio Chats Messaging service
+  description: |
+    Service that allows to write and store chat messages
+    with XMPP protocol thanks to the MongooseIm application.
+  tags:
+    - bash
+    - envoy
+    - java
+    - backend
+  links:
+    - url: https://github.com/Zextras/carbonio-chats-messaging/blob/main/README.md
+      title: README
+spec:
+  type: service
+  lifecycle: production
+  owner: smoky-beans
+  dependsOn:
+    - component:carbonio-chats-messaging-db
