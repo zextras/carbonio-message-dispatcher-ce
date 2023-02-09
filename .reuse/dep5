@@ -1,0 +1,12 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Carbonio Chats Messaging
+Upstream-Contact: Smoky Beans <smokybeans@zextras.com>
+Source: https://github.com/Zextras/carbonio-chats-messaging
+
+Files: pacur.json
+Copyright: 2023 Zextras s.r.l
+License: AGPL-3.0-only
+
+Files: package/*
+Copyright: 2023 Zextras s.r.l
+License: AGPL-3.0-only
