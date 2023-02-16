@@ -28,6 +28,7 @@ makedepends:apt=(
   "carbonio-openssl"
   "unixodbc-dev"
   "zlib1g-dev"
+  "postgresql-client"
 )
 makedepends:yum=(
   "carbonio-elixir"
@@ -35,6 +36,7 @@ makedepends:yum=(
   "carbonio-openssl"
   "unixODBC-devel"
   "zlib-devel"
+  "postgresql"
 )
 
 sources=(
