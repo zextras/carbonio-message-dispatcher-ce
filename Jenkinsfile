@@ -274,7 +274,9 @@ pipeline {
              'copy'               : true,
              'failFast'           : true
           ]
-          Artifactory.addInteractivePromotion server: server, promotionConfig: config, displayName: 'Ubuntu Promotion to Release'
+          Artifactory.addInteractivePromotion server: server,
+          promotionConfig: config,
+          displayName: 'Ubuntu Promotion to Release'
           server.publishBuildInfo buildInfo
 
           //rocky8
@@ -301,7 +303,9 @@ pipeline {
              'copy'               : true,
              'failFast'           : true
           ]
-          Artifactory.addInteractivePromotion server: server, promotionConfig: config, displayName: 'RHEL8 Promotion to Release'
+          Artifactory.addInteractivePromotion server: server,
+          promotionConfig: config,
+          displayName: 'RHEL8 Promotion to Release'
           server.publishBuildInfo buildInfo
         }
       }
