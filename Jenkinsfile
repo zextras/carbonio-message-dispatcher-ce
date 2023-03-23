@@ -25,7 +25,6 @@ pipeline {
     NETWORK_OPTS = '--network ci_agent'
     FAILURE_EMAIL_RECIPIENTS='smokybeans@zextras.com'
   }
-
   stages {
     stage('Build setup') {
       steps {
