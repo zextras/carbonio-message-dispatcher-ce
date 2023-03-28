@@ -155,7 +155,7 @@ pipeline {
               }
             }
             always {
-              archiveArtifacts artifacts: 'artifacts *//*.rpm', fingerprint: true
+              archiveArtifacts artifacts: 'artifacts/*.rpm', fingerprint: true
             }
           }
         }
