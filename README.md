@@ -3,6 +3,14 @@ SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
+<div align="center">
+  <h1>Carbonio Message Dispatcher</h1>
+</div>
+
+<div align="center">
+  Message Dispatcher service for Zextras Carbonio  
+</div>
+
 ***
 
 # License 📚
@@ -37,8 +45,3 @@ Where not specified, all source files owned by Zextras s.r.l. are licensed
 under AGPL-3.0-only.
 
 ***
-
-# MongooseIM package
-
-This repository packages MongooseIM. To build artifacts locally please
-run `build_artifacts.sh`
