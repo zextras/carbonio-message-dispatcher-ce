@@ -28,8 +28,8 @@
     driver = "pgsql"
     host = "127.78.0.10"
     port = 20000
-    database = "carbonio-chats-messaging-db"
-    username = "carbonio-chats-messaging-db"
+    database = "carbonio-message-dispatcher-db"
+    username = "carbonio-message-dispatcher-db"
     password = "<db-password>"
 
 [listen]
@@ -95,9 +95,6 @@
   backend = "rdbms"
   muc.backend = "rdbms"
   muc.host = "muclight.@HOST@"
-  #This is a plain format due to the possible future messages migration from chats to mongooseim, if you find a way to
-  #migrate them that will actually save them in other formats like mam_message_eterm or mam_message_compressed_eterm,
-  #use those
   db_message_format="mam_message_xml"
 
 [modules.mod_inbox]

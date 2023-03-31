@@ -1,0 +1,133 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+# decrypt the bootstrap token, asking the password to the sys admin
+# --setup check for SETUP_CONSUL_TOKEN env. variable and uses it
+# to avoid re-asking for the password
+if [[ $(id -u) -ne 0 ]]; then
+  echo "Please run as root"
+  exit 1
+fi
+
+if [[ "$1" != "setup" ]]; then
+  echo "Syntax: 'carbonio-message-dispatcher setup' to automatically configure the service"
+  exit 1;
+fi
+
+MAIN_SERVICE_NAME="carbonio-message-dispatcher"
+
+config_variant() {
+  VARIANT=$1
+  consul config write /etc/carbonio/message-dispatcher/service-discover/service-protocol-"${VARIANT}".json
+  consul config write /etc/carbonio/message-dispatcher/service-discover/intentions-"${VARIANT}".json
+}
+
+# Decrypt the bootstrap token, asking the password to the sys admin
+# --setup check for SETUP_CONSUL_TOKEN env. variable and uses it
+# to avoid re-asking for the password
+echo -n "Insert the cluster credential password: "
+export CONSUL_HTTP_TOKEN=$(service-discover bootstrap-token --setup)
+EXIT_CODE="$?"
+echo ""
+if [[ "${EXIT_CODE}" != "0" ]]; then
+  echo "Cannot access to bootstrap token"
+  exit 1;
+fi
+# Limit secret visibility as much as possible
+export -n SETUP_CONSUL_TOKEN
+
+POLICY_NAME='carbonio-message-dispatcher-policy'
+POLICY_DESCRIPTION='Carbonio message dispatcher policy for service and sidecar proxy'
+
+# Create or update policy for the specific service (this will be shared across cluster)
+consul acl policy create -name "${POLICY_NAME}" -description "${POLICY_DESCRIPTION}" -rules  @/etc/carbonio/message-dispatcher/service-discover/policies.json >/dev/null 2>&1
+if [[ "$?" != "0" ]]; then
+    consul acl policy update -no-merge -name "${POLICY_NAME}" -description "${POLICY_DESCRIPTION}" -rules @/etc/carbonio/message-dispatcher/service-discover/policies.json
+    if [[ "$?" != "0" ]]; then
+      echo "Setup failed: Cannot update policy for ${POLICY_NAME}"
+      exit 1
+    fi
+fi
+
+trap 'echo Script for message dispatcher terminated with error' EXIT
+set -e
+
+config_variant "http"
+config_variant "xmpp"
+
+if [[ ! -f "/etc/carbonio/message-dispatcher/service-discover/token" ]]; then
+    # Create the token, this is unique for every variant
+    consul acl token create -format json -policy-name "${POLICY_NAME}" -description "Token for
+    carbonio-message-dispatcher/$(hostname -A)" |
+      jq -r '.SecretID' > /etc/carbonio/message-dispatcher/service-discover/token;
+    chown carbonio-message-dispatcher:carbonio-message-dispatcher /etc/carbonio/message-dispatcher/service-discover/token
+    chmod 0600 /etc/carbonio/message-dispatcher/service-discover/token
+
+    # To pass the token to consul we need to inject it to a env. variable
+    # since it doesn't accept a file as an argument
+    mkdir -p /etc/systemd/system/carbonio-message-dispatcher.service.d/
+    cat >/etc/systemd/system/carbonio-message-dispatcher.service.d/override.conf <<EOF
+[Service]
+Environment="CONSUL_HTTP_TOKEN=$(cat /etc/carbonio/message-dispatcher/service-discover/token)"
+EOF
+    chmod 0600 /etc/systemd/system/carbonio-message-dispatcher.service.d/override.conf
+    systemctl daemon-reload
+fi
+
+get_consul_kv() {
+  KEY=$1
+  CONSUL_VALUE=$(consul kv get "$MAIN_SERVICE_NAME/$KEY" || echo "")
+}
+get_consul_kv "db-password" >/dev/null 2>&1; DB_PASSWORD=$CONSUL_VALUE
+if [[ "$DB_PASSWORD" == "" ]]; then
+  echo "Carbonio Message Dispatcher database password not found."
+  echo "Please install carbonio-message-dispatcher-db and run carbonio-message-dispatcher-db-bootstrap command."
+  exit 1
+fi
+sed "s/<db-password>/$DB_PASSWORD/" /etc/carbonio/message-dispatcher/mongooseim.toml -i
+
+get_consul_kv "api/username" >/dev/null 2>&1; API_USERNAME=$CONSUL_VALUE
+if [[ "$API_USERNAME" == "" ]]; then
+  consul kv put "${MAIN_SERVICE_NAME}/api/username" "${MAIN_SERVICE_NAME}"
+  if [[ $? != 0 ]]; then
+    echo "Cannot put a key value pair in Consul"
+    exit 1
+  fi
+  API_USERNAME="$MAIN_SERVICE_NAME"
+fi
+sed "s/<api-username>/$API_USERNAME/" /etc/carbonio/message-dispatcher/mongooseim.toml -i
+
+get_consul_kv "api/password" >/dev/null 2>&1; API_PASSWORD=$CONSUL_VALUE
+if [[ "$API_PASSWORD" == "" ]]; then
+  openssl rand -hex 16 | tr -d '\n' | consul kv put "${MAIN_SERVICE_NAME}/api/password" -
+  if [[ $? != 0 ]]; then
+    echo "Cannot put a key value pair in Consul"
+    exit 1
+  fi
+  get_consul_kv "api/password" >/dev/null 2>&1; API_PASSWORD=$CONSUL_VALUE
+  if [[ $? != 0 ]]; then
+    echo "Cannot get a key value pair in Consul"
+    exit 1
+  fi
+fi
+sed "s/<api-password>/$API_PASSWORD/" /etc/carbonio/message-dispatcher/mongooseim.toml -i
+
+consul reload
+
+# Limit token visibility as much as possible
+export -n CONSUL_HTTP_TOKEN
+
+echo "======================================================================================="
+echo "Carbonio message dispatcher correctly set!"
+echo "You must run carbonio-message-dispatcher-migration to check database consistency."
+echo "Syntax: [PGPASSWORD=password] carbonio-message-dispatcher-migration username [host] [port]"
+echo "======================================================================================="
+
+systemctl restart carbonio-message-dispatcher-auth.service
+systemctl restart carbonio-message-dispatcher.service
+systemctl restart carbonio-message-dispatcher-http-sidecar.service
+systemctl restart carbonio-message-dispatcher-xmpp-sidecar.service
+trap - EXIT

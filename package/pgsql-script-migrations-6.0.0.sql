@@ -24,4 +24,4 @@ CREATE TABLE domain_admins
     PRIMARY KEY (domain)
 );
 
-UPDATE chats_messaging_db_version SET version = '6.0.0';
+UPDATE database_version SET version = '6.0.0';
