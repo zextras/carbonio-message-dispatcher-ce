@@ -18,6 +18,7 @@ if [[ "$1" != "setup" ]]; then
 fi
 
 MAIN_SERVICE_NAME="carbonio-message-dispatcher"
+DB_SERVICE_NAME="carbonio-message-dispatcher-db"
 
 config_variant() {
   VARIANT=$1
@@ -79,9 +80,9 @@ fi
 
 get_consul_kv() {
   KEY=$1
-  CONSUL_VALUE=$(consul kv get "$MAIN_SERVICE_NAME/$KEY" || echo "")
+  CONSUL_VALUE=$(consul kv get "$KEY" || echo "")
 }
-get_consul_kv "db-password" >/dev/null 2>&1; DB_PASSWORD=$CONSUL_VALUE
+get_consul_kv "${DB_SERVICE_NAME}/db-password" >/dev/null 2>&1; DB_PASSWORD=$CONSUL_VALUE
 if [[ "$DB_PASSWORD" == "" ]]; then
   echo "Carbonio Message Dispatcher database password not found."
   echo "Please install carbonio-message-dispatcher-db and run carbonio-message-dispatcher-db-bootstrap command."
@@ -89,7 +90,7 @@ if [[ "$DB_PASSWORD" == "" ]]; then
 fi
 sed "s/<db-password>/$DB_PASSWORD/" /etc/carbonio/message-dispatcher/mongooseim.toml -i
 
-get_consul_kv "api/username" >/dev/null 2>&1; API_USERNAME=$CONSUL_VALUE
+get_consul_kv "${MAIN_SERVICE_NAME}/api/username" >/dev/null 2>&1; API_USERNAME=$CONSUL_VALUE
 if [[ "$API_USERNAME" == "" ]]; then
   consul kv put "${MAIN_SERVICE_NAME}/api/username" "${MAIN_SERVICE_NAME}"
   if [[ $? != 0 ]]; then
@@ -100,14 +101,14 @@ if [[ "$API_USERNAME" == "" ]]; then
 fi
 sed "s/<api-username>/$API_USERNAME/" /etc/carbonio/message-dispatcher/mongooseim.toml -i
 
-get_consul_kv "api/password" >/dev/null 2>&1; API_PASSWORD=$CONSUL_VALUE
+get_consul_kv "${MAIN_SERVICE_NAME}/api/password" >/dev/null 2>&1; API_PASSWORD=$CONSUL_VALUE
 if [[ "$API_PASSWORD" == "" ]]; then
   openssl rand -hex 16 | tr -d '\n' | consul kv put "${MAIN_SERVICE_NAME}/api/password" -
   if [[ $? != 0 ]]; then
     echo "Cannot put a key value pair in Consul"
     exit 1
   fi
-  get_consul_kv "api/password" >/dev/null 2>&1; API_PASSWORD=$CONSUL_VALUE
+  get_consul_kv "${MAIN_SERVICE_NAME}/api/password" >/dev/null 2>&1; API_PASSWORD=$CONSUL_VALUE
   if [[ $? != 0 ]]; then
     echo "Cannot get a key value pair in Consul"
     exit 1
