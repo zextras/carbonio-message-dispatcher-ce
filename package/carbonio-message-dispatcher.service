@@ -1,5 +1,5 @@
 [Unit]
-Description=Carbonio message dispatcher daemon
+Description=Carbonio Message Dispatcher daemon
 Documentation=https://docs.zextras.com/zextras-suite-documentation/latest/
 Wants=network.target
 Requires=network-online.target

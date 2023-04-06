@@ -5,9 +5,9 @@ targets=(
 pkgname="carbonio-message-dispatcher"
 pkgver="0.9.0"
 pkgrel="1"
-pkgdesc="Carbonio message dispatcher component"
+pkgdesc="Carbonio Message Dispatcher component"
 pkgdesclong=(
-  "Carbonio message dispatcher component"
+  "Carbonio Message Dispatcher component"
 )
 maintainer="Zextras <packages@zextras.com>"
 arch="amd64"
@@ -214,7 +214,7 @@ postinst() {
   fi
 
   echo "======================================================"
-  echo "Carbonio message dispatcher installed successfully!"
+  echo "Carbonio Message Dispatcher installed successfully!"
   echo "You must run pending-setups to configure it correctly."
   echo "======================================================"
 }

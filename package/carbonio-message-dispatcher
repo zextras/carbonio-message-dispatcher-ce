@@ -41,7 +41,7 @@ fi
 export -n SETUP_CONSUL_TOKEN
 
 POLICY_NAME='carbonio-message-dispatcher-policy'
-POLICY_DESCRIPTION='Carbonio message dispatcher policy for service and sidecar proxy'
+POLICY_DESCRIPTION='Carbonio Message Dispatcher policy for service and sidecar proxy'
 
 # Create or update policy for the specific service (this will be shared across cluster)
 consul acl policy create -name "${POLICY_NAME}" -description "${POLICY_DESCRIPTION}" -rules  @/etc/carbonio/message-dispatcher/service-discover/policies.json >/dev/null 2>&1
@@ -53,7 +53,7 @@ if [[ "$?" != "0" ]]; then
     fi
 fi
 
-trap 'echo Script for message dispatcher terminated with error' EXIT
+trap 'echo Script for Message Dispatcher terminated with error' EXIT
 set -e
 
 config_variant "http"
@@ -122,7 +122,7 @@ consul reload
 export -n CONSUL_HTTP_TOKEN
 
 echo "======================================================================================="
-echo "Carbonio message dispatcher correctly set!"
+echo "Carbonio Message Dispatcher correctly set!"
 echo "You must run carbonio-message-dispatcher-migration to check database consistency."
 echo "Syntax: [PGPASSWORD=password] carbonio-message-dispatcher-migration username [host] [port]"
 echo "======================================================================================="
