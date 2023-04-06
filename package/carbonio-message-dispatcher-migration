@@ -1,0 +1,153 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+function syntax() {
+    echo "Syntax: [PGPASSWORD=password] $0 username [host] [port]"
+    exit 1
+}
+set -e
+
+if [[ $(id -u) -ne 0 ]]; then
+  echo "Please run as root"
+  exit 1
+fi
+
+if [[ -z "$1" ]]; then
+  syntax;
+fi
+
+INITIAL_SCHEMA_FILE="/etc/carbonio/message-dispatcher/sql-scripts/initial-schema.sql"
+MIGRATIONS_FOLDER="/etc/carbonio/message-dispatcher/sql-scripts/migrations/"
+IS_WORKING=false
+DATABASE_NAME="carbonio-message-dispatcher-db"
+DATABASE_USERNAME="carbonio-message-dispatcher-db"
+
+INITIAL_FOLDER=$(pwd)
+
+NOT_ASK_FOR_PGPASSWORD='-w'
+if [[ -z "${PGPASSWORD}" ]]; then
+  NOT_ASK_FOR_PGPASSWORD=''
+fi
+
+ROOT_DB_USERNAME="$1"
+POSTGRES_HOST=$2
+POSTGRES_PORT=$3
+
+if [ -z "${POSTGRES_HOST}" ]; then
+  POSTGRES_HOST="127.0.0.1";
+fi
+
+if [ -z "${POSTGRES_PORT}" ]; then
+  POSTGRES_PORT="5432";
+fi
+
+run_script_file() {
+  psql -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -U "${ROOT_DB_USERNAME}" "${NOT_ASK_FOR_PGPASSWORD}" "${DATABASE_NAME}" -f "$1" -qtAX
+  return $?
+}
+
+get_pgsql_value() {
+  PGSQL_VALUE=$(psql -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -U "${ROOT_DB_USERNAME}" "${NOT_ASK_FOR_PGPASSWORD}" "${DATABASE_NAME}"  -c "$1" -qtAX)
+  if [[ $? -ne 0 ]]; then
+    PGSQL_VALUE=""
+  fi
+  return $?
+}
+
+format_version() {
+  IFS='.' read -r -a VERSION_TOKENS <<< "$1"; unset IFS
+  printf -v MAJOR "%05d" "${VERSION_TOKENS[0]}"
+  printf -v MINOR "%05d" "${VERSION_TOKENS[1]}"
+  printf -v PATCH "%05d" "${VERSION_TOKENS[2]}"
+  FORMATTED_VERSION="$MAJOR.$MINOR.$PATCH"
+}
+
+exit_with_error_management() {
+  exit_code=$1
+  message=$2
+  if [[ $exit_code -ne 0 ]]; then
+    echo "Failed!"
+    if [[ $message != "" ]]; then
+      echo "$message"
+    fi
+    cd "$INITIAL_FOLDER" || exit 1
+    exit 1
+  fi
+}
+
+update_grant() {
+  read -r -d '' SQL << EOM
+    GRANT ALL PRIVILEGES ON DATABASE "$DATABASE_NAME" TO "$DATABASE_USERNAME";
+    GRANT CONNECT ON DATABASE "$DATABASE_NAME" TO "$DATABASE_USERNAME";
+    GRANT CREATE ON SCHEMA "public" TO "$DATABASE_USERNAME";
+    GRANT USAGE ON SCHEMA "public" TO "$DATABASE_USERNAME";
+    GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA "public" TO "$DATABASE_USERNAME";
+    GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA "public" TO "$DATABASE_USERNAME";
+EOM
+  psql -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -U "${ROOT_DB_USERNAME}" "${NOT_ASK_FOR_PGPASSWORD}" "${DATABASE_NAME}"  -c "$SQL" -qtAX
+}
+
+printf "Checking of database schema... "
+
+set +e
+
+# check if the database has been initialized
+get_pgsql_value "SELECT COUNT(*) FROM pg_tables WHERE 'public' = schemaname" >/dev/null 2>&1
+if [[ $PGSQL_VALUE == "0" ]]; then
+  echo "Done. Database is empty!"
+  printf "Initializing database... "
+  IS_WORKING=true
+  run_script_file $INITIAL_SCHEMA_FILE >/dev/null 2>&1
+  exit_with_error_management $? "Cannot run script for initial schema"
+  CURRENT_VERSION="0.0.0"
+else
+  # gets the database current version
+  get_pgsql_value "SELECT VERSION FROM DATABASE_VERSION LIMIT 1" >/dev/null 2>&1
+  if [[ $PGSQL_VALUE == "" ]]; then
+    CURRENT_VERSION="0.0.0"
+  else
+    CURRENT_VERSION="$PGSQL_VALUE"
+  fi
+fi
+format_version "$CURRENT_VERSION"; CURRENT_VERSION=$FORMATTED_VERSION
+
+# gets all migration script files from the dedicated folder and puts them in an array sorted by files versions
+cd "$MIGRATIONS_FOLDER" || exit_with_error_management $? "Cannot find '$MIGRATIONS_FOLDER' folder"
+MIGRATIONS_ARRAY=()
+for FILE_NAME in *; do
+  format_version "$FILE_NAME"
+  MIGRATIONS_ARRAY+=("$FORMATTED_VERSION;$FILE_NAME")
+done
+# shellcheck disable=SC2207
+IFS=$'\n' MIGRATIONS_ARRAY=($(sort <<< "${MIGRATIONS_ARRAY[*]}")); unset IFS
+
+# gets all migration script files from the dedicated folder and places them in an array sorted by file versions
+for MIGRATIONS in "${MIGRATIONS_ARRAY[@]}"; do
+  IFS=';' read -r FORMATTED_VERSION FILE_NAME <<< "$MIGRATIONS"; unset IFS
+  if [[ $FORMATTED_VERSION > $CURRENT_VERSION ]]; then
+    if [[ "$IS_WORKING" == false ]]; then
+      echo "Done. The database needs to be updated!"
+      printf "Updating database... "
+      IS_WORKING=true
+    fi
+    run_script_file "$MIGRATIONS_FOLDER/$FILE_NAME" >/dev/null 2>&1
+    exit_with_error_management $? "Cannot run script file '$MIGRATIONS_FOLDER/$FILE_NAME'"
+  fi
+done
+
+if [[ "$IS_WORKING" == false ]]; then
+  echo "Done. The database is already updated."
+else
+  echo "Success. The database has been updated."
+  printf "Updating '$DATABASE_USERNAME' grant... "
+  update_grant >/dev/null 2>&1
+  if [[ $? -eq 0 ]]; then
+    echo "Success."
+  else
+    echo "Failed."
+  fi
+fi
+cd "$INITIAL_FOLDER" || exit

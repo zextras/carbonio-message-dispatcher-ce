@@ -2,12 +2,12 @@ targets=(
   "ubuntu"
   "centos"
 )
-pkgname="carbonio-chats-messaging"
+pkgname="carbonio-message-dispatcher"
 pkgver="0.9.0"
 pkgrel="1"
-pkgdesc="Carbonio chats messaging component"
+pkgdesc="Carbonio Message Dispatcher component"
 pkgdesclong=(
-  "Carbonio chats messaging component"
+  "Carbonio Message Dispatcher component"
 )
 maintainer="Zextras <packages@zextras.com>"
 arch="amd64"
@@ -43,13 +43,13 @@ sources=(
   "https://github.com/esl/MongooseIM/archive/6.0.0.tar.gz"
   "configure.vars.config"
   "jwerl.patch"
-  "carbonio-chats-messaging"
-  "carbonio-chats-messaging-http.hcl"
-  "carbonio-chats-messaging-xmpp.hcl"
-  "carbonio-chats-messaging.service"
-  "carbonio-chats-messaging-http-sidecar.service"
-  "carbonio-chats-messaging-xmpp-sidecar.service"
-  "carbonio-chats-messaging-setup.sh"
+  "carbonio-message-dispatcher"
+  "carbonio-message-dispatcher-http.hcl"
+  "carbonio-message-dispatcher-xmpp.hcl"
+  "carbonio-message-dispatcher.service"
+  "carbonio-message-dispatcher-http-sidecar.service"
+  "carbonio-message-dispatcher-xmpp-sidecar.service"
+  "carbonio-message-dispatcher-setup.sh"
   "mongooseim.toml"
   "app.config"
   "intentions-http.json"
@@ -57,47 +57,47 @@ sources=(
   "policies.json"
   "service-protocol-http.json"
   "service-protocol-xmpp.json"
-  "carbonio-chats-messaging-auth.service"
+  "carbonio-message-dispatcher-auth.service"
   "config.properties"
   "logback.xml"
-  "carbonio-chats-messaging-migration"
+  "carbonio-message-dispatcher-migration"
   "pgsql-script-initial-schema-mongooseim-5.1.0.sql"
   "pgsql-script-migrations-5.1.0.sql"
   "pgsql-script-migrations-6.0.0.sql"
 )
 backup=(
-  "etc/zextras/service-discover/carbonio-chats-messaging-http.hcl"
-  "etc/zextras/service-discover/carbonio-chats-messaging-xmpp.hcl"
-  "etc/carbonio/chats-messaging/mongooseim.toml"
-  "etc/carbonio/chats-messaging/app.config"
-  "etc/carbonio/chats-messaging/config.properties"
-  "etc/carbonio/chats-messaging/logback.xml"
+  "etc/zextras/service-discover/carbonio-message-dispatcher-http.hcl"
+  "etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.hcl"
+  "etc/carbonio/message-dispatcher/mongooseim.toml"
+  "etc/carbonio/message-dispatcher/app.config"
+  "etc/carbonio/message-dispatcher/config.properties"
+  "etc/carbonio/message-dispatcher/logback.xml"
 )
 hashsums=(
   "skip"
-  "6920cdf0ba44779dc8b60a47fe80181fe62c848f31ec5d15dfdd131f0b15c891"
+  "a55ee89a02e901831baf61faa3b22127ae93e4cccac8d6f1032bfa4202985089"
   "35d811dcdd6c8c176e5c5a3b5e56a8a59be0357f1a6ad83d72ff17d609cf13dd"
-  "43dd09f35089ad3453f20a1629c4fb86d59225beb64054da4aa7ac5770f8551c"
-  "b29c2a95c091269fef61a4bcd641c03c96471426d5faa534d2f61a7e9d5c91dd"
-  "d8f5a4346871a31f3a300431ddb9bea2915f4576706367eb9ca6fc54342860e7"
-  "2aaeaae56da75582e1ec4662f4bc7dfbf7cb40065f3e7930dfa9903f2ae500ce"
-  "f6f45b0d7f0cc162daf8eecaa39de1ae716d6e19d1c4ca86ce23918c388a8d50"
-  "c93c459cc1c889283b61cb8ac6c21be135034d699576ca844db98c15310f6ee0"
-  "5593a05a547fc1f24448bd129962be3da10937344d8e90423a1328f7daa2cda8"
-  "e5592e8043274ccd9686901f1db8eb68e1a1517ac47ad840b4a8b1bb91b69ed3"
-  "ac592f4b8ee3e3afad7de3840707d2a2765118a6dc62692eb4cde5966fb1baad"
-  "9f000fa2d1fc6adeaa63ed484a39587c88268a989d566a359ee70f75af38c63a"
-  "92ba0d71994096a3a2d3ce2b74dc1847fb43b2676f72c0a39c502e12eef94ec5"
-  "e14778b194a95eebb515e15a20ea767740be857454c330dbba83475880ff7af6"
-  "596f9e16fb5e9804b67a0c3132e8a7ea948c627702d14c916e7156c5a4528418"
-  "68282258e612c16d6aaaaa7a36eba4f00341da0f8273de6c7f4b9aa2e6b1e05b"
-  "1ffd893c3ce4561d4ed9450a7ceb491966071d01882fe773c324b0a07ce1a942"
+  "65823aac0dc69d311b64bf5f4ac05085e98c93f4dcd22b5c144dfc90e3025f1c"
+  "b12a3d48b5eaf521b516a7a45a69e722d33363fff4671ceb04fa1eaee61b7cc4"
+  "0312bb4d66fd0ed34dfa4dc9f38bb253ed6822c71390cd2a858b36bb239a2523"
+  "14ea4d25a52a013553ef0541e9c16cc2a7a7a100759d7c4fa146123f8a7e7288"
+  "c73028f99e85ae53242528fbb5f94ab66e896a2e15f25205920ebc473b4bde3e"
+  "159b269e9d4e2192d284851500673ceb3a601d7be549447a1c51ce98673ea9c4"
+  "656208c6908eacf2147bff0a40c3f4a71763ac505702099a46c3d95967a55ce4"
+  "06023aab8df36b89ea8783f7c6824efff97f2627f5e4bd86cb4c559c300befc4"
+  "f7384b4fd538b267f8c7a708185a9c56f5444ec04526d4b85ca5068f538d1abc"
+  "600d9ed2e2a06a68ff1f486e315f65874547ab85ac8b5a10cb1959d9459a07e3"
+  "7daba3df5207eeebc90b8754f34d669360de14c29404359bb6e782434253438a"
+  "8bf56aaeffa31e4cf9ca64acbf8c127754f2c017b2d5e63c3ae7debd9e8c6591"
+  "58bf32b3212d9333edaec81260121a460c738ede9be5a26c29bd0a0f3c0ee3e9"
+  "c310dee43435bf572532f49947e87e0c33605a43b5ed0980606e147d6fc1e0a5"
+  "ac54cdedd7901f7535d3f4044c64075dc92338db4d2b5678332b95a6b34fe264"
   "1c2d96268b105083d0481b8cd5286d9d4355e21266ca83286449c6ad69c139cc"
-  "eb90a13da283e2f8433c464ab7c5abbcf998d771077d21bd2fbe664171f49476"
-  "7c532fc4bdb8b01bcf9de26051aa3ed7c268a0863f90b48f96629bf9b4aa8e73"
-  "f5951de96915dc501680f309da6cf259db3e40295514006ea5eee93de57c15fb"
-  "7d7051bad2e1c48edd7ad2b158af31538adbc12ffd1f0d10e665f3c81f777ddf"
-  "aad3a7f439adcbfd61fdc38c13b72677300b3ffff75fcb9449c67b0fe35b6429"
+  "d1ec2c67cd15263fc84ffb891f4276d1e147084a3e4eb1bc1801de2ca5bf32e4"
+  "692079ea85e441db8565b1fbc38b460d4f36136d598d7d14c51c1885896e3053"
+  "ae478be53dac94f4763cb9a733fd729169c771c501f425c5b948accaf2055030"
+  "4ab5bad5103488c32a74b8a17a34e019ff92e97e08656e9ab4aa19cbfe17e49a"
+  "5402ca41225adf9c2be5d26e49b2d878ca6045449365cfc97fc15f5b8851a696"
 )
 
 build() {
@@ -119,22 +119,22 @@ build() {
   echo 'export RELTOOL_VARS="rel/configure.vars.config"' >>configure.out
   echo 'export SYSTEM="yes"' >>configure.out
   echo "export BIN_DIR=\"${pkgdir}/opt/zextras/common/bin\"" >>configure.out
-  echo 'export ETC_DIR="/etc/carbonio/chats-messaging"' >>configure.out
+  echo 'export ETC_DIR="/etc/carbonio/message-dispatcher"' >>configure.out
   echo "export LIB_DIR=\"${pkgdir}/opt/zextras/common/lib/mongooseim\"" >>configure.out
-  echo "export LOG_DIR=\"${pkgdir}/var/log/carbonio/chats-messaging\"" >>configure.out
+  echo "export LOG_DIR=\"${pkgdir}/var/log/carbonio/message-dispatcher\"" >>configure.out
   echo 'export PID_DIR="/run"' >>configure.out
-  echo "export STATUS_DIR=\"${pkgdir}/var/lib/carbonio/chats-messaging\"" >>configure.out
-  echo "export MDB_DIR=\"${pkgdir}/var/lib/carbonio/chats-messaging\"" >>configure.out
-  echo "export LOCK_DIR=\"${pkgdir}/var/lock/carbonio/chats-messaging\"" >>configure.out
+  echo "export STATUS_DIR=\"${pkgdir}/var/lib/carbonio/message-dispatcher\"" >>configure.out
+  echo "export MDB_DIR=\"${pkgdir}/var/lib/carbonio/message-dispatcher\"" >>configure.out
+  echo "export LOCK_DIR=\"${pkgdir}/var/lock/carbonio/message-dispatcher\"" >>configure.out
   make rel
 }
 
 package() {
   export PATH="/opt/zextras/common/bin/:$PATH"
 
-  cd "${srcdir}"/../../messaging/carbonio-chats-messaging-auth/target
-  install -Dm 644 ./carbonio-chats-messaging-auth-fatjar.jar \
-    "${pkgdir}/opt/zextras/lib/jars/carbonio-chats-messaging-auth.jar"
+  cd "${srcdir}"/../../dispatcher/carbonio-message-dispatcher-auth/target
+  install -Dm 644 ./carbonio-message-dispatcher-auth-fatjar.jar \
+    "${pkgdir}/opt/zextras/lib/jars/carbonio-message-dispatcher-auth.jar"
 
   cd "${srcdir}/MongooseIM-6.0.0"
   make install
@@ -142,98 +142,98 @@ package() {
   cd "${srcdir}"
   #Overwriting mongoose files with ours
   install -Dm 644 mongooseim.toml \
-    "${pkgdir}/etc/carbonio/chats-messaging/mongooseim.toml"
+    "${pkgdir}/etc/carbonio/message-dispatcher/mongooseim.toml"
   install -Dm 644 app.config \
-    "${pkgdir}/etc/carbonio/chats-messaging/app.config"
+    "${pkgdir}/etc/carbonio/message-dispatcher/app.config"
 
   #Our files
-  install -Dm 755 carbonio-chats-messaging \
-    "${pkgdir}/usr/bin/carbonio-chats-messaging"
-  install -Dm 644 carbonio-chats-messaging.service \
-    "${pkgdir}/lib/systemd/system/carbonio-chats-messaging.service"
-  install -Dm 644 carbonio-chats-messaging-http-sidecar.service \
-    "${pkgdir}/lib/systemd/system/carbonio-chats-messaging-http-sidecar.service"
-  install -Dm 644 carbonio-chats-messaging-xmpp-sidecar.service \
-    "${pkgdir}/lib/systemd/system/carbonio-chats-messaging-xmpp-sidecar.service"
-  install -Dm 644 carbonio-chats-messaging-http.hcl \
-    "${pkgdir}/etc/zextras/service-discover/carbonio-chats-messaging-http.hcl"
-  install -Dm 644 carbonio-chats-messaging-xmpp.hcl \
-    "${pkgdir}/etc/zextras/service-discover/carbonio-chats-messaging-xmpp.hcl"
-  install -Dm 644 carbonio-chats-messaging-setup.sh \
-    "${pkgdir}/etc/zextras/pending-setups.d/carbonio-chats-messaging.sh"
+  install -Dm 755 carbonio-message-dispatcher \
+    "${pkgdir}/usr/bin/carbonio-message-dispatcher"
+  install -Dm 644 carbonio-message-dispatcher.service \
+    "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher.service"
+  install -Dm 644 carbonio-message-dispatcher-http-sidecar.service \
+    "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-http-sidecar.service"
+  install -Dm 644 carbonio-message-dispatcher-xmpp-sidecar.service \
+    "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-xmpp-sidecar.service"
+  install -Dm 644 carbonio-message-dispatcher-http.hcl \
+    "${pkgdir}/etc/zextras/service-discover/carbonio-message-dispatcher-http.hcl"
+  install -Dm 644 carbonio-message-dispatcher-xmpp.hcl \
+    "${pkgdir}/etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.hcl"
+  install -Dm 644 carbonio-message-dispatcher-setup.sh \
+    "${pkgdir}/etc/zextras/pending-setups.d/carbonio-message-dispatcher.sh"
   install -Dm 644 intentions-http.json \
-    "${pkgdir}/etc/carbonio/chats-messaging/service-discover/intentions-http.json"
+    "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/intentions-http.json"
   install -Dm 644 intentions-xmpp.json \
-    "${pkgdir}/etc/carbonio/chats-messaging/service-discover/intentions-xmpp.json"
+    "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/intentions-xmpp.json"
   install -Dm 644 policies.json \
-    "${pkgdir}/etc/carbonio/chats-messaging/service-discover/policies.json"
+    "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/policies.json"
   install -Dm 644 service-protocol-http.json \
-    "${pkgdir}/etc/carbonio/chats-messaging/service-discover/service-protocol-http.json"
+    "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/service-protocol-http.json"
   install -Dm 644 service-protocol-xmpp.json \
-    "${pkgdir}/etc/carbonio/chats-messaging/service-discover/service-protocol-xmpp.json"
-  install -Dm 644 carbonio-chats-messaging-auth.service \
-    "${pkgdir}/lib/systemd/system/carbonio-chats-messaging-auth.service"
+    "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/service-protocol-xmpp.json"
+  install -Dm 644 carbonio-message-dispatcher-auth.service \
+    "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-auth.service"
   install -Dm 644 config.properties \
-    "${pkgdir}/etc/carbonio/chats-messaging/config.properties"
+    "${pkgdir}/etc/carbonio/message-dispatcher/config.properties"
   install -Dm 644 logback.xml \
-    "${pkgdir}/etc/carbonio/chats-messaging/logback.xml"
+    "${pkgdir}/etc/carbonio/message-dispatcher/logback.xml"
 
-  install -Dm 755 carbonio-chats-messaging-migration \
-    "${pkgdir}/usr/bin/carbonio-chats-messaging-migration"
+  install -Dm 755 carbonio-message-dispatcher-migration \
+    "${pkgdir}/usr/bin/carbonio-message-dispatcher-migration"
   install -Dm 644 pgsql-script-initial-schema-mongooseim-5.1.0.sql \
-    "${pkgdir}/etc/carbonio/chats-messaging/sql-scripts/initial-schema.sql"
+    "${pkgdir}/etc/carbonio/message-dispatcher/sql-scripts/initial-schema.sql"
   install -Dm 644 pgsql-script-migrations-5.1.0.sql \
-    "${pkgdir}/etc/carbonio/chats-messaging/sql-scripts/migrations/5.1.0.sql"
+    "${pkgdir}/etc/carbonio/message-dispatcher/sql-scripts/migrations/5.1.0.sql"
   install -Dm 644 pgsql-script-migrations-6.0.0.sql \
-    "${pkgdir}/etc/carbonio/chats-messaging/sql-scripts/migrations/6.0.0.sql"
+    "${pkgdir}/etc/carbonio/message-dispatcher/sql-scripts/migrations/6.0.0.sql"
 
   cp "${pkgdir}/opt/zextras/common/lib/mongooseim/releases/6.0.0/vm.args" \
-    "${pkgdir}/etc/carbonio/chats-messaging/vm.args"
+    "${pkgdir}/etc/carbonio/message-dispatcher/vm.args"
 
-  ln -s /etc/carbonio/chats-messaging/vm.args \
-    "${pkgdir}/etc/carbonio/chats-messaging/vm.dist.args"
+  ln -s /etc/carbonio/message-dispatcher/vm.args \
+    "${pkgdir}/etc/carbonio/message-dispatcher/vm.dist.args"
 }
 
 postinst() {
-  getent group 'carbonio-chats-messaging' >/dev/null ||
-    groupadd -r 'carbonio-chats-messaging'
-  getent passwd 'carbonio-chats-messaging' >/dev/null ||
-    useradd -r -M -g 'carbonio-chats-messaging' -d /var/lib/carbonio/chats-messaging -s /sbin/nologin 'carbonio-chats-messaging'
+  getent group 'carbonio-message-dispatcher' >/dev/null ||
+    groupadd -r 'carbonio-message-dispatcher'
+  getent passwd 'carbonio-message-dispatcher' >/dev/null ||
+    useradd -r -M -g 'carbonio-message-dispatcher' -d /var/lib/carbonio/message-dispatcher -s /sbin/nologin 'carbonio-message-dispatcher'
 
-  chown carbonio-chats-messaging:carbonio-chats-messaging /var/log/carbonio/chats-messaging
-  chown carbonio-chats-messaging:carbonio-chats-messaging /var/lib/carbonio/chats-messaging
-  chown carbonio-chats-messaging:carbonio-chats-messaging /var/lock/carbonio/chats-messaging
-  chown carbonio-chats-messaging:carbonio-chats-messaging /var/lib/carbonio/chats-messaging
+  chown carbonio-message-dispatcher:carbonio-message-dispatcher /var/log/carbonio/message-dispatcher
+  chown carbonio-message-dispatcher:carbonio-message-dispatcher /var/lib/carbonio/message-dispatcher
+  chown carbonio-message-dispatcher:carbonio-message-dispatcher /var/lock/carbonio/message-dispatcher
+  chown carbonio-message-dispatcher:carbonio-message-dispatcher /var/lib/carbonio/message-dispatcher
 
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
-    systemctl enable carbonio-chats-messaging-auth.service >/dev/null 2>&1 || :
-    systemctl enable carbonio-chats-messaging.service >/dev/null 2>&1 || :
-    systemctl enable carbonio-chats-messaging-http-sidecar.service >/dev/null 2>&1 || :
-    systemctl enable carbonio-chats-messaging-xmpp-sidecar.service >/dev/null 2>&1 || :
+    systemctl enable carbonio-message-dispatcher-auth.service >/dev/null 2>&1 || :
+    systemctl enable carbonio-message-dispatcher.service >/dev/null 2>&1 || :
+    systemctl enable carbonio-message-dispatcher-http-sidecar.service >/dev/null 2>&1 || :
+    systemctl enable carbonio-message-dispatcher-xmpp-sidecar.service >/dev/null 2>&1 || :
   fi
 
   echo "======================================================"
-  echo "Carbonio chats messaging installed successfully!"
+  echo "Carbonio Message Dispatcher installed successfully!"
   echo "You must run pending-setups to configure it correctly."
   echo "======================================================"
 }
 
 prerm() {
   if [ -d /run/systemd/system ]; then
-    systemctl --no-reload disable carbonio-chats-messaging.service >/dev/null 2>&1 || :
-    systemctl --no-reload disable carbonio-chats-messaging-http-sidecar.service >/dev/null 2>&1 || :
-    systemctl --no-reload disable carbonio-chats-messaging-xmpp-sidecar.service >/dev/null 2>&1 || :
-    systemctl --no-reload disable carbonio-chats-messaging-auth.service >/dev/null 2>&1 || :
-    systemctl stop carbonio-chats-messaging.service >/dev/null 2>&1 || :
-    systemctl stop carbonio-chats-messaging-http-sidecar.service >/dev/null 2>&1 || :
-    systemctl stop carbonio-chats-messaging-xmpp-sidecar.service >/dev/null 2>&1 || :
-    systemctl stop carbonio-chats-messaging-auth.service >/dev/null 2>&1 || :
+    systemctl --no-reload disable carbonio-message-dispatcher.service >/dev/null 2>&1 || :
+    systemctl --no-reload disable carbonio-message-dispatcher-http-sidecar.service >/dev/null 2>&1 || :
+    systemctl --no-reload disable carbonio-message-dispatcher-xmpp-sidecar.service >/dev/null 2>&1 || :
+    systemctl --no-reload disable carbonio-message-dispatcher-auth.service >/dev/null 2>&1 || :
+    systemctl stop carbonio-message-dispatcher.service >/dev/null 2>&1 || :
+    systemctl stop carbonio-message-dispatcher-http-sidecar.service >/dev/null 2>&1 || :
+    systemctl stop carbonio-message-dispatcher-xmpp-sidecar.service >/dev/null 2>&1 || :
+    systemctl stop carbonio-message-dispatcher-auth.service >/dev/null 2>&1 || :
   fi
 }
 
 postrm() {
-  rm -f /etc/carbonio/chats-messaging/service-discover/token
+  rm -f /etc/carbonio/message-dispatcher/service-discover/token
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
   fi

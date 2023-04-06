@@ -1,7 +1,7 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: Carbonio Chats Messaging
+Upstream-Name: Carbonio Message Dispatcher
 Upstream-Contact: Smoky Beans <smokybeans@zextras.com>
-Source: https://github.com/Zextras/carbonio-chats-messaging
+Source: https://github.com/Zextras/carbonio-message-dispatcher
 
 Files: pacur.json
 Copyright: 2023 Zextras s.r.l

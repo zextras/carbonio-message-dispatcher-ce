@@ -1,6 +1,6 @@
 {
-  "name": "carbonio-chats-messaging",
-  "description": "Chats messaging component for carbonio CE",
+  "name": "carbonio-message-dispatcher",
+  "description": "Message Dispatcher component",
   "build_dir": "/tmp/",
   "output": "artifacts",
   "projects": [

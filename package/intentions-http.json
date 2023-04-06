@@ -1,9 +1,9 @@
 {
   "Kind": "service-intentions",
-  "Name": "carbonio-chats-messaging-http",
+  "Name": "carbonio-message-dispatcher-http",
   "Sources": [
     {
-      "Name": "carbonio-chats",
+      "Name": "carbonio-ws-collaboration",
       "Action": "allow"
     },
     {

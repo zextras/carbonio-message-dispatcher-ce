@@ -9,12 +9,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <configuration>
 
   <appender name="FILE_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>/var/log/carbonio/chats-messaging/auth.log</file>
+    <file>/var/log/carbonio/message-dispatcher/auth.log</file>
     <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
       <Pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} %5p %-30.30logger{29} : %m%n</Pattern>
     </encoder>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <FileNamePattern>/var/log/carbonio/chats-messaging/auth.%d{yyyy-MM-dd}.log.gz</FileNamePattern>
+      <FileNamePattern>/var/log/carbonio/message-dispatcher/auth.%d{yyyy-MM-dd}.log.gz</FileNamePattern>
       <MaxHistory>28</MaxHistory>
     </rollingPolicy>
   </appender>
@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
     </encoder>
   </appender>
 
-  <logger name="com.zextras.carbonio.chats.messaging.auth" level="INFO" additivity="false">
+  <logger name="com.zextras.carbonio.message.dispatcher.auth" level="INFO" additivity="false">
     <appender-ref ref="FILE_APPENDER"/>
     <appender-ref ref="CONSOLE_LOG"/>
   </logger>
