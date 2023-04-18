@@ -10,10 +10,7 @@ import com.zextras.carbonio.message.dispatcher.auth.service.impl.AuthenticationS
 import com.zextras.carbonio.message.dispatcher.auth.web.api.CheckPasswordApi;
 import com.zextras.carbonio.usermanagement.UserManagementClient;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.Properties;
 import javax.servlet.ServletRegistration.Dynamic;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -26,40 +23,17 @@ public class Boot {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Boot.class);
 
-  private final Properties            properties;
   private final AuthenticationService authenticationService;
 
-  public Boot() throws IOException {
-    this.properties = getProperties();
+  public Boot(){
     this.authenticationService = new AuthenticationServiceImpl(getUserManagementClient());
-  }
-
-  private Properties getProperties() throws IOException {
-    Properties properties = new Properties();
-    System.out.printf("Loading application configurations from file '%s' ...", Constant.CONFIG_PATH);
-    try {
-      properties.load(new FileInputStream(Constant.CONFIG_PATH));
-      LOGGER.info("Application configurations loaded");
-      return properties;
-    } catch (Exception e) {
-      LOGGER.error("Could not load properties file: " + Constant.CONFIG_PATH);
-      LOGGER.warn("Try to load the default configurations...");
-    }
-    try {
-      properties.load(Main.class.getClassLoader().getResourceAsStream("config.properties"));
-      LOGGER.warn("Application default configurations loaded");
-      return properties;
-    } catch (IOException e) {
-      LOGGER.error("Could not load configurations");
-      throw e;
-    }
   }
 
   private UserManagementClient getUserManagementClient() {
     return UserManagementClient.atURL(
       String.format("http://%s:%s",
-        properties.getProperty("user.management.host"),
-        properties.getProperty("user.management.port")));
+        "127.78.0.20",
+        "20000"));
   }
 
   public void boot() throws Exception {

@@ -131,4 +131,5 @@ systemctl restart carbonio-message-dispatcher-auth.service
 systemctl restart carbonio-message-dispatcher.service
 systemctl restart carbonio-message-dispatcher-http-sidecar.service
 systemctl restart carbonio-message-dispatcher-xmpp-sidecar.service
+systemctl restart carbonio-message-dispatcher-auth-sidecar.service
 trap - EXIT
