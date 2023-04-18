@@ -2,13 +2,12 @@ services {
   checks = [
     {
       id       = "ready",
-      http     = "http://127.78.0.10:10000/api/graphql",
+      http     = "http://127.78.0.20:10000/health/ready",
       method   = "GET",
       timeout  = "1s",
       interval = "5s"
     }
   ],
-
   connect {
     sidecar_service {
       proxy {

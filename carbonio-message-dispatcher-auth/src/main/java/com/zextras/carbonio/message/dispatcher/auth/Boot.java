@@ -8,6 +8,7 @@ import com.zextras.carbonio.message.dispatcher.auth.config.Constant;
 import com.zextras.carbonio.message.dispatcher.auth.service.AuthenticationService;
 import com.zextras.carbonio.message.dispatcher.auth.service.impl.AuthenticationServiceImpl;
 import com.zextras.carbonio.message.dispatcher.auth.web.api.CheckPasswordApi;
+import com.zextras.carbonio.message.dispatcher.auth.web.api.HealthApi;
 import com.zextras.carbonio.usermanagement.UserManagementClient;
 
 import java.net.InetSocketAddress;
@@ -32,8 +33,8 @@ public class Boot {
   private UserManagementClient getUserManagementClient() {
     return UserManagementClient.atURL(
       String.format("http://%s:%s",
-        "127.78.0.20",
-        "20000"));
+        Constant.SERVER_HOST,
+        Constant.USER_MANAGEMENT_PORT));
   }
 
   public void boot() throws Exception {
@@ -49,6 +50,10 @@ public class Boot {
     context.addServletContainerInitializer((c, ctx) -> {
       Dynamic userExists = ctx.addServlet("UserExistsServlet", UserExistsApi.create(authenticationService));
       userExists.addMapping("/user_exists");
+    });
+    context.addServletContainerInitializer((c, ctx) -> {
+      Dynamic health = ctx.addServlet("HealthServlet", HealthApi.create());
+      health.addMapping("/health/ready");
     });
     handlers.addHandler(context);
     server.setHandler(handlers);
