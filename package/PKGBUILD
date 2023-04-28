@@ -50,14 +50,17 @@ sources=(
   "carbonio-message-dispatcher.service"
   "carbonio-message-dispatcher-http-sidecar.service"
   "carbonio-message-dispatcher-xmpp-sidecar.service"
+  "carbonio-message-dispatcher-auth-sidecar.service"
   "carbonio-message-dispatcher-setup.sh"
   "mongooseim.toml"
   "app.config"
   "intentions-http.json"
   "intentions-xmpp.json"
+  "intensions-auth.json"
   "policies.json"
   "service-protocol-http.json"
   "service-protocol-xmpp.json"
+  "service-protocol-auth.json"
   "carbonio-message-dispatcher-auth.service"
   "logback.xml"
   "carbonio-message-dispatcher-migration"
@@ -84,14 +87,17 @@ hashsums=(
   "14ea4d25a52a013553ef0541e9c16cc2a7a7a100759d7c4fa146123f8a7e7288"
   "c73028f99e85ae53242528fbb5f94ab66e896a2e15f25205920ebc473b4bde3e"
   "159b269e9d4e2192d284851500673ceb3a601d7be549447a1c51ce98673ea9c4"
+  "2e668553091433e98b056880ec4c2527aed15c69301f9be618e69d7bb541e7ab"
   "656208c6908eacf2147bff0a40c3f4a71763ac505702099a46c3d95967a55ce4"
   "06023aab8df36b89ea8783f7c6824efff97f2627f5e4bd86cb4c559c300befc4"
   "f7384b4fd538b267f8c7a708185a9c56f5444ec04526d4b85ca5068f538d1abc"
   "600d9ed2e2a06a68ff1f486e315f65874547ab85ac8b5a10cb1959d9459a07e3"
   "7daba3df5207eeebc90b8754f34d669360de14c29404359bb6e782434253438a"
+  "4c6e3661865d28018f2f5049746389008d3f6bb8a7e5821604c684592f410e07"
   "8bf56aaeffa31e4cf9ca64acbf8c127754f2c017b2d5e63c3ae7debd9e8c6591"
   "58bf32b3212d9333edaec81260121a460c738ede9be5a26c29bd0a0f3c0ee3e9"
   "c310dee43435bf572532f49947e87e0c33605a43b5ed0980606e147d6fc1e0a5"
+  "ecca7efddcff1a5efe6d38fd64bf489638bdac94c6c5ec7178866354a9ad5a91"
   "ac54cdedd7901f7535d3f4044c64075dc92338db4d2b5678332b95a6b34fe264"
   "d1ec2c67cd15263fc84ffb891f4276d1e147084a3e4eb1bc1801de2ca5bf32e4"
   "692079ea85e441db8565b1fbc38b460d4f36136d598d7d14c51c1885896e3053"
@@ -155,6 +161,8 @@ package() {
     "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-http-sidecar.service"
   install -Dm 644 carbonio-message-dispatcher-xmpp-sidecar.service \
     "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-xmpp-sidecar.service"
+  install -Dm 644 carbonio-message-dispatcher-auth-sidecar.service \
+      "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-auth-sidecar.service"
   install -Dm 644 carbonio-message-dispatcher-http.hcl \
     "${pkgdir}/etc/zextras/service-discover/carbonio-message-dispatcher-http.hcl"
   install -Dm 644 carbonio-message-dispatcher-xmpp.hcl \
@@ -167,12 +175,16 @@ package() {
     "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/intentions-http.json"
   install -Dm 644 intentions-xmpp.json \
     "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/intentions-xmpp.json"
+  install -Dm 644 intentions-auth.json \
+    "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/intentions-auth.json"
   install -Dm 644 policies.json \
     "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/policies.json"
   install -Dm 644 service-protocol-http.json \
     "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/service-protocol-http.json"
   install -Dm 644 service-protocol-xmpp.json \
     "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/service-protocol-xmpp.json"
+  install -Dm 644 service-protocol-auth.json \
+      "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/service-protocol-auth.json"
   install -Dm 644 carbonio-message-dispatcher-auth.service \
     "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-auth.service"
   install -Dm 644 logback.xml \
@@ -211,6 +223,7 @@ postinst() {
     systemctl enable carbonio-message-dispatcher.service >/dev/null 2>&1 || :
     systemctl enable carbonio-message-dispatcher-http-sidecar.service >/dev/null 2>&1 || :
     systemctl enable carbonio-message-dispatcher-xmpp-sidecar.service >/dev/null 2>&1 || :
+    systemctl enable carbonio-message-dispatcher-auth-sidecar.service >/dev/null 2>&1 || :
   fi
 
   echo "======================================================"
@@ -224,10 +237,12 @@ prerm() {
     systemctl --no-reload disable carbonio-message-dispatcher.service >/dev/null 2>&1 || :
     systemctl --no-reload disable carbonio-message-dispatcher-http-sidecar.service >/dev/null 2>&1 || :
     systemctl --no-reload disable carbonio-message-dispatcher-xmpp-sidecar.service >/dev/null 2>&1 || :
+    systemctl --no-reload disable carbonio-message-dispatcher-auth-sidecar.service >/dev/null 2>&1 || :
     systemctl --no-reload disable carbonio-message-dispatcher-auth.service >/dev/null 2>&1 || :
     systemctl stop carbonio-message-dispatcher.service >/dev/null 2>&1 || :
     systemctl stop carbonio-message-dispatcher-http-sidecar.service >/dev/null 2>&1 || :
     systemctl stop carbonio-message-dispatcher-xmpp-sidecar.service >/dev/null 2>&1 || :
+    systemctl stop carbonio-message-dispatcher-auth-sidecar.service >/dev/null 2>&1 || :
     systemctl stop carbonio-message-dispatcher-auth.service >/dev/null 2>&1 || :
   fi
 }
