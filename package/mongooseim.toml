@@ -16,7 +16,7 @@
   [auth.http]
 
 [outgoing_pools.http.auth]
-  connection.host = "http://127.78.0.20:10000"
+  connection.host = "http://127.78.0.22:10000"
 
 [s2s]
   default_policy = "deny"
