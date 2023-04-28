@@ -3,7 +3,7 @@ targets=(
   "centos"
 )
 pkgname="carbonio-message-dispatcher"
-pkgver="0.9.0"
+pkgver="0.10.0"
 pkgrel="1"
 pkgdesc="Carbonio Message Dispatcher component"
 pkgdesclong=(
@@ -46,6 +46,7 @@ sources=(
   "carbonio-message-dispatcher"
   "carbonio-message-dispatcher-http.hcl"
   "carbonio-message-dispatcher-xmpp.hcl"
+  "carbonio-message-dispatcher-auth.hcl"
   "carbonio-message-dispatcher.service"
   "carbonio-message-dispatcher-http-sidecar.service"
   "carbonio-message-dispatcher-xmpp-sidecar.service"
@@ -67,6 +68,7 @@ sources=(
 backup=(
   "etc/zextras/service-discover/carbonio-message-dispatcher-http.hcl"
   "etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.hcl"
+  "etc/zextras/service-discover/carbonio-message-dispatcher-auth.hcl"
   "etc/carbonio/message-dispatcher/mongooseim.toml"
   "etc/carbonio/message-dispatcher/app.config"
   "etc/carbonio/message-dispatcher/logback.xml"
@@ -78,6 +80,7 @@ hashsums=(
   "65823aac0dc69d311b64bf5f4ac05085e98c93f4dcd22b5c144dfc90e3025f1c"
   "b12a3d48b5eaf521b516a7a45a69e722d33363fff4671ceb04fa1eaee61b7cc4"
   "0312bb4d66fd0ed34dfa4dc9f38bb253ed6822c71390cd2a858b36bb239a2523"
+  "9e3c97df78fd6f090baf7f2db347cf40d0c4da2b045b01c8ddd1c076a1f4f187"
   "14ea4d25a52a013553ef0541e9c16cc2a7a7a100759d7c4fa146123f8a7e7288"
   "c73028f99e85ae53242528fbb5f94ab66e896a2e15f25205920ebc473b4bde3e"
   "159b269e9d4e2192d284851500673ceb3a601d7be549447a1c51ce98673ea9c4"
@@ -156,6 +159,8 @@ package() {
     "${pkgdir}/etc/zextras/service-discover/carbonio-message-dispatcher-http.hcl"
   install -Dm 644 carbonio-message-dispatcher-xmpp.hcl \
     "${pkgdir}/etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.hcl"
+  install -Dm 644 carbonio-message-dispatcher-auth.hcl \
+      "${pkgdir}/etc/zextras/service-discover/carbonio-message-dispatcher-auth.hcl"
   install -Dm 644 carbonio-message-dispatcher-setup.sh \
     "${pkgdir}/etc/zextras/pending-setups.d/carbonio-message-dispatcher.sh"
   install -Dm 644 intentions-http.json \
