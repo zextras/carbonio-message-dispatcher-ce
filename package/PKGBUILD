@@ -58,7 +58,6 @@ sources=(
   "service-protocol-http.json"
   "service-protocol-xmpp.json"
   "carbonio-message-dispatcher-auth.service"
-  "config.properties"
   "logback.xml"
   "carbonio-message-dispatcher-migration"
   "pgsql-script-initial-schema-mongooseim-5.1.0.sql"
@@ -70,7 +69,6 @@ backup=(
   "etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.hcl"
   "etc/carbonio/message-dispatcher/mongooseim.toml"
   "etc/carbonio/message-dispatcher/app.config"
-  "etc/carbonio/message-dispatcher/config.properties"
   "etc/carbonio/message-dispatcher/logback.xml"
 )
 hashsums=(
@@ -92,7 +90,6 @@ hashsums=(
   "58bf32b3212d9333edaec81260121a460c738ede9be5a26c29bd0a0f3c0ee3e9"
   "c310dee43435bf572532f49947e87e0c33605a43b5ed0980606e147d6fc1e0a5"
   "ac54cdedd7901f7535d3f4044c64075dc92338db4d2b5678332b95a6b34fe264"
-  "1c2d96268b105083d0481b8cd5286d9d4355e21266ca83286449c6ad69c139cc"
   "d1ec2c67cd15263fc84ffb891f4276d1e147084a3e4eb1bc1801de2ca5bf32e4"
   "692079ea85e441db8565b1fbc38b460d4f36136d598d7d14c51c1885896e3053"
   "ae478be53dac94f4763cb9a733fd729169c771c501f425c5b948accaf2055030"
@@ -173,8 +170,6 @@ package() {
     "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/service-protocol-xmpp.json"
   install -Dm 644 carbonio-message-dispatcher-auth.service \
     "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-auth.service"
-  install -Dm 644 config.properties \
-    "${pkgdir}/etc/carbonio/message-dispatcher/config.properties"
   install -Dm 644 logback.xml \
     "${pkgdir}/etc/carbonio/message-dispatcher/logback.xml"
 
