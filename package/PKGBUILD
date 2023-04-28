@@ -56,7 +56,7 @@ sources=(
   "app.config"
   "intentions-http.json"
   "intentions-xmpp.json"
-  "intensions-auth.json"
+  "intentions-auth.json"
   "policies.json"
   "service-protocol-http.json"
   "service-protocol-xmpp.json"
