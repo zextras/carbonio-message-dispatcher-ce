@@ -1,13 +1,11 @@
 services {
-  checks = [
-    {
-      id       = "ready",
-      http     = "http://127.78.0.22:10000/health/ready",
-      method   = "GET",
-      timeout  = "1s",
-      interval = "5s"
-    }
-  ],
+  check {
+    id       = "ready",
+    http     = "http://127.78.0.22:10000/health/ready",
+    method   = "GET",
+    timeout  = "1s",
+    interval = "5s"
+  }
   connect {
     sidecar_service {
       proxy {
