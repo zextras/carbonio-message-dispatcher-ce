@@ -117,7 +117,7 @@ build() {
   echo "export BIN_DIR=\"${pkgdir}/opt/zextras/common/bin\"" >>configure.out
   echo 'export ETC_DIR="/etc/carbonio/message-dispatcher"' >>configure.out
   echo "export LIB_DIR=\"${pkgdir}/opt/zextras/common/lib/mongooseim\"" >>configure.out
-  echo "export LOG_DIR=\"${pkgdir}/opt/zextras/common/lib/mongooseim/log\"" >>configure.out
+  echo "export LOG_DIR=\"${pkgdir}/var/log/carbonio/message-dispatcher\"" >>configure.out
   echo 'export PID_DIR="/run"' >>configure.out
   echo "export STATUS_DIR=\"${pkgdir}/var/lib/carbonio/message-dispatcher\"" >>configure.out
   echo "export MDB_DIR=\"${pkgdir}/var/lib/carbonio/message-dispatcher\"" >>configure.out
@@ -188,6 +188,8 @@ package() {
 
   cp "${pkgdir}/opt/zextras/common/lib/mongooseim/etc/vm.dist.args.example" \
       "${pkgdir}/etc/carbonio/message-dispatcher/vm.dist.args"
+
+  install -d "${pkgdir}/opt/zextras/common/lib/mongooseim/log"
 }
 
 postinst() {
@@ -200,6 +202,7 @@ postinst() {
   chown carbonio-message-dispatcher:carbonio-message-dispatcher /var/lib/carbonio/message-dispatcher
   chown carbonio-message-dispatcher:carbonio-message-dispatcher /var/lock/carbonio/message-dispatcher
   chown carbonio-message-dispatcher:carbonio-message-dispatcher /var/lib/carbonio/message-dispatcher
+  chown carbonio-message-dispatcher:carbonio-message-dispatcher /opt/zextras/common/lib/mongooseim/log
 
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
