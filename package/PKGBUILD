@@ -186,7 +186,7 @@ package() {
   cp "${pkgdir}/opt/zextras/common/lib/mongooseim/releases/6.0.0/vm.args" \
     "${pkgdir}/etc/carbonio/message-dispatcher/vm.args"
 
-  cp "${pkgdir}/opt/zextras/common/lib/mongooseim/etc/vm.dist.args.example \
+  cp "${pkgdir}/opt/zextras/common/lib/mongooseim/etc/vm.dist.args.example" \
       "${pkgdir}/etc/carbonio/message-dispatcher/vm.dist.args"
 }
 
