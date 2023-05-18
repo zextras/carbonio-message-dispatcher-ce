@@ -3,7 +3,7 @@ targets=(
   "centos"
 )
 pkgname="carbonio-message-dispatcher"
-pkgver="0.9.0"
+pkgver="0.10.0"
 pkgrel="1"
 pkgdesc="Carbonio Message Dispatcher component"
 pkgdesclong=(
@@ -42,7 +42,6 @@ makedepends:yum=(
 sources=(
   "https://github.com/esl/MongooseIM/archive/6.0.0.tar.gz"
   "configure.vars.config"
-  "jwerl.patch"
   "carbonio-message-dispatcher"
   "carbonio-message-dispatcher-http.hcl"
   "carbonio-message-dispatcher-xmpp.hcl"
@@ -76,7 +75,6 @@ backup=(
 hashsums=(
   "skip"
   "a55ee89a02e901831baf61faa3b22127ae93e4cccac8d6f1032bfa4202985089"
-  "35d811dcdd6c8c176e5c5a3b5e56a8a59be0357f1a6ad83d72ff17d609cf13dd"
   "65823aac0dc69d311b64bf5f4ac05085e98c93f4dcd22b5c144dfc90e3025f1c"
   "b12a3d48b5eaf521b516a7a45a69e722d33363fff4671ceb04fa1eaee61b7cc4"
   "0312bb4d66fd0ed34dfa4dc9f38bb253ed6822c71390cd2a858b36bb239a2523"
@@ -102,8 +100,6 @@ hashsums=(
 
 build() {
   cd "${srcdir}/MongooseIM-6.0.0"
-  # Update jwerl ref
-#   patch -Np1 -i ../jwerl.patch
 
   export PATH="/opt/zextras/common/bin/:$PATH"
   export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
@@ -190,8 +186,10 @@ package() {
   cp "${pkgdir}/opt/zextras/common/lib/mongooseim/releases/6.0.0/vm.args" \
     "${pkgdir}/etc/carbonio/message-dispatcher/vm.args"
 
-  ln -s /etc/carbonio/message-dispatcher/vm.args \
-    "${pkgdir}/etc/carbonio/message-dispatcher/vm.dist.args"
+  cp "${pkgdir}/opt/zextras/common/lib/mongooseim/etc/vm.dist.args.example" \
+      "${pkgdir}/etc/carbonio/message-dispatcher/vm.dist.args"
+
+  install -d "${pkgdir}/opt/zextras/common/lib/mongooseim/log"
 }
 
 postinst() {
@@ -204,6 +202,7 @@ postinst() {
   chown carbonio-message-dispatcher:carbonio-message-dispatcher /var/lib/carbonio/message-dispatcher
   chown carbonio-message-dispatcher:carbonio-message-dispatcher /var/lock/carbonio/message-dispatcher
   chown carbonio-message-dispatcher:carbonio-message-dispatcher /var/lib/carbonio/message-dispatcher
+  chown carbonio-message-dispatcher:carbonio-message-dispatcher /opt/zextras/common/lib/mongooseim/log
 
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :

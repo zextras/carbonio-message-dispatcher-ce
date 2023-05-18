@@ -89,6 +89,10 @@
   equal_occupants = true
   all_can_configure = true
   all_can_invite = true
+  rooms_per_page = 10
+  rooms_in_rosters = false
+  max_occupants = 128
+
 [modules.mod_disco]
   users_can_see_hidden_services = true
 [modules.mod_mam]
@@ -96,11 +100,21 @@
   muc.backend = "rdbms"
   muc.host = "muclight.@HOST@"
   db_message_format="mam_message_xml"
+  muc.async_writer.enabled = true
+  muc.async_writer.flush_interval = 2000
+  muc.async_writer.batch_size = 30
+  archive_chat_markers = true
+  full_text_search = true
 
 [modules.mod_inbox]
+  backend = "rdbms_async"
   reset_markers = ["displayed"]
   groupchat = ["muclight"]
+  aff_changes = true
+  remove_on_kicked = true
+  iqdisc.type = "parallel"
 [modules.mod_last]
+  iqdisc.type = "parallel"
   backend = "rdbms"
 [modules.mod_offline_stub]
 [modules.mod_roster]
@@ -108,7 +122,8 @@
 [modules.mod_carboncopy]
 [modules.mod_ping]
 [modules.mod_smart_markers]
-  backend = "rdbms"
+  iqdisc.type = "parallel"
+  backend = "rdbms_async"
 
 [services.service_mongoose_system_metrics]
   report = false
