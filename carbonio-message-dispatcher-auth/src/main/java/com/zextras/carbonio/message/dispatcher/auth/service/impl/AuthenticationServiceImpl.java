@@ -25,6 +25,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   public Optional<String> validateToken(String token) {
     Try<UserId> userId = userManagementClient.validateUserToken(token);
     if (userId.isSuccess()) {
+      System.out.println("Validated user with id: " + userId.get().getUserId());
       return Optional.of(userId.get().getUserId());
     }
     if (userId.isFailure()) {
