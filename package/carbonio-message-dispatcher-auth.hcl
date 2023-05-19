@@ -1,20 +1,19 @@
 services {
   check {
     id       = "ready",
-    http     = "http://127.78.0.10:10000/api/graphql",
+    http     = "http://127.78.0.23:10000/health/ready",
     method   = "GET",
     timeout  = "1s",
     interval = "5s"
   }
-
   connect {
     sidecar_service {
       proxy {
-        local_service_address = "127.78.0.10"
+        local_service_address = "127.78.0.23"
         upstreams             = [
           {
-            destination_name   = "carbonio-message-dispatcher-db"
-            local_bind_address = "127.78.0.10"
+            destination_name   = "carbonio-user-management"
+            local_bind_address = "127.78.0.23"
             local_bind_port    = 20000
           }
         ]
@@ -22,6 +21,6 @@ services {
     }
   }
 
-  name = "carbonio-message-dispatcher-http"
+  name = "carbonio-message-dispatcher-auth"
   port = 10000
 }
