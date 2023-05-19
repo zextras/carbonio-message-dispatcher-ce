@@ -22,8 +22,6 @@ import com.zextras.carbonio.message.dispatcher.auth.web.api.UserExistsApi;
 
 public class Boot {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(Boot.class);
-
   private final AuthenticationService authenticationService;
 
   public Boot(){
