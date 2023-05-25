@@ -100,13 +100,7 @@
   muc.backend = "rdbms"
   muc.host = "muclight.@HOST@"
   db_message_format="mam_message_xml"
-  async_writer.enabled = false
-  async_writer.flush_interval = 2000
-  async_writer.batch_size = 30
-  muc.async_writer.enabled = false
-  muc.async_writer.flush_interval = 2000
-  muc.async_writer.batch_size = 30
-  archive_chat_markers = true
+  archive_chat_markers = false
   full_text_search = true
 
 [modules.mod_inbox]
