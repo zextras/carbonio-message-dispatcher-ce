@@ -63,8 +63,7 @@ sources=(
   "carbonio-message-dispatcher-auth.service"
   "logback.xml"
   "carbonio-message-dispatcher-migration"
-  "pgsql-script-initial-schema-mongooseim-5.1.0.sql"
-  "pgsql-script-migrations-5.1.0.sql"
+  "pgsql-script-initial-schema-mongooseim-6.0.0.sql"
   "pgsql-script-migrations-6.0.0.sql"
 )
 backup=(
@@ -99,9 +98,8 @@ hashsums=(
   "ac54cdedd7901f7535d3f4044c64075dc92338db4d2b5678332b95a6b34fe264"
   "d1ec2c67cd15263fc84ffb891f4276d1e147084a3e4eb1bc1801de2ca5bf32e4"
   "692079ea85e441db8565b1fbc38b460d4f36136d598d7d14c51c1885896e3053"
-  "ae478be53dac94f4763cb9a733fd729169c771c501f425c5b948accaf2055030"
-  "4ab5bad5103488c32a74b8a17a34e019ff92e97e08656e9ab4aa19cbfe17e49a"
-  "5402ca41225adf9c2be5d26e49b2d878ca6045449365cfc97fc15f5b8851a696"
+  "661dc638c8153516b682d8a5ac066fb1c3e75f4a2218212b175bd26c88ec32dd"
+  "cf583dd0a4ccd21fdb04a4600792657a762609b3cda4322252643d3ee28e3002"
 )
 
 build() {
@@ -188,10 +186,8 @@ package() {
 
   install -Dm 755 carbonio-message-dispatcher-migration \
     "${pkgdir}/usr/bin/carbonio-message-dispatcher-migration"
-  install -Dm 644 pgsql-script-initial-schema-mongooseim-5.1.0.sql \
+  install -Dm 644 pgsql-script-initial-schema-mongooseim-6.0.0.sql \
     "${pkgdir}/etc/carbonio/message-dispatcher/sql-scripts/initial-schema.sql"
-  install -Dm 644 pgsql-script-migrations-5.1.0.sql \
-    "${pkgdir}/etc/carbonio/message-dispatcher/sql-scripts/migrations/5.1.0.sql"
   install -Dm 644 pgsql-script-migrations-6.0.0.sql \
     "${pkgdir}/etc/carbonio/message-dispatcher/sql-scripts/migrations/6.0.0.sql"
 

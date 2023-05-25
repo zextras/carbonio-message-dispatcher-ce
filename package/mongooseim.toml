@@ -22,7 +22,7 @@
   default_policy = "deny"
 [outgoing_pools.rdbms.default]
   scope = "global"
-  workers = 5
+  workers = 10
 
   [outgoing_pools.rdbms.default.connection]
     driver = "pgsql"
@@ -100,21 +100,16 @@
   muc.backend = "rdbms"
   muc.host = "muclight.@HOST@"
   db_message_format="mam_message_xml"
-  muc.async_writer.enabled = true
-  muc.async_writer.flush_interval = 2000
-  muc.async_writer.batch_size = 30
-  archive_chat_markers = true
+  archive_chat_markers = false
   full_text_search = true
 
 [modules.mod_inbox]
-  backend = "rdbms_async"
+  backend = "rdbms"
   reset_markers = ["displayed"]
   groupchat = ["muclight"]
   aff_changes = true
   remove_on_kicked = true
-  iqdisc.type = "parallel"
 [modules.mod_last]
-  iqdisc.type = "parallel"
   backend = "rdbms"
 [modules.mod_offline_stub]
 [modules.mod_roster]
@@ -122,8 +117,7 @@
 [modules.mod_carboncopy]
 [modules.mod_ping]
 [modules.mod_smart_markers]
-  iqdisc.type = "parallel"
-  backend = "rdbms_async"
+  backend = "rdbms"
 
 [services.service_mongoose_system_metrics]
   report = false
