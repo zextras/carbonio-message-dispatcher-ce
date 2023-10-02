@@ -22,7 +22,9 @@
   default_policy = "deny"
 [outgoing_pools.rdbms.default]
   scope = "global"
-  workers = 10
+  strategy = "available_worker"
+  workers = 5
+  call_timeout = 60000
 
   [outgoing_pools.rdbms.default.connection]
     driver = "pgsql"
@@ -31,6 +33,7 @@
     database = "carbonio-message-dispatcher-db"
     username = "carbonio-message-dispatcher-db"
     password = "<db-password>"
+    keepalive_interval = 30
 
 [listen]
   [[listen.c2s]]
