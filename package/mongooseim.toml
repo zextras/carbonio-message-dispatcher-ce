@@ -121,6 +121,7 @@
 [modules.mod_ping]
 [modules.mod_smart_markers]
   backend = "rdbms"
+[modules.mod_presence]
 
 [services.service_mongoose_system_metrics]
   report = false
