@@ -1,7 +1,7 @@
 {
   "name": "carbonio-message-dispatcher",
   "description": "Message Dispatcher component",
-  "build_dir": "/tmp/",
+  "buildDir": "/tmp/",
   "output": "artifacts",
   "projects": [
     {

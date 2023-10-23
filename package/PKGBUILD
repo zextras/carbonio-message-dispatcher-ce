@@ -1,16 +1,9 @@
-targets=(
-  "ubuntu"
-  "centos"
-)
 pkgname="carbonio-message-dispatcher"
 pkgver="0.13.0"
 pkgrel="1"
 pkgdesc="Carbonio Message Dispatcher component"
-pkgdesclong=(
-  "Carbonio Message Dispatcher component"
-)
 maintainer="Zextras <packages@zextras.com>"
-arch="amd64"
+arch=('x86_64')
 license=("spdx:AGPL-3.0-only")
 section="admin"
 priority="optional"
@@ -22,7 +15,7 @@ depends=(
   "pending-setups"
   "service-discover"
 )
-makedepends:apt=(
+makedepends__apt=(
   "carbonio-elixir"
   "carbonio-erlang"
   "carbonio-openssl"
@@ -30,7 +23,7 @@ makedepends:apt=(
   "zlib1g-dev"
   "postgresql-client"
 )
-makedepends:yum=(
+makedepends__yum=(
   "carbonio-elixir"
   "carbonio-erlang"
   "carbonio-openssl"
@@ -39,7 +32,7 @@ makedepends:yum=(
   "postgresql"
 )
 
-sources=(
+source=(
   "https://github.com/esl/MongooseIM/archive/6.1.0.tar.gz"
   "configure.vars.config"
   "carbonio-message-dispatcher"
@@ -74,33 +67,31 @@ backup=(
   "etc/carbonio/message-dispatcher/app.config"
   "etc/carbonio/message-dispatcher/logback.xml"
 )
-hashsums=(
-  "d4d50386e65602d45f55b1319a2ce7c36cda8c2a6da4132a9cb96f038e7d5fe0"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-)
+sha256sums=('d4d50386e65602d45f55b1319a2ce7c36cda8c2a6da4132a9cb96f038e7d5fe0'
+  'a55ee89a02e901831baf61faa3b22127ae93e4cccac8d6f1032bfa4202985089'
+  '653a9deeabf6fde20002cd36956eb6f4afff3cfa34ad334008642c5cd967b3a5'
+  '79e51b926350907dd210465df333d7919459f7f1d4744d64ce3b984d33c0a053'
+  '0312bb4d66fd0ed34dfa4dc9f38bb253ed6822c71390cd2a858b36bb239a2523'
+  'dafbb47f5219ebf713376bb443460658e9c99291c9577fe8a7f814096183d340'
+  '6cca2865bdffc74edd982bbd9901f271c74244dc5ea7347784f93e04cb0f894e'
+  'ed4612556f0f04a750d6f6cc7ab9b40a72e1034898ef0fd7c5c342ab5df8c822'
+  '1d2ee12e586ad43b856919afb9c5883b8d95876a17bdd90636649fefafe05b3e'
+  '2e668553091433e98b056880ec4c2527aed15c69301f9be618e69d7bb541e7ab'
+  '656208c6908eacf2147bff0a40c3f4a71763ac505702099a46c3d95967a55ce4'
+  'cc16ea28ee1e5431ac1803dd4872e6ab3697e03f17f88979e5d66067b0eef19f'
+  'f7384b4fd538b267f8c7a708185a9c56f5444ec04526d4b85ca5068f538d1abc'
+  'c5a04071a24f45f79d28135b79da396a607baf587d880f66f94d6afee77070b3'
+  '7daba3df5207eeebc90b8754f34d669360de14c29404359bb6e782434253438a'
+  '4c6e3661865d28018f2f5049746389008d3f6bb8a7e5821604c684592f410e07'
+  '073efa7ea1a80e06a53c1678d0fa18b81f407a3b08b403adac6a6b4b2906880f'
+  '58bf32b3212d9333edaec81260121a460c738ede9be5a26c29bd0a0f3c0ee3e9'
+  'c310dee43435bf572532f49947e87e0c33605a43b5ed0980606e147d6fc1e0a5'
+  'ecca7efddcff1a5efe6d38fd64bf489638bdac94c6c5ec7178866354a9ad5a91'
+  '8aea6c1d0fa90e27863220427fdc3f6fb24b45d69e7f24287e606c5aeda54ce7'
+  'd1ec2c67cd15263fc84ffb891f4276d1e147084a3e4eb1bc1801de2ca5bf32e4'
+  '692079ea85e441db8565b1fbc38b460d4f36136d598d7d14c51c1885896e3053'
+  'a32f61262ba7a51ba268c41801684c26668fadea676ae8e0f90e38bd754d1455'
+  'cf583dd0a4ccd21fdb04a4600792657a762609b3cda4322252643d3ee28e3002')
 
 build() {
   cd "${srcdir}/MongooseIM-6.1.0"
@@ -149,13 +140,13 @@ package() {
   install -Dm 644 carbonio-message-dispatcher-xmpp-sidecar.service \
     "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-xmpp-sidecar.service"
   install -Dm 644 carbonio-message-dispatcher-auth-sidecar.service \
-      "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-auth-sidecar.service"
+    "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-auth-sidecar.service"
   install -Dm 644 carbonio-message-dispatcher-http.hcl \
     "${pkgdir}/etc/zextras/service-discover/carbonio-message-dispatcher-http.hcl"
   install -Dm 644 carbonio-message-dispatcher-xmpp.hcl \
     "${pkgdir}/etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.hcl"
   install -Dm 644 carbonio-message-dispatcher-auth.hcl \
-      "${pkgdir}/etc/zextras/service-discover/carbonio-message-dispatcher-auth.hcl"
+    "${pkgdir}/etc/zextras/service-discover/carbonio-message-dispatcher-auth.hcl"
   install -Dm 644 carbonio-message-dispatcher-setup.sh \
     "${pkgdir}/etc/zextras/pending-setups.d/carbonio-message-dispatcher.sh"
   install -Dm 644 intentions-http.json \
@@ -171,7 +162,7 @@ package() {
   install -Dm 644 service-protocol-xmpp.json \
     "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/service-protocol-xmpp.json"
   install -Dm 644 service-protocol-auth.json \
-      "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/service-protocol-auth.json"
+    "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/service-protocol-auth.json"
   install -Dm 644 carbonio-message-dispatcher-auth.service \
     "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-auth.service"
   install -Dm 644 logback.xml \
@@ -188,7 +179,7 @@ package() {
     "${pkgdir}/etc/carbonio/message-dispatcher/vm.args"
 
   cp "${pkgdir}/opt/zextras/common/lib/mongooseim/etc/vm.dist.args.example" \
-      "${pkgdir}/etc/carbonio/message-dispatcher/vm.dist.args"
+    "${pkgdir}/etc/carbonio/message-dispatcher/vm.dist.args"
 
   install -d "${pkgdir}/opt/zextras/common/lib/mongooseim/log"
 }
