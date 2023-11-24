@@ -3,7 +3,7 @@ Upstream-Name: Carbonio Message Dispatcher
 Upstream-Contact: Smoky Beans <smokybeans@zextras.com>
 Source: https://github.com/Zextras/carbonio-message-dispatcher
 
-Files: pacur.json
+Files: yap.json
 Copyright: 2023 Zextras s.r.l
 License: AGPL-3.0-only
 
