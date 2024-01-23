@@ -60,6 +60,7 @@ source=(
   "carbonio-message-dispatcher-migration"
   "pgsql-script-initial-schema-mongooseim-6.0.0.sql"
   "pgsql-script-migrations-6.0.0.sql"
+  "mod_event_pusher_http_defaults.patch"
 )
 backup=(
   "etc/zextras/service-discover/carbonio-message-dispatcher-http.hcl"
@@ -93,10 +94,12 @@ sha256sums=('d4d50386e65602d45f55b1319a2ce7c36cda8c2a6da4132a9cb96f038e7d5fe0'
   'd1ec2c67cd15263fc84ffb891f4276d1e147084a3e4eb1bc1801de2ca5bf32e4'
   '692079ea85e441db8565b1fbc38b460d4f36136d598d7d14c51c1885896e3053'
   'a32f61262ba7a51ba268c41801684c26668fadea676ae8e0f90e38bd754d1455'
-  'cf583dd0a4ccd21fdb04a4600792657a762609b3cda4322252643d3ee28e3002')
+  'cf583dd0a4ccd21fdb04a4600792657a762609b3cda4322252643d3ee28e3002'
+  '5c8d45d303f15dd9d9b734b2803ddf1cc763546d9ca0e0e742c88c1654258b32')
 
 build() {
   cd "${srcdir}/MongooseIM-6.1.0"
+  git apply ../mod_event_pusher_http_defaults.patch
 
   export PATH="/opt/zextras/common/bin/:$PATH"
   export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
