@@ -35,7 +35,7 @@ makedepends__yum=(
 )
 
 source=(
-  "https://github.com/esl/MongooseIM/archive/6.1.0.tar.gz"
+  "https://github.com/esl/MongooseIM/archive/6.2.0.tar.gz"
   "configure.vars.config"
   "carbonio-message-dispatcher"
   "carbonio-message-dispatcher-http.hcl"
@@ -60,6 +60,7 @@ source=(
   "carbonio-message-dispatcher-migration"
   "pgsql-script-initial-schema-mongooseim-6.0.0.sql"
   "pgsql-script-migrations-6.0.0.sql"
+  "pgsql-script-migrations-6.2.0.sql"
   "mod_event_pusher_http_defaults.patch"
 )
 backup=(
@@ -70,7 +71,7 @@ backup=(
   "etc/carbonio/message-dispatcher/app.config"
   "etc/carbonio/message-dispatcher/logback.xml"
 )
-sha256sums=('d4d50386e65602d45f55b1319a2ce7c36cda8c2a6da4132a9cb96f038e7d5fe0'
+sha256sums=('2ebf5f34f66c5b97c618a1adfa11a36df650a6fe07238b90089bbd72ba39c44a'
   'a55ee89a02e901831baf61faa3b22127ae93e4cccac8d6f1032bfa4202985089'
   '653a9deeabf6fde20002cd36956eb6f4afff3cfa34ad334008642c5cd967b3a5'
   '79e51b926350907dd210465df333d7919459f7f1d4744d64ce3b984d33c0a053'
@@ -95,10 +96,11 @@ sha256sums=('d4d50386e65602d45f55b1319a2ce7c36cda8c2a6da4132a9cb96f038e7d5fe0'
   '692079ea85e441db8565b1fbc38b460d4f36136d598d7d14c51c1885896e3053'
   'a32f61262ba7a51ba268c41801684c26668fadea676ae8e0f90e38bd754d1455'
   'cf583dd0a4ccd21fdb04a4600792657a762609b3cda4322252643d3ee28e3002'
+  'f223f80047745435b2114430edf7d21e1fb288f28cc90180fb812e2a51341db8'
   '5c8d45d303f15dd9d9b734b2803ddf1cc763546d9ca0e0e742c88c1654258b32')
 
 build() {
-  cd "${srcdir}/MongooseIM-6.1.0"
+  cd "${srcdir}/MongooseIM-6.2.0"
   git apply ../mod_event_pusher_http_defaults.patch
 
   export PATH="/opt/zextras/common/bin/:$PATH"
@@ -179,8 +181,10 @@ package() {
     "${pkgdir}/etc/carbonio/message-dispatcher/sql-scripts/initial-schema.sql"
   install -Dm 644 pgsql-script-migrations-6.0.0.sql \
     "${pkgdir}/etc/carbonio/message-dispatcher/sql-scripts/migrations/6.0.0.sql"
+  install -Dm 644 pgsql-script-migrations-6.2.0.sql \
+      "${pkgdir}/etc/carbonio/message-dispatcher/sql-scripts/migrations/6.2.0.sql"
 
-  cp "${pkgdir}/opt/zextras/common/lib/mongooseim/releases/6.1.0/vm.args" \
+  cp "${pkgdir}/opt/zextras/common/lib/mongooseim/releases/6.2.0/vm.args" \
     "${pkgdir}/etc/carbonio/message-dispatcher/vm.args"
 
   cp "${pkgdir}/opt/zextras/common/lib/mongooseim/etc/vm.dist.args.example" \
