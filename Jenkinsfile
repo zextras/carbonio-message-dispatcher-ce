@@ -18,7 +18,7 @@ pipeline {
   }
   agent {
     node {
-      label 'openjdk11-agent-v1'
+      label 'openjdk17-agent-v1'
     }
   }
   environment {
@@ -86,7 +86,7 @@ pipeline {
           }
           steps {
             unstash 'project'
-            withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted', 
+            withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
               passwordVariable: 'SECRET',
               usernameVariable: 'USERNAME')]) {
                 sh 'echo "machine zextras.jfrog.io" >> auth.conf'
@@ -128,7 +128,7 @@ pipeline {
           }
           steps {
             unstash 'project'
-            withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted', 
+            withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
               passwordVariable: 'SECRET',
               usernameVariable: 'USERNAME')]) {
                 sh 'echo "machine zextras.jfrog.io" >> auth.conf'
@@ -181,7 +181,7 @@ pipeline {
           }
           steps {
             unstash 'project'
-            withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted', 
+            withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
               passwordVariable: 'SECRET',
               usernameVariable: 'USERNAME')]) {
                 sh 'echo "[Zextras]" > zextras.repo'
@@ -220,7 +220,7 @@ pipeline {
           }
           steps {
             unstash 'project'
-            withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted', 
+            withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
               passwordVariable: 'SECRET',
               usernameVariable: 'USERNAME')]) {
                 sh 'echo "[Zextras]" > zextras.repo'
