@@ -22,9 +22,8 @@
   default_policy = "deny"
 [outgoing_pools.rdbms.default]
   scope = "global"
-  strategy = "available_worker"
-  workers = 5
-  call_timeout = 60000
+  strategy = "best_worker"
+  workers = 1
 
   [outgoing_pools.rdbms.default.connection]
     driver = "pgsql"
@@ -34,6 +33,19 @@
     username = "carbonio-message-dispatcher-db"
     password = "<db-password>"
     keepalive_interval = 30
+
+[outgoing_pools.http.http_pool]
+  scope = "global"
+  workers = 100
+
+[outgoing_pools.http.http_pool.connection]
+  host = "http://127.78.0.25:10000"
+  request_timeout = 5000
+
+[modules.mod_event_pusher.http]
+  [[modules.mod_event_pusher.http.handlers]]
+    pool_name = "http_pool"
+    path = "/messages"
 
 [listen]
   [[listen.c2s]]
