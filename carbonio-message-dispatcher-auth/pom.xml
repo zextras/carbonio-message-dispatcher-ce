@@ -21,8 +21,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
   <artifactId>carbonio-message-dispatcher-auth</artifactId>
 
-  <dependencies>
+  <properties>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <java-compiler.version>17</java-compiler.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 
+  <dependencies>
     <!-- Carbonio User Management -->
     <dependency>
       <groupId>com.zextras.carbonio.user-management</groupId>
@@ -63,7 +69,6 @@ SPDX-License-Identifier: AGPL-3.0-only
     </resources>
 
     <plugins>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -109,7 +114,6 @@ SPDX-License-Identifier: AGPL-3.0-only
           </execution>
         </executions>
       </plugin>
-
     </plugins>
   </build>
 
