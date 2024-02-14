@@ -4,18 +4,16 @@
 
 package com.zextras.carbonio.message.dispatcher.auth.service.impl;
 
-import com.zextras.carbonio.message.dispatcher.auth.Boot;
 import com.zextras.carbonio.message.dispatcher.auth.exception.FailedDependencyException;
 import com.zextras.carbonio.message.dispatcher.auth.exception.UnauthorizedException;
 import com.zextras.carbonio.message.dispatcher.auth.service.AuthenticationService;
 import com.zextras.carbonio.usermanagement.UserManagementClient;
 import com.zextras.carbonio.usermanagement.entities.UserId;
-import com.zextras.carbonio.usermanagement.exceptions.Unauthorized;
+import com.zextras.carbonio.usermanagement.exceptions.UnAuthorized;
 import io.vavr.control.Try;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Optional;
 
 public class AuthenticationServiceImpl implements AuthenticationService {
 
@@ -35,7 +33,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
       return Optional.of(userId.get().getUserId());
     }
     if (userId.isFailure()) {
-      if (userId.getCause() instanceof Unauthorized) {
+      if (userId.getCause() instanceof UnAuthorized) {
         LOGGER.debug("Failed validation for unauthorized token");
         throw new UnauthorizedException();
       } else {

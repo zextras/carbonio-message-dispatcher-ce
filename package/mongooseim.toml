@@ -22,9 +22,8 @@
   default_policy = "deny"
 [outgoing_pools.rdbms.default]
   scope = "global"
-  strategy = "available_worker"
-  workers = 5
-  call_timeout = 60000
+  strategy = "best_worker"
+  workers = 1
 
   [outgoing_pools.rdbms.default.connection]
     driver = "pgsql"
