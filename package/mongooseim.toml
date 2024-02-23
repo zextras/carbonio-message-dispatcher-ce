@@ -39,7 +39,7 @@
   workers = 100
 
 [outgoing_pools.http.http_pool.connection]
-  host = "http://127.78.0.25:10000"
+  host = "http://127.78.0.10:20001"
   request_timeout = 5000
 
 [modules.mod_event_pusher.http]
