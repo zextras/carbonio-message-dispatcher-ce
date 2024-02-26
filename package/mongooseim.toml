@@ -45,7 +45,7 @@
 [modules.mod_event_pusher.http]
   [[modules.mod_event_pusher.http.handlers]]
     pool_name = "http_pool"
-    path = "/messages"
+    path = "/notifications"
 
 [listen]
   [[listen.c2s]]
