@@ -4,9 +4,9 @@ Upstream-Contact: Smoky Beans <smokybeans@zextras.com>
 Source: https://github.com/Zextras/carbonio-message-dispatcher
 
 Files: yap.json
-Copyright: 2023 Zextras s.r.l
+Copyright: 2023 Zextras
 License: AGPL-3.0-only
 
 Files: package/*
-Copyright: 2023 Zextras s.r.l
+Copyright: 2023 Zextras
 License: AGPL-3.0-only
