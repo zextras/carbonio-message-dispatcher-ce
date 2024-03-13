@@ -6,6 +6,7 @@ services {
     timeout  = "1s"
     interval = "5s"
   }
+
   connect {
     sidecar_service {
       proxy {

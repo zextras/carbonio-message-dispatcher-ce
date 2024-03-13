@@ -1,0 +1,13 @@
+diff --git a/src/event_pusher/mod_event_pusher_http_defaults.erl b/src/event_pusher/mod_event_pusher_http_defaults.erl
+index 7225acdf8..115b6842f 100644
+--- a/src/event_pusher/mod_event_pusher_http_defaults.erl
++++ b/src/event_pusher/mod_event_pusher_http_defaults.erl
+@@ -24,7 +24,7 @@ should_make_req(Acc, in, Packet, From, To, _Opts) ->
+     Body = exml_query:path(Packet, [{element, <<"body">>}, cdata], <<>>),
+     should_make_req_type(Acc, Type, Body, From, To).
+ 
+-should_make_req_type(_Acc, <<"chat">>, Body, _From, _To) when Body /= <<"">> ->
++should_make_req_type(_Acc, <<"groupchat">>, Body, _From, _To) when Body /= <<"">> ->
+     true;
+ should_make_req_type(_Acc, _, _, _, _) ->
+     false.

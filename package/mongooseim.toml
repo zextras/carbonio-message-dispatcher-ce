@@ -34,6 +34,19 @@
     password = "<db-password>"
     keepalive_interval = 30
 
+[outgoing_pools.http.http_pool]
+  scope = "global"
+  workers = 100
+
+[outgoing_pools.http.http_pool.connection]
+  host = "http://127.78.0.10:20001"
+  request_timeout = 5000
+
+[modules.mod_event_pusher.http]
+  [[modules.mod_event_pusher.http.handlers]]
+    pool_name = "http_pool"
+    path = "/notifications"
+
 [listen]
   [[listen.c2s]]
     port = 10000
