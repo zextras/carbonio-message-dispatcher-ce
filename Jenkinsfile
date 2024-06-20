@@ -95,9 +95,8 @@ pipeline {
                 sh 'sudo mv auth.conf /etc/apt'
             }
             sh '''
-              sudo echo "deb https://zextras.jfrog.io/artifactory/ubuntu-devel focal main" > zextras.list
+              sudo echo "deb [trusted=yes] https://zextras.jfrog.io/artifactory/ubuntu-devel focal main" > zextras.list
               sudo mv zextras.list /etc/apt/sources.list.d/
-              sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243E584A21
             '''
             sh '''
               ./mvnw package -Dmaven.main.skip -Dmaven.repo.local=$(pwd)/m2
@@ -137,9 +136,8 @@ pipeline {
                 sh 'sudo mv auth.conf /etc/apt'
             }
             sh '''
-              sudo echo "deb https://zextras.jfrog.io/artifactory/ubuntu-devel jammy main" > zextras.list
+              sudo echo "deb [trusted=yes] https://zextras.jfrog.io/artifactory/ubuntu-devel jammy main" > zextras.list
               sudo mv zextras.list /etc/apt/sources.list.d/
-              sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243E584A21
             '''
             sh '''
               ./mvnw package -Dmaven.main.skip -Dmaven.repo.local=$(pwd)/m2
