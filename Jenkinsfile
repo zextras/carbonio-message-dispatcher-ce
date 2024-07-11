@@ -7,9 +7,6 @@ pipeline {
     booleanParam defaultValue: false,
     description: 'Whether to upload the packages in playground repository',
     name: 'PLAYGROUND'
-    booleanParam defaultValue: false,
-    description: 'Whether to upload the packages in rc repository',
-    name: 'RC'
   }
   options {
     skipDefaultCheckout()
@@ -52,7 +49,7 @@ pipeline {
       post {
         failure {
           script {
-            if ("main".equals(env.BRANCH_NAME)) {
+            if ("main".equals(env.BRANCH_NAME) || "devel".equals(env.BRANCH_NAME)) {
               sendFailureEmail(STAGE_NAME)
             }
           }
@@ -60,23 +57,11 @@ pipeline {
       }
     }
     stage('Stashing for packaging') {
-      when {
-        anyOf {
-          branch "main"
-          expression { params.PLAYGROUND == true }
-        }
-      }
       steps {
         stash includes: '**', name: 'project', useDefaultExcludes: false
       }
     }
     stage('Building Ubuntu') {
-      when {
-        anyOf {
-          branch "main"
-          expression { params.PLAYGROUND == true }
-        }
-      }
       parallel {
         stage('Ubuntu 20') {
           agent {
@@ -102,14 +87,21 @@ pipeline {
               ./mvnw package -Dmaven.main.skip -Dmaven.repo.local=$(pwd)/m2
               mkdir /tmp/dispatcher
               mv * /tmp/dispatcher
-              sudo yap build ubuntu-focal /tmp/dispatcher
             '''
+            script {
+              if (BRANCH_NAME == 'devel') {
+                def timestamp = new Date().format('yyyyMMddHHmmss')
+                sh "sudo yap build ubuntu-focal /tmp/dispatcher -r ${timestamp}"
+              } else {
+                sh 'sudo yap build ubuntu-focal /tmp/dispatcher'
+              }
+            }
             stash includes: 'artifacts/*focal*.deb', name: 'artifacts-ubuntu-focal'
           }
           post {
             failure {
               script {
-                if (env.BRANCH_NAME.equals("main")) {
+                if ("main".equals(env.BRANCH_NAME) || "devel".equals(env.BRANCH_NAME)) {
                   sendFailureEmail(STAGE_NAME)
                 }
               }
@@ -143,14 +135,21 @@ pipeline {
               ./mvnw package -Dmaven.main.skip -Dmaven.repo.local=$(pwd)/m2
               mkdir /tmp/dispatcher
               mv * /tmp/dispatcher
-              sudo yap build ubuntu-jammy /tmp/dispatcher
             '''
+            script {
+              if (BRANCH_NAME == 'devel') {
+                def timestamp = new Date().format('yyyyMMddHHmmss')
+                sh "sudo yap build ubuntu-jammy /tmp/dispatcher -r ${timestamp}"
+              } else {
+                sh 'sudo yap build ubuntu-jammy /tmp/dispatcher'
+              }
+            }
             stash includes: 'artifacts/*jammy*.deb', name: 'artifacts-ubuntu-jammy'
           }
           post {
             failure {
               script {
-                if (env.BRANCH_NAME.equals("main")) {
+                if ("main".equals(env.BRANCH_NAME) || "devel".equals(env.BRANCH_NAME)) {
                   sendFailureEmail(STAGE_NAME)
                 }
               }
@@ -193,14 +192,21 @@ pipeline {
               ./mvnw package -Dmaven.main.skip -Dmaven.repo.local=$(pwd)/m2
               mkdir /tmp/dispatcher
               mv * /tmp/dispatcher
-              sudo yap build rocky-8 /tmp/dispatcher
             '''
+            script {
+              if (BRANCH_NAME == 'devel') {
+                def timestamp = new Date().format('yyyyMMddHHmmss')
+                sh "sudo yap build rocky-8 /tmp/dispatcher -r ${timestamp}"
+              } else {
+                sh 'sudo yap build rocky-8 /tmp/dispatcher'
+              }
+            }
             stash includes: 'artifacts/x86_64/*el8*.rpm', name: 'artifacts-rocky-8'
           }
           post {
             failure {
               script {
-                if (env.BRANCH_NAME.equals("main")) {
+                if ("main".equals(env.BRANCH_NAME) || "devel".equals(env.BRANCH_NAME)) {
                   sendFailureEmail(STAGE_NAME)
                 }
               }
@@ -232,14 +238,21 @@ pipeline {
               ./mvnw package -Dmaven.main.skip -Dmaven.repo.local=$(pwd)/m2
               mkdir /tmp/dispatcher
               mv * /tmp/dispatcher
-              sudo yap build rocky-9 /tmp/dispatcher
             '''
+            script {
+              if (BRANCH_NAME == 'devel') {
+                def timestamp = new Date().format('yyyyMMddHHmmss')
+                sh "sudo yap build rocky-9 /tmp/dispatcher -r ${timestamp}"
+              } else {
+                sh 'sudo yap build rocky-9 /tmp/dispatcher'
+              }
+            }
             stash includes: 'artifacts/x86_64/*el9*.rpm', name: 'artifacts-rocky-9'
           }
           post {
             failure {
               script {
-                if (env.BRANCH_NAME.equals("main")) {
+                if ("main".equals(env.BRANCH_NAME) || "devel".equals(env.BRANCH_NAME)) {
                   sendFailureEmail(STAGE_NAME)
                 }
               }
@@ -296,7 +309,7 @@ pipeline {
     }
     stage('Upload To Devel') {
       when {
-        branch "main"
+        branch "devel"
       }
       steps {
         unstash 'artifacts-ubuntu-focal'
@@ -339,19 +352,14 @@ pipeline {
       post {
         failure {
           script {
-            if (env.BRANCH_NAME.equals("main")) {
-              sendFailureEmail(STAGE_NAME)
-            }
+            sendFailureEmail(STAGE_NAME)
           }
         }
       }
     }
-    stage('Upload To Release') {
+    stage('Upload & Promotion Config') {
       when {
-        allOf {
-          branch "main"
-          expression { params.RC == true }
-        }
+        buildingTag()
       }
       steps {
         unstash 'artifacts-ubuntu-focal'
@@ -461,9 +469,7 @@ pipeline {
       post {
         failure {
           script {
-            if (env.BRANCH_NAME.equals("main")) {
-              sendFailureEmail(STAGE_NAME)
-            }
+            sendFailureEmail(STAGE_NAME)
           }
         }
       }
