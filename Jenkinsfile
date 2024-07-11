@@ -163,12 +163,6 @@ pipeline {
     }
 
     stage('Building RHEL') {
-      when {
-        anyOf {
-          branch "main"
-          expression { params.PLAYGROUND == true }
-        }
-      }
       parallel {
         stage('Rocky 8') {
           agent {
