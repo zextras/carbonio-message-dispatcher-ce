@@ -61,7 +61,7 @@ pipeline {
         stash includes: '**', name: 'project', useDefaultExcludes: false
       }
     }
-    stage('Building Ubuntu') {
+    stage('Building packages') {
       parallel {
         stage('Ubuntu 20') {
           agent {
@@ -159,11 +159,6 @@ pipeline {
             }
           }
         }
-      }
-    }
-
-    stage('Building RHEL') {
-      parallel {
         stage('Rocky 8') {
           agent {
             node {
