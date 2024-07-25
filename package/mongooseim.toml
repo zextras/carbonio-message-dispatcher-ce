@@ -20,6 +20,7 @@
 
 [s2s]
   default_policy = "deny"
+
 [outgoing_pools.rdbms.default]
   scope = "global"
   strategy = "best_worker"
@@ -97,6 +98,7 @@
 
 [modules.mod_disco]
   users_can_see_hidden_services = true
+
 [modules.mod_mam]
   backend = "rdbms"
   muc.backend = "rdbms"
@@ -111,15 +113,26 @@
   groupchat = ["muclight"]
   aff_changes = true
   remove_on_kicked = true
+
 [modules.mod_last]
   backend = "rdbms"
+
 [modules.mod_offline_stub]
+
 [modules.mod_roster]
   backend = "rdbms"
+
 [modules.mod_carboncopy]
+
 [modules.mod_ping]
+  send_pings = true
+  ping_interval = 60
+  timeout_action = "kill"
+  ping_req_timeout = 10
+
 [modules.mod_smart_markers]
   backend = "rdbms"
+
 [modules.mod_presence]
 
 [services.service_mongoose_system_metrics]
