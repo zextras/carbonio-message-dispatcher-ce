@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+JAVA_HOME="/usr/share/carbonio/message-dispatcher:/opt/zextras/common/lib/jvm/java"
+export JAVA_HOME
+/opt/zextras/common/bin/java \
+  -Djava.net.preferIPv4Stack=true \
+  -jar /usr/share/carbonio/carbonio-message-dispatcher-auth.jar

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
+# SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
 #
 # SPDX-License-Identifier: AGPL-3.0-only
 
@@ -10,11 +10,6 @@
 if [[ $(id -u) -ne 0 ]]; then
   echo "Please run as root"
   exit 1
-fi
-
-if [[ "$1" != "setup" ]]; then
-  echo "Syntax: 'carbonio-message-dispatcher setup' to automatically configure the service"
-  exit 1;
 fi
 
 MAIN_SERVICE_NAME="carbonio-message-dispatcher"
@@ -30,6 +25,7 @@ config_variant() {
 # --setup check for SETUP_CONSUL_TOKEN env. variable and uses it
 # to avoid re-asking for the password
 echo -n "Insert the cluster credential password: "
+# shellcheck disable=SC2155
 export CONSUL_HTTP_TOKEN=$(service-discover bootstrap-token --setup)
 EXIT_CODE="$?"
 echo ""
@@ -45,6 +41,7 @@ POLICY_DESCRIPTION='Carbonio Message Dispatcher policy for service and sidecar p
 
 # Create or update policy for the specific service (this will be shared across cluster)
 consul acl policy create -name "${POLICY_NAME}" -description "${POLICY_DESCRIPTION}" -rules  @/etc/carbonio/message-dispatcher/service-discover/policies.json >/dev/null 2>&1
+# shellcheck disable=SC2181
 if [[ "$?" != "0" ]]; then
     consul acl policy update -no-merge -name "${POLICY_NAME}" -description "${POLICY_DESCRIPTION}" -rules @/etc/carbonio/message-dispatcher/service-discover/policies.json
     if [[ "$?" != "0" ]]; then
@@ -56,6 +53,7 @@ fi
 trap 'echo Script for Message Dispatcher terminated with error' EXIT
 set -e
 
+config_variant "auth"
 config_variant "http"
 config_variant "xmpp"
 
@@ -93,6 +91,7 @@ sed "s/<db-password>/$DB_PASSWORD/" /etc/carbonio/message-dispatcher/mongooseim.
 get_consul_kv "${MAIN_SERVICE_NAME}/api/username" >/dev/null 2>&1; API_USERNAME=$CONSUL_VALUE
 if [[ "$API_USERNAME" == "" ]]; then
   consul kv put "${MAIN_SERVICE_NAME}/api/username" "${MAIN_SERVICE_NAME}"
+  # shellcheck disable=SC2181
   if [[ $? != 0 ]]; then
     echo "Cannot put a key value pair in Consul"
     exit 1
@@ -104,11 +103,13 @@ sed "s/<api-username>/$API_USERNAME/" /etc/carbonio/message-dispatcher/mongoosei
 get_consul_kv "${MAIN_SERVICE_NAME}/api/password" >/dev/null 2>&1; API_PASSWORD=$CONSUL_VALUE
 if [[ "$API_PASSWORD" == "" ]]; then
   openssl rand -hex 16 | tr -d '\n' | consul kv put "${MAIN_SERVICE_NAME}/api/password" -
+  # shellcheck disable=SC2181
   if [[ $? != 0 ]]; then
     echo "Cannot put a key value pair in Consul"
     exit 1
   fi
   get_consul_kv "${MAIN_SERVICE_NAME}/api/password" >/dev/null 2>&1; API_PASSWORD=$CONSUL_VALUE
+  # shellcheck disable=SC2181
   if [[ $? != 0 ]]; then
     echo "Cannot get a key value pair in Consul"
     exit 1
@@ -121,15 +122,15 @@ consul reload
 # Limit token visibility as much as possible
 export -n CONSUL_HTTP_TOKEN
 
-echo "======================================================================================="
+echo "==========================================================================================="
 echo "Carbonio Message Dispatcher correctly set!"
 echo "You must run carbonio-message-dispatcher-migration to check database consistency."
 echo "Syntax: [PGPASSWORD=password] carbonio-message-dispatcher-migration username [host] [port]"
-echo "======================================================================================="
+echo "==========================================================================================="
 
 systemctl restart carbonio-message-dispatcher-auth.service
 systemctl restart carbonio-message-dispatcher.service
+systemctl restart carbonio-message-dispatcher-auth-sidecar.service
 systemctl restart carbonio-message-dispatcher-http-sidecar.service
 systemctl restart carbonio-message-dispatcher-xmpp-sidecar.service
-systemctl restart carbonio-message-dispatcher-auth-sidecar.service
 trap - EXIT

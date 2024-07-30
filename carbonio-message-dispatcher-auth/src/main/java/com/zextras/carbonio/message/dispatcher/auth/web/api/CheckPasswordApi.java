@@ -8,7 +8,6 @@ import com.zextras.carbonio.message.dispatcher.auth.exception.FailedDependencyEx
 import com.zextras.carbonio.message.dispatcher.auth.exception.UnauthorizedException;
 import com.zextras.carbonio.message.dispatcher.auth.service.AuthenticationService;
 import com.zextras.carbonio.message.dispatcher.auth.utility.Utilities;
-import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 import javax.servlet.http.HttpServlet;
@@ -28,7 +27,7 @@ public class CheckPasswordApi extends HttpServlet {
   }
 
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) {
     Map<String, String> queryItems = Utilities.getQueryItems(request.getQueryString());
     String user = queryItems.get("user");
     String token = queryItems.get("pass");
@@ -38,7 +37,6 @@ public class CheckPasswordApi extends HttpServlet {
       return;
     }
     try {
-
       Optional<String> userId = authenticationService.validateToken(token);
       if (userId.isPresent()) {
         if (userId.get().equals(user)) {
