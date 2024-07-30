@@ -131,7 +131,7 @@ build() {
 
 package() {
   cd "${srcdir}"/../../dispatcher/carbonio-message-dispatcher-auth/target
-  install -Dm 644 ./carbonio-message-dispatcher-auth-fatjar.jar \
+  install -Dm 755 ./carbonio-message-dispatcher-auth-fatjar.jar \
     "${pkgdir}/usr/share/carbonio/carbonio-message-dispatcher-auth.jar"
 
   cd "${srcdir}"
