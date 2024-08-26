@@ -20,18 +20,18 @@ makedepends__apt=(
   "carbonio-erlang"
   "carbonio-openssl"
   "git"
+  "postgresql-client"
   "unixodbc-dev"
   "zlib1g-dev"
-  "postgresql-client"
 )
 makedepends__yum=(
   "carbonio-elixir"
   "carbonio-erlang"
   "carbonio-openssl"
   "git"
+  "postgresql"
   "unixODBC-devel"
   "zlib-devel"
-  "postgresql"
 )
 
 source=(
@@ -113,19 +113,21 @@ build() {
 
   cp ../configure.vars.config rel
 
-  echo 'export MONGOOSEIM_CONFIGURED="yes"' >configure.out
-  echo 'export APPS="epgsql"' >>configure.out
-  echo 'export PREFIX="/opt/zextras/common"' >>configure.out
-  echo 'export RELTOOL_VARS="rel/configure.vars.config"' >>configure.out
-  echo 'export SYSTEM="yes"' >>configure.out
-  echo "export BIN_DIR=\"${pkgdir}/opt/zextras/common/bin\"" >>configure.out
-  echo 'export ETC_DIR="/etc/carbonio/message-dispatcher"' >>configure.out
-  echo "export LIB_DIR=\"${pkgdir}/opt/zextras/common/lib/mongooseim\"" >>configure.out
-  echo "export LOG_DIR=\"${pkgdir}/var/log/carbonio/message-dispatcher\"" >>configure.out
-  echo 'export PID_DIR="/run"' >>configure.out
-  echo "export STATUS_DIR=\"${pkgdir}/var/lib/carbonio/message-dispatcher\"" >>configure.out
-  echo "export MDB_DIR=\"${pkgdir}/var/lib/carbonio/message-dispatcher\"" >>configure.out
-  echo "export LOCK_DIR=\"${pkgdir}/var/lock/carbonio/message-dispatcher\"" >>configure.out
+  {
+    echo 'export MONGOOSEIM_CONFIGURED="yes"'
+    echo 'export APPS="epgsql"'
+    echo 'export PREFIX="/opt/zextras/common"'
+    echo 'export RELTOOL_VARS="rel/configure.vars.config"'
+    echo 'export SYSTEM="yes"'
+    echo "export BIN_DIR=\"${pkgdir}/opt/zextras/common/bin\""
+    echo 'export ETC_DIR="/etc/carbonio/message-dispatcher"'
+    echo "export LIB_DIR=\"${pkgdir}/opt/zextras/common/lib/mongooseim\""
+    echo "export LOG_DIR=\"${pkgdir}/var/log/carbonio/message-dispatcher\""
+    echo 'export PID_DIR="/run"'
+    echo "export STATUS_DIR=\"${pkgdir}/var/lib/carbonio/message-dispatcher\""
+    echo "export MDB_DIR=\"${pkgdir}/var/lib/carbonio/message-dispatcher\""
+    echo "export LOCK_DIR=\"${pkgdir}/var/lock/carbonio/message-dispatcher\""
+  } >>configure.out
   make install
 }
 
@@ -204,14 +206,17 @@ package() {
   install -Dm 644 pgsql-script-migrations-6.2.0.sql \
     "${pkgdir}/etc/carbonio/message-dispatcher/sql-scripts/migrations/6.2.0.sql"
   install -Dm 644 pgsql-script-migrations-6.2.1.sql \
-      "${pkgdir}/etc/carbonio/message-dispatcher/sql-scripts/migrations/6.2.1.sql"
+    "${pkgdir}/etc/carbonio/message-dispatcher/sql-scripts/migrations/6.2.1.sql"
 }
 
 postinst() {
   getent group 'carbonio-message-dispatcher' >/dev/null ||
     groupadd -r 'carbonio-message-dispatcher'
   getent passwd 'carbonio-message-dispatcher' >/dev/null ||
-    useradd -r -M -g 'carbonio-message-dispatcher' -d /var/lib/carbonio/message-dispatcher -s /sbin/nologin 'carbonio-message-dispatcher'
+    useradd -r -M \
+      -g 'carbonio-message-dispatcher' \
+      -d /var/lib/carbonio/message-dispatcher \
+      -s /sbin/nologin 'carbonio-message-dispatcher'
 
   chown carbonio-message-dispatcher:carbonio-message-dispatcher /var/log/carbonio/message-dispatcher
   chown carbonio-message-dispatcher:carbonio-message-dispatcher /var/lib/carbonio/message-dispatcher
