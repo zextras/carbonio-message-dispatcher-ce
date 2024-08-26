@@ -7,7 +7,7 @@ After=network-online.target
 
 [Service]
 Type=simple
-ExecStart=/opt/zextras/common/bin/java -Djava.net.preferIPv4Stack=true -jar /opt/zextras/lib/jars/carbonio-message-dispatcher-auth.jar
+ExecStart=/usr/bin/carbonio-message-dispatcher-auth
 User=carbonio-message-dispatcher
 Group=carbonio-message-dispatcher
 Restart=on-failure
