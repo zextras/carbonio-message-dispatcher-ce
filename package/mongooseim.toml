@@ -24,7 +24,7 @@
 [outgoing_pools.rdbms.default]
   scope = "global"
   strategy = "best_worker"
-  workers = 1
+  workers = 10
 
   [outgoing_pools.rdbms.default.connection]
     driver = "pgsql"
