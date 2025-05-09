@@ -41,6 +41,7 @@ source=(
   "configure.vars.config"
   "mod_event_pusher_http_defaults.patch"
   "carbonio-message-dispatcher-auth"
+  "carbonio-message-dispatcher-auth-fatjar.jar"
   "carbonio-message-dispatcher-migration"
   "carbonio-message-dispatcher-setup"
   "carbonio-message-dispatcher-pending-setup"
@@ -79,6 +80,7 @@ sha256sums=('662999119c20792e959d479ccdf530b6c0cea11e44eafd069df6ef98fe89bc52'
   'a55ee89a02e901831baf61faa3b22127ae93e4cccac8d6f1032bfa4202985089'
   '5c8d45d303f15dd9d9b734b2803ddf1cc763546d9ca0e0e742c88c1654258b32'
   'fc36795b485260f2048bf6802f942be0e427c57a09b020b33be457b655a98625'
+  'SKIP'
   '692079ea85e441db8565b1fbc38b460d4f36136d598d7d14c51c1885896e3053'
   '8a06d1f97c290e818951b5f38bd38b63ab51dfd641f433cd2f0b84905edcd0b1'
   '38c979389729d127887c2da1b23bf5114e2ad9bdc211c8315f87da745b4488d1'
@@ -114,41 +116,34 @@ build() {
   cp ../configure.vars.config rel
 
   {
-    echo 'export MONGOOSEIM_CONFIGURED="yes"'
-    echo 'export APPS="epgsql"'
-    echo 'export PREFIX="/opt/zextras/common"'
-    echo 'export RELTOOL_VARS="rel/configure.vars.config"'
-    echo 'export SYSTEM="yes"'
-    echo "export BIN_DIR=\"${pkgdir}/opt/zextras/common/bin\""
-    echo 'export ETC_DIR="/etc/carbonio/message-dispatcher"'
-    echo "export LIB_DIR=\"${pkgdir}/opt/zextras/common/lib/mongooseim\""
-    echo "export LOG_DIR=\"${pkgdir}/var/log/carbonio/message-dispatcher\""
-    echo 'export PID_DIR="/run"'
-    echo "export STATUS_DIR=\"${pkgdir}/var/lib/carbonio/message-dispatcher\""
-    echo "export MDB_DIR=\"${pkgdir}/var/lib/carbonio/message-dispatcher\""
-    echo "export LOCK_DIR=\"${pkgdir}/var/lock/carbonio/message-dispatcher\""
+    echo "export MONGOOSEIM_CONFIGURED=yes"
+    echo "export APPS=epgsql"
+    echo "export PREFIX=/opt/zextras/common"
+    echo "export RELTOOL_VARS=rel/configure.vars.config"
+    echo "export SYSTEM=yes"
+    echo "export BIN_DIR=${pkgdir}/opt/zextras/common/bin"
+    echo "export ETC_DIR=/etc/carbonio/message-dispatcher"
+    echo "export LIB_DIR=${pkgdir}/opt/zextras/common/lib/mongooseim"
+    echo "export LOG_DIR=${pkgdir}/var/log/carbonio/message-dispatcher"
+    echo "export PID_DIR=${pkgdir}/run"
+    echo "export STATUS_DIR=${pkgdir}/var/lib/carbonio/message-dispatcher"
+    echo "export MDB_DIR=${pkgdir}/var/lib/carbonio/message-dispatcher"
+    echo "export LOCK_DIR=${pkgdir}/var/lock/carbonio/message-dispatcher"
   } >>configure.out
   make install
 }
 
 package() {
-  cd "${srcdir}"/../../dispatcher/carbonio-message-dispatcher-auth/target
-  install -Dm 755 ./carbonio-message-dispatcher-auth-fatjar.jar \
-    "${pkgdir}/usr/share/carbonio/carbonio-message-dispatcher-auth.jar"
-
   cd "${srcdir}"
 
-  #Overwriting mongoose files with ours
-  install -Dm 644 mongooseim.toml \
-    "${pkgdir}/etc/carbonio/message-dispatcher/mongooseim.toml"
-  install -Dm 644 app.config \
-    "${pkgdir}/etc/carbonio/message-dispatcher/app.config"
+  install -Dm755 carbonio-message-dispatcher-auth-fatjar.jar \
+    "${pkgdir}/usr/share/carbonio/carbonio-message-dispatcher-auth.jar"
 
-  #Log files
-  install -d "${pkgdir}/opt/zextras/common/lib/mongooseim/log"
-  touch "${pkgdir}/opt/zextras/common/lib/mongooseim/log/console.log"
-  touch "${pkgdir}/opt/zextras/common/lib/mongooseim/log/error.log"
-  touch "${pkgdir}/opt/zextras/common/lib/mongooseim/log/crash.log"
+  #Overwriting mongoose files with ours
+  install -Dm644 mongooseim.toml \
+    "${pkgdir}/etc/carbonio/message-dispatcher/mongooseim.toml"
+  install -Dm644 app.config \
+    "${pkgdir}/etc/carbonio/message-dispatcher/app.config"
 
   #Args files
   cp "${pkgdir}/opt/zextras/common/lib/mongooseim/releases/6.2.1/vm.args" \
@@ -157,63 +152,63 @@ package() {
     "${pkgdir}/etc/carbonio/message-dispatcher/vm.dist.args"
 
   #Our files
-  install -Dm 755 carbonio-message-dispatcher-auth \
+  install -Dm755 carbonio-message-dispatcher-auth \
     "${pkgdir}/usr/bin/carbonio-message-dispatcher-auth"
-  install -Dm 755 carbonio-message-dispatcher-migration \
+  install -Dm755 carbonio-message-dispatcher-migration \
     "${pkgdir}/usr/bin/carbonio-message-dispatcher-migration"
-  install -Dm 755 carbonio-message-dispatcher-setup \
+  install -Dm755 carbonio-message-dispatcher-setup \
     "${pkgdir}/usr/bin/carbonio-message-dispatcher-setup"
-  install -Dm 644 carbonio-message-dispatcher-pending-setup \
+  install -Dm644 carbonio-message-dispatcher-pending-setup \
     "${pkgdir}/etc/zextras/pending-setups.d/carbonio-message-dispatcher.sh"
-  install -Dm 644 carbonio-message-dispatcher.service \
+  install -Dm644 carbonio-message-dispatcher.service \
     "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher.service"
-  install -Dm 644 carbonio-message-dispatcher-auth.service \
+  install -Dm644 carbonio-message-dispatcher-auth.service \
     "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-auth.service"
-  install -Dm 644 carbonio-message-dispatcher-http-sidecar.service \
+  install -Dm644 carbonio-message-dispatcher-http-sidecar.service \
     "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-http-sidecar.service"
-  install -Dm 644 carbonio-message-dispatcher-xmpp-sidecar.service \
+  install -Dm644 carbonio-message-dispatcher-xmpp-sidecar.service \
     "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-xmpp-sidecar.service"
-  install -Dm 644 carbonio-message-dispatcher-auth-sidecar.service \
+  install -Dm644 carbonio-message-dispatcher-auth-sidecar.service \
     "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-auth-sidecar.service"
-  install -Dm 644 carbonio-message-dispatcher-http.hcl \
+  install -Dm644 carbonio-message-dispatcher-http.hcl \
     "${pkgdir}/etc/zextras/service-discover/carbonio-message-dispatcher-http.hcl"
-  install -Dm 644 carbonio-message-dispatcher-xmpp.hcl \
+  install -Dm644 carbonio-message-dispatcher-xmpp.hcl \
     "${pkgdir}/etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.hcl"
-  install -Dm 644 carbonio-message-dispatcher-auth.hcl \
+  install -Dm644 carbonio-message-dispatcher-auth.hcl \
     "${pkgdir}/etc/zextras/service-discover/carbonio-message-dispatcher-auth.hcl"
-  install -Dm 644 logback.xml \
+  install -Dm644 logback.xml \
     "${pkgdir}/etc/carbonio/message-dispatcher/logback.xml"
-  install -Dm 644 intentions-http.json \
+  install -Dm644 intentions-http.json \
     "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/intentions-http.json"
-  install -Dm 644 intentions-xmpp.json \
+  install -Dm644 intentions-xmpp.json \
     "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/intentions-xmpp.json"
-  install -Dm 644 intentions-auth.json \
+  install -Dm644 intentions-auth.json \
     "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/intentions-auth.json"
-  install -Dm 644 policies.json \
+  install -Dm644 policies.json \
     "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/policies.json"
-  install -Dm 644 service-protocol-http.json \
+  install -Dm644 service-protocol-http.json \
     "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/service-protocol-http.json"
-  install -Dm 644 service-protocol-xmpp.json \
+  install -Dm644 service-protocol-xmpp.json \
     "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/service-protocol-xmpp.json"
-  install -Dm 644 service-protocol-auth.json \
+  install -Dm644 service-protocol-auth.json \
     "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/service-protocol-auth.json"
 
   #Migration files
-  install -Dm 644 pgsql-script-initial-schema-mongooseim-6.0.0.sql \
+  install -Dm644 pgsql-script-initial-schema-mongooseim-6.0.0.sql \
     "${pkgdir}/etc/carbonio/message-dispatcher/sql-scripts/initial-schema.sql"
-  install -Dm 644 pgsql-script-migrations-6.0.0.sql \
+  install -Dm644 pgsql-script-migrations-6.0.0.sql \
     "${pkgdir}/etc/carbonio/message-dispatcher/sql-scripts/migrations/6.0.0.sql"
-  install -Dm 644 pgsql-script-migrations-6.2.0.sql \
+  install -Dm644 pgsql-script-migrations-6.2.0.sql \
     "${pkgdir}/etc/carbonio/message-dispatcher/sql-scripts/migrations/6.2.0.sql"
-  install -Dm 644 pgsql-script-migrations-6.2.1.sql \
+  install -Dm644 pgsql-script-migrations-6.2.1.sql \
     "${pkgdir}/etc/carbonio/message-dispatcher/sql-scripts/migrations/6.2.1.sql"
 }
 
 postinst() {
-  getent group 'carbonio-message-dispatcher' >/dev/null ||
-    groupadd -r 'carbonio-message-dispatcher'
-  getent passwd 'carbonio-message-dispatcher' >/dev/null ||
-    useradd -r -M \
+  getent group 'carbonio-message-dispatcher' >/dev/null \
+    || groupadd -r 'carbonio-message-dispatcher'
+  getent passwd 'carbonio-message-dispatcher' >/dev/null \
+    || useradd -r -M \
       -g 'carbonio-message-dispatcher' \
       -d /var/lib/carbonio/message-dispatcher \
       -s /sbin/nologin 'carbonio-message-dispatcher'
@@ -222,10 +217,6 @@ postinst() {
   chown carbonio-message-dispatcher:carbonio-message-dispatcher /var/lib/carbonio/message-dispatcher
   chown carbonio-message-dispatcher:carbonio-message-dispatcher /var/lock/carbonio/message-dispatcher
   chown carbonio-message-dispatcher:carbonio-message-dispatcher /var/lib/carbonio/message-dispatcher
-  chown carbonio-message-dispatcher:carbonio-message-dispatcher /opt/zextras/common/lib/mongooseim/log
-  chown carbonio-message-dispatcher:carbonio-message-dispatcher /opt/zextras/common/lib/mongooseim/log/console.log
-  chown carbonio-message-dispatcher:carbonio-message-dispatcher /opt/zextras/common/lib/mongooseim/log/error.log
-  chown carbonio-message-dispatcher:carbonio-message-dispatcher /opt/zextras/common/lib/mongooseim/log/crash.log
 
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
