@@ -7,8 +7,9 @@ After=network-online.target
 
 [Service]
 Type=simple
-ExecStart=/opt/zextras/common/bin/mongooseimctl foreground
-ExecStop=/opt/zextras/common/bin/mongooseimctl stop
+Environment=EJABBERD_CONFIG_PATH=/etc/carbonio/message-dispatcher/mongooseim.toml
+ExecStart=/opt/zextras/common/lib/mongooseim/bin/mongooseim foreground
+ExecStop=/opt/zextras/common/lib/mongooseim/bin/mongooseim stop
 User=carbonio-message-dispatcher
 Group=carbonio-message-dispatcher
 Restart=on-failure

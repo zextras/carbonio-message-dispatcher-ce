@@ -1,0 +1,12 @@
+diff '--color=auto' -Naur a/opt/zextras/common/lib/mongooseim/bin/mongooseim b/opt/zextras/common/lib/mongooseim/bin/mongooseim
+--- a/opt/zextras/common/lib/mongooseim/bin/mongooseim	2025-05-16 16:58:58.349467129 +0200
++++ b/opt/zextras/common/lib/mongooseim/bin/mongooseim	2025-05-16 16:26:50.384016292 +0200
+@@ -18,7 +18,7 @@
+ export EJABBERD_STATUS_PATH="$EJABBERD_STATUS_PATH"
+ 
+ EJABBERD_SO_PATH=`ls -dt "$RUNNER_BASE_DIR"/lib/mongooseim-*/priv/lib | head -1`
+-EJABBERD_CONFIG_PATH="$RUNNER_ETC_DIR"/mongooseim.${MONGOOSEIM_CONFIG_FORMAT:-toml}
++EJABBERD_CONFIG_PATH="$EJABBERD_CONFIG_PATH"
+ export EJABBERD_SO_PATH
+ export EJABBERD_CONFIG_PATH
+ 
