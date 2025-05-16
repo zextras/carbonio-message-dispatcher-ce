@@ -1,5 +1,5 @@
 pkgname="carbonio-message-dispatcher"
-pkgver="0.14.2"
+pkgver="0.15.2"
 pkgrel="1"
 pkgdesc="Carbonio Message Dispatcher component"
 maintainer="Zextras <packages@zextras.com>"
@@ -75,7 +75,7 @@ backup=(
   "etc/zextras/service-discover/carbonio-message-dispatcher-auth.hcl"
 )
 sha256sums=('662999119c20792e959d479ccdf530b6c0cea11e44eafd069df6ef98fe89bc52'
-  '74102a0513511c242f3e9948d7da674d9cfe86e8eea4c70c4ad0cb1a269f9b1c'
+  'e458e7e29aec6b2636ff0bfa4cc66ee18bebe9fe3ed6cca4393d0cb0bbccb7f4'
   'f7384b4fd538b267f8c7a708185a9c56f5444ec04526d4b85ca5068f538d1abc'
   'a55ee89a02e901831baf61faa3b22127ae93e4cccac8d6f1032bfa4202985089'
   '5c8d45d303f15dd9d9b734b2803ddf1cc763546d9ca0e0e742c88c1654258b32'
