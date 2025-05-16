@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
   <groupId>com.zextras.carbonio.message.dispatcher</groupId>
   <artifactId>carbonio-message-dispatcher</artifactId>
-  <version>0.14.2</version>
+  <version>0.15.1</version>
 
   <modules>
     <module>carbonio-message-dispatcher-auth</module>
