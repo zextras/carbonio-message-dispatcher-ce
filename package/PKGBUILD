@@ -1,4 +1,4 @@
-pkgname="carbonio-message-dispatcher"
+pkgname="carbonio-message-dispatcher-ce"
 pkgver="0.15.2"
 pkgrel="1"
 pkgdesc="Carbonio Message Dispatcher component"
