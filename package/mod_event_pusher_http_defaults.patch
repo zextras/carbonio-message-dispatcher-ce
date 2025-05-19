@@ -1,8 +1,7 @@
-diff --git a/src/event_pusher/mod_event_pusher_http_defaults.erl b/src/event_pusher/mod_event_pusher_http_defaults.erl
-index 7225acdf8..115b6842f 100644
---- a/src/event_pusher/mod_event_pusher_http_defaults.erl
-+++ b/src/event_pusher/mod_event_pusher_http_defaults.erl
-@@ -24,7 +24,7 @@ should_make_req(Acc, in, Packet, From, To, _Opts) ->
+diff '--color=auto' -Naur a/src/event_pusher/mod_event_pusher_http_defaults.erl b/src/event_pusher/mod_event_pusher_http_defaults.erl
+--- a/src/event_pusher/mod_event_pusher_http_defaults.erl	2025-05-16 15:01:52.183444484 +0200
++++ b/src/event_pusher/mod_event_pusher_http_defaults.erl	2025-05-16 15:03:05.371807033 +0200
+@@ -24,7 +24,7 @@
      Body = exml_query:path(Packet, [{element, <<"body">>}, cdata], <<>>),
      should_make_req_type(Acc, Type, Body, From, To).
  
