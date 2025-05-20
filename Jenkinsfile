@@ -15,36 +15,34 @@ pipeline {
   }
   agent {
     node {
-      label 'openjdk17-agent-v1'
+      label 'zextras-v1'
     }
   }
   environment {
-    NETWORK_OPTS = '--network ci_agent'
     FAILURE_EMAIL_RECIPIENTS='smokybeans@zextras.com'
   }
   stages {
-    stage('Build setup') {
+    stage('Checkout') {
       steps {
-        checkout([
-          $class: 'GitSCM',
-          branches: scm.branches,
-          extensions: [[
-            $class: 'CloneOption',
-            shallow: true,
-            depth:   2,
-            timeout: 30
-          ]],
-          userRemoteConfigs: scm.userRemoteConfigs
-        ])
+        checkout scm
         withCredentials([file(credentialsId: 'jenkins-maven-settings.xml', variable: 'SETTINGS_PATH')]) {
           sh 'cp $SETTINGS_PATH settings-jenkins.xml'
-          sh 'mvn -Dmaven.repo.local=$(pwd)/m2 -N wrapper:wrapper'
+        }
+        script {
+          env.GIT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
         }
       }
     }
     stage('Compiling') {
       steps {
-        sh './mvnw -Dmaven.repo.local=$(pwd)/m2 -T1C -B -q --settings settings-jenkins.xml compile'
+        container('jdk-17') {
+          sh 'mvn -Dmaven.repo.local=$(pwd)/m2 -T1C -B -s settings-jenkins.xml compile'
+          sh 'mvn package -Dmaven.main.skip -Dmaven.repo.local=$(pwd)/m2'
+          sh 'mkdir dispatcher'
+          sh 'cp -r package yap.json dispatcher'
+          sh 'cp carbonio-message-dispatcher-auth/target/carbonio-message-dispatcher-auth-fatjar.jar dispatcher/package'
+          stash includes: 'dispatcher/**', name: 'project'
+        }
       }
       post {
         failure {
@@ -56,47 +54,40 @@ pipeline {
         }
       }
     }
-    stage('Stashing for packaging') {
-      steps {
-        stash includes: '**', name: 'project', useDefaultExcludes: false
-      }
-    }
     stage('Building packages') {
       parallel {
         stage('Ubuntu 20') {
           agent {
             node {
-              label 'yap-agent-ubuntu-20.04-v2'
+              label 'yap-ubuntu-20-v1'
             }
           }
           steps {
-            unstash 'project'
-            withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
-              passwordVariable: 'SECRET',
-              usernameVariable: 'USERNAME')]) {
-                sh 'echo "machine zextras.jfrog.io" >> auth.conf'
-                sh 'echo "login $USERNAME" >> auth.conf'
-                sh 'echo "password $SECRET" >> auth.conf'
-                sh 'sudo mv auth.conf /etc/apt'
-            }
-            sh '''
-              sudo echo "deb [trusted=yes] https://zextras.jfrog.io/artifactory/ubuntu-devel focal main" > zextras.list
-              sudo mv zextras.list /etc/apt/sources.list.d/
-            '''
-            sh '''
-              ./mvnw package -Dmaven.main.skip -Dmaven.repo.local=$(pwd)/m2
-              mkdir /tmp/dispatcher
-              mv * /tmp/dispatcher
-            '''
-            script {
-              if (BRANCH_NAME == 'devel') {
-                def timestamp = new Date().format('yyyyMMddHHmmss')
-                sh "sudo yap build ubuntu-focal /tmp/dispatcher -r ${timestamp}"
-              } else {
-                sh 'sudo yap build ubuntu-focal /tmp/dispatcher'
+            container('yap') {
+              unstash 'project'
+              withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
+                passwordVariable: 'SECRET',
+                usernameVariable: 'USERNAME')]) {
+                  sh 'echo "machine zextras.jfrog.io" >> auth.conf'
+                  sh 'echo "login $USERNAME" >> auth.conf'
+                  sh 'echo "password $SECRET" >> auth.conf'
+                  sh 'sudo mv auth.conf /etc/apt'
               }
+              sh '''
+                sudo echo "deb [trusted=yes] https://zextras.jfrog.io/artifactory/ubuntu-devel focal main" > zextras.list
+                sudo mv zextras.list /etc/apt/sources.list.d/
+                sudo yap prepare ubuntu
+              '''
+              script {
+                if (BRANCH_NAME == 'devel') {
+                  def timestamp = new Date().format('yyyyMMddHHmmss')
+                  sh "sudo yap build ubuntu-focal dispatcher -r ${timestamp}"
+                } else {
+                  sh 'sudo yap build ubuntu-focal dispatcher'
+                }
+              }
+              stash includes: 'artifacts/*focal*.deb', name: 'artifacts-ubuntu-focal'
             }
-            stash includes: 'artifacts/*focal*.deb', name: 'artifacts-ubuntu-focal'
           }
           post {
             failure {
@@ -114,37 +105,35 @@ pipeline {
         stage('Ubuntu 22') {
           agent {
             node {
-              label 'yap-agent-ubuntu-22.04-v2'
+              label 'yap-ubuntu-22-v1'
             }
           }
           steps {
-            unstash 'project'
-            withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
-              passwordVariable: 'SECRET',
-              usernameVariable: 'USERNAME')]) {
-                sh 'echo "machine zextras.jfrog.io" >> auth.conf'
-                sh 'echo "login $USERNAME" >> auth.conf'
-                sh 'echo "password $SECRET" >> auth.conf'
-                sh 'sudo mv auth.conf /etc/apt'
-            }
-            sh '''
-              sudo echo "deb [trusted=yes] https://zextras.jfrog.io/artifactory/ubuntu-devel jammy main" > zextras.list
-              sudo mv zextras.list /etc/apt/sources.list.d/
-            '''
-            sh '''
-              ./mvnw package -Dmaven.main.skip -Dmaven.repo.local=$(pwd)/m2
-              mkdir /tmp/dispatcher
-              mv * /tmp/dispatcher
-            '''
-            script {
-              if (BRANCH_NAME == 'devel') {
-                def timestamp = new Date().format('yyyyMMddHHmmss')
-                sh "sudo yap build ubuntu-jammy /tmp/dispatcher -r ${timestamp}"
-              } else {
-                sh 'sudo yap build ubuntu-jammy /tmp/dispatcher'
+            container('yap') {
+              unstash 'project'
+              withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
+                passwordVariable: 'SECRET',
+                usernameVariable: 'USERNAME')]) {
+                  sh 'echo "machine zextras.jfrog.io" >> auth.conf'
+                  sh 'echo "login $USERNAME" >> auth.conf'
+                  sh 'echo "password $SECRET" >> auth.conf'
+                  sh 'sudo mv auth.conf /etc/apt'
               }
+              sh '''
+                sudo echo "deb [trusted=yes] https://zextras.jfrog.io/artifactory/ubuntu-devel jammy main" > zextras.list
+                sudo mv zextras.list /etc/apt/sources.list.d/
+                sudo yap prepare ubuntu
+              '''
+              script {
+                if (BRANCH_NAME == 'devel') {
+                  def timestamp = new Date().format('yyyyMMddHHmmss')
+                  sh "sudo yap build ubuntu-jammy dispatcher -r ${timestamp}"
+                } else {
+                  sh 'sudo yap build ubuntu-jammy dispatcher'
+                }
+              }
+              stash includes: 'artifacts/*jammy*.deb', name: 'artifacts-ubuntu-jammy'
             }
-            stash includes: 'artifacts/*jammy*.deb', name: 'artifacts-ubuntu-jammy'
           }
           post {
             failure {
@@ -162,37 +151,35 @@ pipeline {
         stage('Ubuntu 24') {
           agent {
             node {
-              label 'yap-agent-ubuntu-24.04-v2'
+              label 'yap-ubuntu-24-v1'
             }
           }
           steps {
-            unstash 'project'
-            withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
-              passwordVariable: 'SECRET',
-              usernameVariable: 'USERNAME')]) {
-                sh 'echo "machine zextras.jfrog.io" >> auth.conf'
-                sh 'echo "login $USERNAME" >> auth.conf'
-                sh 'echo "password $SECRET" >> auth.conf'
-                sh 'sudo mv auth.conf /etc/apt'
-            }
-            sh '''
-              sudo echo "deb [trusted=yes] https://zextras.jfrog.io/artifactory/ubuntu-devel noble main" > zextras.list
-              sudo mv zextras.list /etc/apt/sources.list.d/
-            '''
-            sh '''
-              ./mvnw package -Dmaven.main.skip -Dmaven.repo.local=$(pwd)/m2
-              mkdir /tmp/dispatcher
-              mv * /tmp/dispatcher
-            '''
-            script {
-              if (BRANCH_NAME == 'devel') {
-                def timestamp = new Date().format('yyyyMMddHHmmss')
-                sh "sudo yap build ubuntu-noble /tmp/dispatcher -r ${timestamp}"
-              } else {
-                sh 'sudo yap build ubuntu-noble /tmp/dispatcher'
+            container('yap') {
+              unstash 'project'
+              withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
+                passwordVariable: 'SECRET',
+                usernameVariable: 'USERNAME')]) {
+                  sh 'echo "machine zextras.jfrog.io" >> auth.conf'
+                  sh 'echo "login $USERNAME" >> auth.conf'
+                  sh 'echo "password $SECRET" >> auth.conf'
+                  sh 'sudo mv auth.conf /etc/apt'
               }
+              sh '''
+                sudo echo "deb [trusted=yes] https://zextras.jfrog.io/artifactory/ubuntu-devel noble main" > zextras.list
+                sudo mv zextras.list /etc/apt/sources.list.d/
+                sudo yap prepare ubuntu
+              '''
+              script {
+                if (BRANCH_NAME == 'devel') {
+                  def timestamp = new Date().format('yyyyMMddHHmmss')
+                  sh "sudo yap build ubuntu-noble dispatcher -r ${timestamp}"
+                } else {
+                  sh 'sudo yap build ubuntu-noble dispatcher'
+                }
+              }
+              stash includes: 'artifacts/*noble*.deb', name: 'artifacts-ubuntu-noble'
             }
-            stash includes: 'artifacts/*noble*.deb', name: 'artifacts-ubuntu-noble'
           }
           post {
             failure {
@@ -210,35 +197,33 @@ pipeline {
         stage('Rocky 8') {
           agent {
             node {
-              label 'yap-agent-rocky-8-v2'
+              label 'yap-rocky-8-v1'
             }
           }
           steps {
-            unstash 'project'
-            withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
-              passwordVariable: 'SECRET',
-              usernameVariable: 'USERNAME')]) {
-                sh 'echo "[Zextras]" > zextras.repo'
-                sh 'echo "baseurl=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/centos8-devel/" >> zextras.repo'
-                sh 'echo "enabled=1" >> zextras.repo'
-                sh 'echo "gpgcheck=0" >> zextras.repo'
-                sh 'echo "gpgkey=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/centos8-devel/repomd.xml.key" >> zextras.repo'
-                sh 'sudo mv zextras.repo /etc/yum.repos.d/zextras.repo'
-            }
-            sh '''
-              ./mvnw package -Dmaven.main.skip -Dmaven.repo.local=$(pwd)/m2
-              mkdir /tmp/dispatcher
-              mv * /tmp/dispatcher
-            '''
-            script {
-              if (BRANCH_NAME == 'devel') {
-                def timestamp = new Date().format('yyyyMMddHHmmss')
-                sh "sudo yap build rocky-8 /tmp/dispatcher -r ${timestamp}"
-              } else {
-                sh 'sudo yap build rocky-8 /tmp/dispatcher'
+            container('yap') {
+              unstash 'project'
+              withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
+                passwordVariable: 'SECRET',
+                usernameVariable: 'USERNAME')]) {
+                  sh 'echo "[Zextras]" > zextras.repo'
+                  sh 'echo "baseurl=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/centos8-devel/" >> zextras.repo'
+                  sh 'echo "enabled=1" >> zextras.repo'
+                  sh 'echo "gpgcheck=0" >> zextras.repo'
+                  sh 'echo "gpgkey=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/centos8-devel/repomd.xml.key" >> zextras.repo'
+                  sh 'sudo mv zextras.repo /etc/yum.repos.d/zextras.repo'
+                  sh 'sudo yap prepare rocky'
               }
+              script {
+                if (BRANCH_NAME == 'devel') {
+                  def timestamp = new Date().format('yyyyMMddHHmmss')
+                  sh "sudo yap build rocky-8 dispatcher -r ${timestamp}"
+                } else {
+                  sh 'sudo yap build rocky-8 dispatcher'
+                }
+              }
+              stash includes: 'artifacts/*el8*.rpm', name: 'artifacts-rocky-8'
             }
-            stash includes: 'artifacts/x86_64/*el8*.rpm', name: 'artifacts-rocky-8'
           }
           post {
             failure {
@@ -249,42 +234,40 @@ pipeline {
               }
             }
             always {
-              archiveArtifacts artifacts: 'artifacts/x86_64/*el8*.rpm', fingerprint: true
+              archiveArtifacts artifacts: 'artifacts/*el8*.rpm', fingerprint: true
             }
           }
         }
         stage('Rocky 9') {
           agent {
             node {
-              label 'yap-agent-rocky-9-v2'
+              label 'yap-rocky-9-v1'
             }
           }
           steps {
-            unstash 'project'
-            withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
-              passwordVariable: 'SECRET',
-              usernameVariable: 'USERNAME')]) {
-                sh 'echo "[Zextras]" > zextras.repo'
-                sh 'echo "baseurl=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/rhel9-devel/" >> zextras.repo'
-                sh 'echo "enabled=1" >> zextras.repo'
-                sh 'echo "gpgcheck=0" >> zextras.repo'
-                sh 'echo "gpgkey=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/rhel9-devel/repomd.xml.key" >> zextras.repo'
-                sh 'sudo mv zextras.repo /etc/yum.repos.d/zextras.repo'
-            }
-            sh '''
-              ./mvnw package -Dmaven.main.skip -Dmaven.repo.local=$(pwd)/m2
-              mkdir /tmp/dispatcher
-              mv * /tmp/dispatcher
-            '''
-            script {
-              if (BRANCH_NAME == 'devel') {
-                def timestamp = new Date().format('yyyyMMddHHmmss')
-                sh "sudo yap build rocky-9 /tmp/dispatcher -r ${timestamp}"
-              } else {
-                sh 'sudo yap build rocky-9 /tmp/dispatcher'
+            container('yap') {
+              unstash 'project'
+              withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
+                passwordVariable: 'SECRET',
+                usernameVariable: 'USERNAME')]) {
+                  sh 'echo "[Zextras]" > zextras.repo'
+                  sh 'echo "baseurl=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/rhel9-devel/" >> zextras.repo'
+                  sh 'echo "enabled=1" >> zextras.repo'
+                  sh 'echo "gpgcheck=0" >> zextras.repo'
+                  sh 'echo "gpgkey=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/rhel9-devel/repomd.xml.key" >> zextras.repo'
+                  sh 'sudo mv zextras.repo /etc/yum.repos.d/zextras.repo'
+                  sh 'sudo yap prepare rocky'
               }
+              script {
+                if (BRANCH_NAME == 'devel') {
+                  def timestamp = new Date().format('yyyyMMddHHmmss')
+                  sh "sudo yap build rocky-9 dispatcher -r ${timestamp}"
+                } else {
+                  sh 'sudo yap build rocky-9 dispatcher'
+                }
+              }
+              stash includes: 'artifacts/*el9*.rpm', name: 'artifacts-rocky-9'
             }
-            stash includes: 'artifacts/x86_64/*el9*.rpm', name: 'artifacts-rocky-9'
           }
           post {
             failure {
@@ -295,7 +278,7 @@ pipeline {
               }
             }
             always {
-              archiveArtifacts artifacts: 'artifacts/x86_64/*el9*.rpm', fingerprint: true
+              archiveArtifacts artifacts: 'artifacts/*el9*.rpm', fingerprint: true
             }
           }
         }
@@ -317,35 +300,35 @@ pipeline {
           def buildInfo
           def uploadSpec
           buildInfo = Artifactory.newBuildInfo()
-          uploadSpec = '''{
+          uploadSpec = """{
             "files": [
               {
                 "pattern": "artifacts/*focal*.deb",
                 "target": "ubuntu-playground/pool/",
-                "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
+                "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
               },
               {
                 "pattern": "artifacts/*jammy*.deb",
                 "target": "ubuntu-playground/pool/",
-                "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
+                "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
               },
               {
                 "pattern": "artifacts/*noble*.deb",
                 "target": "ubuntu-playground/pool/",
-                "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64"
+                "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
               },
               {
-                "pattern": "artifacts/x86_64/(carbonio-message-dispatcher)-(*).el8.x86_64.rpm",
+                "pattern": "artifacts/(carbonio-message-dispatcher-ce)-(*).el8.x86_64.rpm",
                 "target": "centos8-playground/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
-                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras;vcs.revision=${env.GIT_COMMIT}"
               },
               {
-                "pattern": "artifacts/x86_64/(carbonio-message-dispatcher)-(*).el9.x86_64.rpm",
+                "pattern": "artifacts/(carbonio-message-dispatcher-ce)-(*).el9.x86_64.rpm",
                 "target": "rhel9-playground/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
-                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras;vcs.revision=${env.GIT_COMMIT}"
               }
             ]
-          }'''
+          }"""
           server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
         }
       }
@@ -366,35 +349,35 @@ pipeline {
           def buildInfo
           def uploadSpec
           buildInfo = Artifactory.newBuildInfo()
-          uploadSpec = '''{
+          uploadSpec = """{
             "files": [
               {
                 "pattern": "artifacts/*focal*.deb",
                 "target": "ubuntu-devel/pool/",
-                "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
+                "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
               },
               {
                 "pattern": "artifacts/*jammy*.deb",
                 "target": "ubuntu-devel/pool/",
-                "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
+                "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
               },
               {
                 "pattern": "artifacts/*noble*.deb",
                 "target": "ubuntu-devel/pool/",
-                "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64"
+                "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
               },
               {
-                "pattern": "artifacts/x86_64/(carbonio-message-dispatcher)-(*).el8.x86_64.rpm",
+                "pattern": "artifacts/(carbonio-message-dispatcher-ce)-(*).el8.x86_64.rpm",
                 "target": "centos8-devel/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
-                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras;vcs.revision=${env.GIT_COMMIT}"
               },
               {
-                "pattern": "artifacts/x86_64/(carbonio-message-dispatcher)-(*).el9.x86_64.rpm",
+                "pattern": "artifacts/(carbonio-message-dispatcher-ce)-(*).el9.x86_64.rpm",
                 "target": "rhel9-devel/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
-                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras;vcs.revision=${env.GIT_COMMIT}"
               }
             ]
-          }'''
+          }"""
           server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
         }
       }
@@ -426,25 +409,25 @@ pipeline {
           //ubuntu
           buildInfo = Artifactory.newBuildInfo()
           buildInfo.name += '-ubuntu'
-          uploadSpec = '''{
+          uploadSpec = """{
             "files": [
               {
                 "pattern": "artifacts/*focal*.deb",
                 "target": "ubuntu-rc/pool/",
-                "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
+                "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
               },
               {
                 "pattern": "artifacts/*jammy*.deb",
                 "target": "ubuntu-rc/pool/",
-                "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
+                "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
               },
               {
                 "pattern": "artifacts/*noble*.deb",
                 "target": "ubuntu-rc/pool/",
-                "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64"
+                "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
               }
             ]
-          }'''
+          }"""
           server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
           config = [
              'buildName'          : buildInfo.name,
@@ -465,15 +448,15 @@ pipeline {
           //rhel8
           buildInfo = Artifactory.newBuildInfo()
           buildInfo.name += "-centos8"
-          uploadSpec = '''{
+          uploadSpec = """{
             "files": [
               {
-                "pattern": "artifacts/x86_64/(carbonio-message-dispatcher)-(*).el8.x86_64.rpm",
+                "pattern": "artifacts/(carbonio-message-dispatcher-ce)-(*).el8.x86_64.rpm",
                 "target": "centos8-rc/zextras/{1}/{1}-{2}.el8.x86_64.rpm",
-                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras;vcs.revision=${env.GIT_COMMIT}"
               }
             ]
-          }'''
+          }"""
           server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
           config = [
              'buildName'          : buildInfo.name,
@@ -494,15 +477,15 @@ pipeline {
           //rhel9
           buildInfo = Artifactory.newBuildInfo()
           buildInfo.name += "-rhel9"
-          uploadSpec = '''{
+          uploadSpec = """{
             "files": [
               {
-                "pattern": "artifacts/x86_64/(carbonio-message-dispatcher)-(*).el9.x86_64.rpm",
+                "pattern": "artifacts/(carbonio-message-dispatcher-ce)-(*).el9.x86_64.rpm",
                 "target": "rhel9-rc/zextras/{1}/{1}-{2}.el9.x86_64.rpm",
-                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras;vcs.revision=${env.GIT_COMMIT}"
               }
             ]
-          }'''
+          }"""
           server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
           config = [
              'buildName'          : buildInfo.name,
