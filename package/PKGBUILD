@@ -190,6 +190,7 @@ postinst() {
       -d /var/lib/carbonio/message-dispatcher \
       -s /sbin/nologin 'carbonio-message-dispatcher'
 
+  chmod 755 -R /opt/zextras/common/lib/mongooseim/log
   chown carbonio-message-dispatcher:carbonio-message-dispatcher -R /opt/zextras/common/lib/mongooseim/log
   chown carbonio-message-dispatcher:carbonio-message-dispatcher -R /var/lib/carbonio/message-dispatcher
   chown carbonio-message-dispatcher:carbonio-message-dispatcher -R /var/lib/carbonio/message-dispatcher
