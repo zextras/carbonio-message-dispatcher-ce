@@ -1,6 +1,6 @@
 {
-  "name": "carbonio-message-dispatcher",
-  "description": "Message Dispatcher component",
+  "name": "carbonio-message-dispatcher-ce",
+  "description": "Message Dispatcher component for Carbonio CE",
   "buildDir": "/tmp/",
   "output": "artifacts",
   "projects": [

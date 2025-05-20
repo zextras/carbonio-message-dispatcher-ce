@@ -16,7 +16,7 @@ metadata:
     - java
     - backend
   links:
-    - url: https://github.com/Zextras/carbonio-message-dispatcher/blob/main/README.md
+    - url: https://github.com/Zextras/carbonio-message-dispatcher-ce/blob/main/README.md
       title: README
 spec:
   type: service
