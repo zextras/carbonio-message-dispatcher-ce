@@ -16,11 +16,6 @@ services {
             destination_name   = "carbonio-message-dispatcher-db"
             local_bind_address = "127.78.0.10"
             local_bind_port    = 20000
-          },
-          {
-            destination_name   = "carbonio-push-connector"
-            local_bind_address = "127.78.0.10"
-            local_bind_port    = 20001
           }
         ]
       }
