@@ -1,6 +1,20 @@
--- SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
 --
--- SPDX-License-Identifier: AGPL-3.0-only
+-- ejabberd, Copyright (C) 2002-2011   ProcessOne
+--
+-- This program is free software; you can redistribute it and/or
+-- modify it under the terms of the GNU General Public License as
+-- published by the Free Software Foundation; either version 2 of the
+-- License, or (at your option) any later version.
+--
+-- This program is distributed in the hope that it will be useful,
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+-- General Public License for more details.
+--
+-- You should have received a copy of the GNU General Public License
+-- along with this program; if not, write to the Free Software
+-- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+--
 
 CREATE TYPE test_enum_char AS ENUM('A','B', 'C');
 CREATE TABLE test_types(
@@ -38,7 +52,6 @@ CREATE TABLE last (
 
 CREATE INDEX i_last_server_seconds ON last USING btree (server, seconds);
 
-
 CREATE TABLE rosterusers (
     server varchar(250) NOT NULL,
     username varchar(250) NOT NULL,
@@ -47,23 +60,24 @@ CREATE TABLE rosterusers (
     subscription character(1) NOT NULL,
     ask character(1) NOT NULL,
     askmessage text NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT now()
+    created_at TIMESTAMP NOT NULL DEFAULT now(),
+    PRIMARY KEY (server, username, jid)
 );
-
-CREATE UNIQUE INDEX i_rosteru_server_user_jid ON rosterusers USING btree (server, username, jid);
-CREATE INDEX i_rosteru_server_user ON rosterusers USING btree (server, username);
-CREATE INDEX i_rosteru_jid ON rosterusers USING btree (jid);
-
 
 CREATE TABLE rostergroups (
     server varchar(250) NOT NULL,
     username varchar(250) NOT NULL,
     jid text NOT NULL,
-    grp text NOT NULL
+    grp text NOT NULL,
+    PRIMARY KEY (server, username, jid, grp)
 );
 
-CREATE INDEX i_rosterg_server_user_jid ON rostergroups USING btree (server, username, jid);
-
+CREATE TABLE roster_version (
+    server varchar(250),
+    username varchar(250),
+    version text NOT NULL,
+    PRIMARY KEY (server, username)
+);
 
 CREATE TABLE vcard (
     username varchar(150),
@@ -153,29 +167,6 @@ CREATE TABLE private_storage (
     PRIMARY KEY(server, username, namespace)
 );
 
-CREATE TABLE roster_version (
-    server varchar(250),
-    username varchar(250),
-    version text NOT NULL,
-    PRIMARY KEY (server, username)
-);
-
--- To update from 0.9.8:
--- CREATE SEQUENCE spool_seq_seq;
--- ALTER TABLE spool ADD COLUMN seq integer;
--- ALTER TABLE spool ALTER COLUMN seq SET DEFAULT nextval('spool_seq_seq');
--- UPDATE spool SET seq = DEFAULT;
--- ALTER TABLE spool ALTER COLUMN seq SET NOT NULL;
-
--- To update from 1.x:
--- ALTER TABLE rosterusers ADD COLUMN askmessage text;
--- UPDATE rosterusers SET askmessage = '';
--- ALTER TABLE rosterusers ALTER COLUMN askmessage SET NOT NULL;
-
--- To update from 2.0.0:
--- ALTER TABLE mam_message ADD COLUMN search_body text;
--- ALTER TABLE mam_muc_message ADD COLUMN search_body text;
-
 CREATE TYPE mam_behaviour AS ENUM('A', 'N', 'R');
 CREATE TYPE mam_direction AS ENUM('I','O');
 
@@ -199,6 +190,7 @@ CREATE TABLE mam_message(
   message bytea NOT NULL,
   search_body text,
   origin_id varchar,
+  is_groupchat boolean NOT NULL,
   PRIMARY KEY(user_id, id)
 );
 CREATE INDEX i_mam_message_username_jid_id
@@ -490,3 +482,40 @@ CREATE TABLE domain_events (
     PRIMARY KEY(id)
 );
 CREATE INDEX i_domain_events_domain ON domain_events(domain);
+
+CREATE TABLE discovery_nodes (
+    cluster_name varchar(250) NOT NULL,
+    node_name varchar(250) NOT NULL,
+    node_num INT NOT NULL,
+    address varchar(250) NOT NULL DEFAULT '', -- empty means we should ask DNS
+    updated_timestamp BIGINT NOT NULL, -- in seconds
+    PRIMARY KEY (node_name)
+);
+CREATE UNIQUE INDEX i_discovery_nodes_node_num ON discovery_nodes USING BTREE(cluster_name, node_num);
+
+CREATE TABLE caps (
+    node varchar(250) NOT NULL,
+    sub_node varchar(250) NOT NULL,
+    features text NOT NULL,
+    PRIMARY KEY (node, sub_node)
+);
+
+-- XEP-0484: Fast Authentication Streamlining Tokens
+-- Module: mod_fast_auth_token
+CREATE TABLE fast_auth_token(
+     server VARCHAR(250) NOT NULL,
+     username VARCHAR(250) NOT NULL,
+     -- Device installation ID (User-Agent ID)
+     -- Unique for each device
+     -- https://xmpp.org/extensions/xep-0388.html#initiation
+     user_agent_id VARCHAR(250) NOT NULL,
+     current_token VARCHAR(250),
+     current_expire BIGINT, -- seconds unix timestamp
+     current_count INT, -- replay counter
+     current_mech_id smallint,
+     new_token VARCHAR(250),
+     new_expire BIGINT, -- seconds unix timestamp
+     new_count INT,
+     new_mech_id smallint,
+     PRIMARY KEY(server, username, user_agent_id)
+);
