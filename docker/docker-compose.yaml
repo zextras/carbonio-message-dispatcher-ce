@@ -1,0 +1,40 @@
+services:
+  carbonio-message-dispatcher-db:
+    build:
+      context: ./db/
+      dockerfile: Dockerfile
+    container_name: carbonio-message-dispatcher-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: carbonio-message-dispatcher-db
+      POSTGRES_USER: carbonio-message-dispatcher-db
+      POSTGRES_PASSWORD: password
+    volumes:
+      - ./db/:/docker-entrypoint-initdb.d/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U carbonio-message-dispatcher-db -d carbonio-message-dispatcher-db"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  mongooseim:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mongooseim
+    hostname: mongooseim
+    restart: unless-stopped
+    ports:
+      - "10000:10000" # Graphql Admin port
+    depends_on:
+      carbonio-message-dispatcher-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "mongooseimctl", "status"]
+      interval: 15s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
