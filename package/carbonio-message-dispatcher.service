@@ -14,6 +14,7 @@ User=carbonio-message-dispatcher
 Group=carbonio-message-dispatcher
 Restart=on-failure
 RestartSec=15
+LimitNOFILE=65536
 TimeoutSec=60
 TimeoutStopSec=120
 
