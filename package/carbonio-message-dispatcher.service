@@ -4,6 +4,7 @@ Documentation=https://docs.zextras.com/
 Wants=network.target
 Requires=network-online.target
 After=network-online.target
+PartOf=carbonio.target
 
 [Service]
 Type=simple
@@ -13,8 +14,10 @@ User=carbonio-message-dispatcher
 Group=carbonio-message-dispatcher
 Restart=on-failure
 RestartSec=15
+LimitNOFILE=65536
 TimeoutSec=60
 TimeoutStopSec=120
+LimitNOFILE=65536
 
 [Install]
 WantedBy=multi-user.target
