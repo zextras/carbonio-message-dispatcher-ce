@@ -3,21 +3,19 @@ Description=Carbonio Message Dispatcher XMPP sidecar proxy
 Documentation=https://docs.zextras.com/
 Requires=network-online.target
 After=network-online.target
+PartOf=carbonio.target
 
 [Service]
-Type=simple
+User=carbonio-message-dispatcher
 ExecStart=/usr/bin/consul connect envoy \
     -token-file /etc/carbonio/message-dispatcher/service-discover/token \
     -admin-bind localhost:0 \
     -sidecar-for carbonio-message-dispatcher-xmpp
+ExecReload=/usr/bin/kill -HUP $MAINPID
 Restart=on-failure
 RestartSec=15
-User=carbonio-message-dispatcher
-KillMode=process
-KillSignal=SIGKILL
+KillSignal=SIGINT
 LimitNOFILE=65536
-TimeoutSec=120
-TimeoutStopSec=120
 
 [Install]
 WantedBy=multi-user.target
