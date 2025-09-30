@@ -19,7 +19,7 @@ pipeline {
   }
 
   environment {
-    FAILURE_EMAIL_RECIPIENTS = 'smokybeans@zextras.com'
+    FAILURE_EMAIL_RECIPIENTS='smokybeans@zextras.com'
   }
 
   options {
@@ -70,6 +70,8 @@ pipeline {
                 imageTags.add('latest')
               } else if (buildingTag() && env.TAG_NAME?.trim()) {
                 imageTags.add(env.TAG_NAME?.startsWith('v') ? env.TAG_NAME.substring(1) : env.TAG_NAME)
+              } else if (params.PLAYGROUND == true) {
+                imageTags.add(env.BRANCH_NAME.replaceAll('/', '-'))
               }
 
               dockerHelper.buildImage([
@@ -77,7 +79,7 @@ pipeline {
                 imageTags: imageTags,
                 dockerfile: 'docker/Dockerfile',
                 ocLabels: [
-                  title: 'Carbonio Message Dispatcher',
+                  title: 'Carbonio Message Dispatcher Community Edition',
                   descriptionFile: 'docker/description.md',
                   version: imageTags[0]
                 ]
@@ -88,7 +90,7 @@ pipeline {
                 imageTags: imageTags,
                 dockerfile: 'docker/db/Dockerfile',
                 ocLabels: [
-                  title: 'Carbonio Message Dispatcher DB',
+                  title: 'Carbonio Message Dispatcher Community Edition DB',
                   descriptionFile: 'docker/db/description.md',
                   version: imageTags[0]
                 ]
@@ -97,6 +99,7 @@ pipeline {
           }
         }
     }
+   }
 
     stage('Build deb/rpm') {
       steps {
@@ -172,5 +175,5 @@ pipeline {
         )
       }
     }
-  }
+}
 }
