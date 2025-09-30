@@ -19,7 +19,7 @@ pipeline {
   }
 
   environment {
-    FAILURE_EMAIL_RECIPIENTS='smokybeans@zextras.com'
+    FAILURE_EMAIL_RECIPIENTS = 'smokybeans@zextras.com'
   }
 
   options {
@@ -97,7 +97,6 @@ pipeline {
           }
         }
     }
-  }
 
     stage('Build deb/rpm') {
       steps {
@@ -173,5 +172,5 @@ pipeline {
         )
       }
     }
-}
+  }
 }
