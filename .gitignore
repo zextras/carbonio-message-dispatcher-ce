@@ -62,3 +62,6 @@ Thumbs.db
 m2/
 mvnw
 mvnw.cmd
+
+
+.vscode/
