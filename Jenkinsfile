@@ -65,6 +65,7 @@ pipeline {
         anyOf {
           branch 'devel'
           buildingTag()
+          expression { params.PLAYGROUND == true }
         }
       }
 
@@ -78,25 +79,27 @@ pipeline {
                 imageTags.add('latest')
               } else if (buildingTag() && env.TAG_NAME?.trim()) {
                 imageTags.add(env.TAG_NAME?.startsWith('v') ? env.TAG_NAME.substring(1) : env.TAG_NAME)
+              } else if (params.PLAYGROUND == true) {
+                imageTags.add(env.BRANCH_NAME.replaceAll('/', '-'))
               }
 
               dockerHelper.buildImage([
-                imageName: 'registry.dev.zextras.com/dev/carbonio-message-dispatcher',
+                imageName: 'registry.dev.zextras.com/dev/carbonio-message-dispatcher-ce',
                 imageTags: imageTags,
                 dockerfile: 'docker/Dockerfile',
                 ocLabels: [
-                  title: 'Carbonio Message Dispatcher',
+                  title: 'Carbonio Message Dispatcher Community Edition',
                   descriptionFile: 'docker/description.md',
                   version: imageTags[0]
                 ]
               ])
 
               dockerHelper.buildImage([
-                imageName: 'registry.dev.zextras.com/dev/carbonio-message-dispatcher-db',
+                imageName: 'registry.dev.zextras.com/dev/carbonio-message-dispatcher-ce-db',
                 imageTags: imageTags,
                 dockerfile: 'docker/db/Dockerfile',
                 ocLabels: [
-                  title: 'Carbonio Message Dispatcher DB',
+                  title: 'Carbonio Message Dispatcher Community Edition DB',
                   descriptionFile: 'docker/db/description.md',
                   version: imageTags[0]
                 ]
