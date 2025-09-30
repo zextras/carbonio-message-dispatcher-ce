@@ -60,7 +60,15 @@ pipeline {
       }
     }
 
-    steps {
+    stage('Build and Publish Docker Image') {
+      when {
+        anyOf {
+          branch 'devel'
+          buildingTag()
+        }
+      }
+
+      steps {
         container('dind') {
           withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
             script {
@@ -70,27 +78,25 @@ pipeline {
                 imageTags.add('latest')
               } else if (buildingTag() && env.TAG_NAME?.trim()) {
                 imageTags.add(env.TAG_NAME?.startsWith('v') ? env.TAG_NAME.substring(1) : env.TAG_NAME)
-              } else if (params.PLAYGROUND == true) {
-                imageTags.add(env.BRANCH_NAME.replaceAll('/', '-'))
               }
 
               dockerHelper.buildImage([
-                imageName: 'registry.dev.zextras.com/dev/carbonio-message-dispatcher-ce',
+                imageName: 'registry.dev.zextras.com/dev/carbonio-message-dispatcher',
                 imageTags: imageTags,
                 dockerfile: 'docker/Dockerfile',
                 ocLabels: [
-                  title: 'Carbonio Message Dispatcher Community Edition',
+                  title: 'Carbonio Message Dispatcher',
                   descriptionFile: 'docker/description.md',
                   version: imageTags[0]
                 ]
               ])
 
               dockerHelper.buildImage([
-                imageName: 'registry.dev.zextras.com/dev/carbonio-message-dispatcher-ce-db',
+                imageName: 'registry.dev.zextras.com/dev/carbonio-message-dispatcher-db',
                 imageTags: imageTags,
                 dockerfile: 'docker/db/Dockerfile',
                 ocLabels: [
-                  title: 'Carbonio Message Dispatcher Community Edition DB',
+                  title: 'Carbonio Message Dispatcher DB',
                   descriptionFile: 'docker/db/description.md',
                   version: imageTags[0]
                 ]
@@ -98,8 +104,9 @@ pipeline {
             }
           }
         }
+
+      }
     }
-  }
 
     stage('Build deb/rpm') {
       steps {
@@ -175,5 +182,4 @@ pipeline {
         )
       }
     }
-}
-
+  }
