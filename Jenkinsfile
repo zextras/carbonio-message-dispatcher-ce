@@ -18,10 +18,6 @@ pipeline {
     }
   }
 
-  environment {
-    FAILURE_EMAIL_RECIPIENTS='smokybeans@zextras.com'
-  }
-
   options {
     buildDiscarder(logRotator(numToKeepStr: '5'))
     skipDefaultCheckout()
@@ -56,6 +52,56 @@ pipeline {
             mvn package -Dmaven.main.skip -Dmaven.repo.local=$(pwd)/m2
             cp carbonio-message-dispatcher-auth/target/carbonio-message-dispatcher-auth-fatjar.jar package/
           '''
+        }
+      }
+    }
+
+    stage('Build and Publish Docker Image') {
+      when {
+        anyOf {
+          branch 'devel'
+          buildingTag()
+          expression { params.PLAYGROUND == true }
+        }
+      }
+
+      steps {
+        container('dind') {
+          withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
+            script {
+              Set<String> imageTags = []
+
+              if (env.BRANCH_NAME == 'devel') {
+                imageTags.add('latest')
+              } else if (buildingTag() && env.TAG_NAME?.trim()) {
+                imageTags.add(env.TAG_NAME?.startsWith('v') ? env.TAG_NAME.substring(1) : env.TAG_NAME)
+              } else if (params.PLAYGROUND == true) {
+                imageTags.add(env.BRANCH_NAME.replaceAll('/', '-'))
+              }
+
+              dockerHelper.buildImage([
+                imageName: 'registry.dev.zextras.com/dev/carbonio-message-dispatcher-ce',
+                imageTags: imageTags,
+                dockerfile: 'docker/Dockerfile',
+                ocLabels: [
+                  title: 'Carbonio Message Dispatcher Community Edition',
+                  descriptionFile: 'docker/description.md',
+                  version: imageTags[0]
+                ]
+              ])
+
+              dockerHelper.buildImage([
+                imageName: 'registry.dev.zextras.com/dev/carbonio-message-dispatcher-ce-db',
+                imageTags: imageTags,
+                dockerfile: 'docker/db/Dockerfile',
+                ocLabels: [
+                  title: 'Carbonio Message Dispatcher Community Edition DB',
+                  descriptionFile: 'docker/db/description.md',
+                  version: imageTags[0]
+                ]
+              ])
+            }
+          }
         }
       }
     }
