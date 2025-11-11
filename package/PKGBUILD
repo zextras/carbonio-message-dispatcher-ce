@@ -36,6 +36,7 @@ makedepends__yum=(
 
 source=(
   "https://github.com/esl/MongooseIM/archive/6.2.1.tar.gz"
+  "611-carbonio-message-dispatcher.sh"
   "app.config"
   "carbonio-message-dispatcher-auth"
   "carbonio-message-dispatcher-auth-fatjar.jar"
@@ -45,7 +46,6 @@ source=(
   "carbonio-message-dispatcher-http-sidecar.service"
   "carbonio-message-dispatcher-http.hcl"
   "carbonio-message-dispatcher-migration"
-  "carbonio-message-dispatcher-pending-setup"
   "carbonio-message-dispatcher-setup"
   "carbonio-message-dispatcher-xmpp-sidecar.service"
   "carbonio-message-dispatcher-xmpp.hcl"
@@ -69,6 +69,7 @@ source=(
 
 sha256sums=(
   '662999119c20792e959d479ccdf530b6c0cea11e44eafd069df6ef98fe89bc52'
+  '38c979389729d127887c2da1b23bf5114e2ad9bdc211c8315f87da745b4488d1'
   'f7384b4fd538b267f8c7a708185a9c56f5444ec04526d4b85ca5068f538d1abc'
   'fc36795b485260f2048bf6802f942be0e427c57a09b020b33be457b655a98625'
   'SKIP'
@@ -78,7 +79,6 @@ sha256sums=(
   '8dd56e4b4accc01c65fe665306f0b8002904ac08d36229b84976b8a293843494'
   'b4a330c34a44be520df35498d7f8173355f63ed79d241cbaab454a3ecd96d8a1'
   '692079ea85e441db8565b1fbc38b460d4f36136d598d7d14c51c1885896e3053'
-  '38c979389729d127887c2da1b23bf5114e2ad9bdc211c8315f87da745b4488d1'
   '8a06d1f97c290e818951b5f38bd38b63ab51dfd641f433cd2f0b84905edcd0b1'
   '7aa72a9f6f63a8c16d8d7f0cdd9304ab03a7dac5f404945ca5b46080809c30c7'
   '0312bb4d66fd0ed34dfa4dc9f38bb253ed6822c71390cd2a858b36bb239a2523'
@@ -169,8 +169,8 @@ package() {
     "${pkgdir}/usr/bin/carbonio-message-dispatcher-migration"
   install -Dm755 carbonio-message-dispatcher-setup \
     "${pkgdir}/usr/bin/carbonio-message-dispatcher-setup"
-  install -Dm644 carbonio-message-dispatcher-pending-setup \
-    "${pkgdir}/etc/zextras/pending-setups.d/carbonio-message-dispatcher.sh"
+  install -Dm644 611-carbonio-message-dispatcher.sh \
+    "${pkgdir}/etc/zextras/pending-setups.d/611-carbonio-message-dispatcher.sh"
   install -Dm644 carbonio-message-dispatcher.service \
     "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher.service"
   install -Dm644 carbonio-message-dispatcher-auth.service \
