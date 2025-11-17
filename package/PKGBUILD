@@ -1,5 +1,5 @@
 pkgname="carbonio-message-dispatcher-ce"
-pkgver="0.15.3"
+pkgver="0.16.0"
 pkgrel="1"
 pkgdesc="Carbonio Message Dispatcher component"
 maintainer="Zextras <packages@zextras.com>"
