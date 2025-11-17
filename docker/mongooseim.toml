@@ -41,34 +41,6 @@
       path = "/ws-xmpp"
       ping_rate = 30_000
 
-    [[listen.http.handlers.mongoose_admin_api]]
-      host = "_"
-      path = "/admin"
-
-    [[listen.http.handlers.mongoose_client_api_messages]]
-      host = "_"
-      path = "/api/messages/[:with]"
-
-    [[listen.http.handlers.mongoose_client_api_contacts]]
-      host = "_"
-      path = "/api/contacts/[:jid]"
-
-    [[listen.http.handlers.mongoose_client_api_rooms]]
-      host = "_"
-      path = "/api/rooms/[:id]"
-
-    [[listen.http.handlers.mongoose_client_api_rooms_config]]
-      host = "_"
-      path = "/api/rooms/[:id]/config"
-
-    [[listen.http.handlers.mongoose_client_api_rooms_users]]
-      host = "_"
-      path = "/api/rooms/:id/users/[:user]"
-
-    [[listen.http.handlers.mongoose_client_api_rooms_messages]]
-      host = "_"
-      path = "/api/rooms/[:id]/messages"
-
     [[listen.http.handlers.mongoose_graphql_handler]]
       host = "_"
       path = "/api/graphql"

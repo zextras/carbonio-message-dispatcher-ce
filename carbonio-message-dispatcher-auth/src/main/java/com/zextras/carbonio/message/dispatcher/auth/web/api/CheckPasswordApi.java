@@ -10,9 +10,9 @@ import com.zextras.carbonio.message.dispatcher.auth.service.AuthenticationServic
 import com.zextras.carbonio.message.dispatcher.auth.utility.Utilities;
 import java.util.Map;
 import java.util.Optional;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class CheckPasswordApi extends HttpServlet {
 
