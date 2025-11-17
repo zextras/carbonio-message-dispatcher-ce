@@ -29,13 +29,14 @@ SPDX-License-Identifier: AGPL-3.0-only
     <!-- Carbonio User Management -->
     <carbonio-user-management-sdk.version>0.5.9</carbonio-user-management-sdk.version>
     <!-- Jetty -->
-    <org.eclipse.jetty.version>10.0.6</org.eclipse.jetty.version>
+    <org.eclipse.jetty.version>12.0.25</org.eclipse.jetty.version>
+    <org.eclipse.jetty.servlet.version>12.0.25</org.eclipse.jetty.servlet.version>
     <!-- Logging -->
-    <org.slf4j-api.version>1.7.32</org.slf4j-api.version>
-    <logback-classic.version>1.2.6</logback-classic.version>
+    <org.slf4j-api.version>2.0.17</org.slf4j-api.version>
+    <logback-classic.version>1.5.18</logback-classic.version>
     <!-- Plugins -->
-    <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
-    <maven-shade-plugin.version>3.5.1</maven-shade-plugin.version>
+    <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+    <maven-shade-plugin.version>3.6.0</maven-shade-plugin.version>
   </properties>
 
   <dependencyManagement>
@@ -55,9 +56,9 @@ SPDX-License-Identifier: AGPL-3.0-only
       </dependency>
 
       <dependency>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-servlet</artifactId>
-        <version>${org.eclipse.jetty.version}</version>
+        <groupId>org.eclipse.jetty.ee10</groupId>
+        <artifactId>jetty-ee10-servlet</artifactId>
+        <version>${org.eclipse.jetty.servlet.version}</version>
       </dependency>
 
       <!-- Logging dependencies-->
