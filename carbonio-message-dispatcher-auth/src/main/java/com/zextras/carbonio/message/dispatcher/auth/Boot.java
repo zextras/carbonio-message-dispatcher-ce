@@ -11,11 +11,11 @@ import com.zextras.carbonio.message.dispatcher.auth.web.api.CheckPasswordApi;
 import com.zextras.carbonio.message.dispatcher.auth.web.api.HealthApi;
 import com.zextras.carbonio.message.dispatcher.auth.web.api.UserExistsApi;
 import com.zextras.carbonio.usermanagement.UserManagementClient;
+import jakarta.servlet.ServletRegistration.Dynamic;
 import java.net.InetSocketAddress;
-import javax.servlet.ServletRegistration.Dynamic;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.servlet.ServletContextHandler;
 
 public class Boot {
 
