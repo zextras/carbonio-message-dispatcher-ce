@@ -3,11 +3,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 library(
-  identifier: 'jenkins-packages-build-library@1.0.4',
+  identifier: 'jenkins-lib-common@1.1.2',
   retriever: modernSCM([
     $class: 'GitSCMSource',
-    remote: 'git@github.com:zextras/jenkins-packages-build-library.git',
-    credentialsId: 'jenkins-integration-with-github-account'
+    credentialsId: 'jenkins-integration-with-github-account',
+    remote: 'git@github.com:zextras/jenkins-lib-common.git',
   ])
 )
 
@@ -24,22 +24,13 @@ pipeline {
     timeout(time: 1, unit: 'HOURS')
   }
 
-  parameters {
-    booleanParam defaultValue: false,
-      description: 'Whether to upload the packages in playground repository',
-      name: 'PLAYGROUND'
-  }
-
-  tools {
-    jfrog 'jfrog-cli'
-  }
-
   stages {
-    stage('Checkout') {
+    stage('Setup') {
       steps {
         checkout scm
         script {
           gitMetadata()
+          properties(defaultPipelineProperties())
         }
       }
     }
@@ -61,47 +52,30 @@ pipeline {
         anyOf {
           branch 'devel'
           buildingTag()
-          expression { params.PLAYGROUND == true }
         }
       }
 
       steps {
-        container('dind') {
-          withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
-            script {
-              Set<String> imageTags = []
+        script {
+          dockerStage([
+            imageName: 'carbonio-message-dispatcher-ce',
+            dockerfile: 'docker/Dockerfile',
+            ocLabels: [
+              title: 'Carbonio Message Dispatcher Community Edition',
+              descriptionFile: 'docker/description.md',
+              version: isBuildingTag() ? env.GIT_TAG : 'devel'
+            ]
+          ])
 
-              if (env.BRANCH_NAME == 'devel') {
-                imageTags.add('latest')
-              } else if (buildingTag() && env.TAG_NAME?.trim()) {
-                imageTags.add(env.TAG_NAME?.startsWith('v') ? env.TAG_NAME.substring(1) : env.TAG_NAME)
-              } else if (params.PLAYGROUND == true) {
-                imageTags.add(env.BRANCH_NAME.replaceAll('/', '-'))
-              }
-
-              dockerHelper.buildImage([
-                imageName: 'registry.dev.zextras.com/dev/carbonio-message-dispatcher-ce',
-                imageTags: imageTags,
-                dockerfile: 'docker/Dockerfile',
-                ocLabels: [
-                  title: 'Carbonio Message Dispatcher Community Edition',
-                  descriptionFile: 'docker/description.md',
-                  version: imageTags[0]
-                ]
-              ])
-
-              dockerHelper.buildImage([
-                imageName: 'registry.dev.zextras.com/dev/carbonio-message-dispatcher-ce-db',
-                imageTags: imageTags,
-                dockerfile: 'docker/db/Dockerfile',
-                ocLabels: [
-                  title: 'Carbonio Message Dispatcher Community Edition DB',
-                  descriptionFile: 'docker/db/description.md',
-                  version: imageTags[0]
-                ]
-              ])
-            }
-          }
+          dockerStage([
+            imageName: 'carbonio-message-dispatcher-ce-db',
+            dockerfile: 'docker/db/Dockerfile',
+            ocLabels: [
+              title: 'Carbonio Message Dispatcher Community Edition DB',
+              descriptionFile: 'docker/db/description.md',
+              version: isBuildingTag() ? env.GIT_TAG : 'devel'
+            ]
+          ])
         }
       }
     }
@@ -174,9 +148,15 @@ pipeline {
 
     stage('Upload artifacts')
     {
+      when {
+        expression { return uploadStage.shouldUpload() }
+      }
+      tools {
+        jfrog 'jfrog-cli'
+      }
       steps {
         uploadStage(
-          packages: yapHelper.getPackageNames()
+          packages: yapHelper.resolvePackageNames()
         )
       }
     }
