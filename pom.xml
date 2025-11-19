@@ -24,7 +24,6 @@ SPDX-License-Identifier: AGPL-3.0-only
   <properties>
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- Carbonio User Management -->
     <carbonio-user-management-sdk.version>0.5.9</carbonio-user-management-sdk.version>
     <!-- Jetty -->
