@@ -37,7 +37,7 @@ pipeline {
 
     stage('Compiling') {
       steps {
-        container('jdk-17') {
+        container('jdk-21') {
           sh '''
             mvn -Dmaven.repo.local=$(pwd)/m2 -T1C compile
             mvn package -Dmaven.main.skip -Dmaven.repo.local=$(pwd)/m2
