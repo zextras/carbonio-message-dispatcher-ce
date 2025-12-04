@@ -45,7 +45,6 @@ source=(
   "carbonio-message-dispatcher-auth.service"
   "carbonio-message-dispatcher-http-sidecar.service"
   "carbonio-message-dispatcher-http.hcl"
-  "carbonio-message-dispatcher-migration"
   "carbonio-message-dispatcher-setup"
   "carbonio-message-dispatcher-xmpp-sidecar.service"
   "carbonio-message-dispatcher-xmpp.hcl"
@@ -74,7 +73,6 @@ sha256sums=(
   '52403661267da54747e3b09e5d4a81775722a96b513c0b42265e4a2ac0366d1e'
   '8dd56e4b4accc01c65fe665306f0b8002904ac08d36229b84976b8a293843494'
   'b4a330c34a44be520df35498d7f8173355f63ed79d241cbaab454a3ecd96d8a1'
-  '692079ea85e441db8565b1fbc38b460d4f36136d598d7d14c51c1885896e3053'
   '8a06d1f97c290e818951b5f38bd38b63ab51dfd641f433cd2f0b84905edcd0b1'
   '7aa72a9f6f63a8c16d8d7f0cdd9304ab03a7dac5f404945ca5b46080809c30c7'
   '0312bb4d66fd0ed34dfa4dc9f38bb253ed6822c71390cd2a858b36bb239a2523'
@@ -157,8 +155,6 @@ package() {
   #Our files
   install -Dm755 carbonio-message-dispatcher-auth \
     "${pkgdir}/usr/bin/carbonio-message-dispatcher-auth"
-  install -Dm755 carbonio-message-dispatcher-migration \
-    "${pkgdir}/usr/bin/carbonio-message-dispatcher-migration"
   install -Dm755 carbonio-message-dispatcher-setup \
     "${pkgdir}/usr/bin/carbonio-message-dispatcher-setup"
   install -Dm644 611-carbonio-message-dispatcher.sh \
