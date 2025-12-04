@@ -15,19 +15,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 ## Upgrade Mongoose
 
-### Migrations
-
-In order to properly upgrade MongooseIm version follow these steps:
-
-- check for migrations (sql) in mongoose repository and add in package folder following the naming convention
-  `pgsql-script-migrations-{VERSION}.sql`
-- add this sql statement on the bottom of migrations added like `UPDATE database_version SET version = '{VERSION}'`.
-    - This statement is mandatory to apply logic in `carbonio-message-dispatcher-migration` script
-- add references to migrations in PKGBUILD file in `source` array and `sha256sums` array
-- install migrations in package function in PKGBUILD file like
-    -
-    `install -Dm644 pgsql-script-migrations-{VERSION}.sql "${pkgdir}/etc/carbonio/message-dispatcher/sql-scripts/migrations/{VERSION}.sql"`
-
 ### Update package version
 
 In order to properly update package version follow these steps:
