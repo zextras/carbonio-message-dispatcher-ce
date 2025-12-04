@@ -67,12 +67,23 @@ if [[ ! -f "/etc/carbonio/message-dispatcher/service-discover/token" ]]; then
 
     # To pass the token to consul we need to inject it to a env. variable
     # since it doesn't accept a file as an argument
+
+    # Override for main service
     mkdir -p /etc/systemd/system/carbonio-message-dispatcher.service.d/
     cat >/etc/systemd/system/carbonio-message-dispatcher.service.d/override.conf <<EOF
 [Service]
 Environment="CONSUL_HTTP_TOKEN=$(cat /etc/carbonio/message-dispatcher/service-discover/token)"
 EOF
     chmod 0600 /etc/systemd/system/carbonio-message-dispatcher.service.d/override.conf
+
+    # Override for auth service (needs Consul token for database credentials)
+    mkdir -p /etc/systemd/system/carbonio-message-dispatcher-auth.service.d/
+    cat >/etc/systemd/system/carbonio-message-dispatcher-auth.service.d/override.conf <<EOF
+[Service]
+Environment="CONSUL_HTTP_TOKEN=$(cat /etc/carbonio/message-dispatcher/service-discover/token)"
+EOF
+    chmod 0600 /etc/systemd/system/carbonio-message-dispatcher-auth.service.d/override.conf
+
     systemctl daemon-reload
 fi
 
