@@ -76,7 +76,11 @@ Environment="CONSUL_HTTP_TOKEN=$(cat /etc/carbonio/message-dispatcher/service-di
 EOF
     chmod 0600 /etc/systemd/system/carbonio-message-dispatcher.service.d/override.conf
 
-    # Override for auth service (needs Consul token for database credentials)
+    systemctl daemon-reload
+fi
+
+if [[ -f "/etc/carbonio/message-dispatcher/service-discover/token" ]] && \
+   [[ ! -f "/etc/systemd/system/carbonio-message-dispatcher-auth.service.d/override.conf" ]]; then
     mkdir -p /etc/systemd/system/carbonio-message-dispatcher-auth.service.d/
     cat >/etc/systemd/system/carbonio-message-dispatcher-auth.service.d/override.conf <<EOF
 [Service]
