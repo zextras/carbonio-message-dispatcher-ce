@@ -124,8 +124,6 @@ export -n CONSUL_HTTP_TOKEN
 
 echo "==========================================================================================="
 echo "Carbonio Message Dispatcher correctly set!"
-echo "You must run carbonio-message-dispatcher-migration to check database consistency."
-echo "Syntax: [PGPASSWORD=password] carbonio-message-dispatcher-migration username [host] [port]"
 echo "==========================================================================================="
 
 systemctl restart carbonio-message-dispatcher-auth.service

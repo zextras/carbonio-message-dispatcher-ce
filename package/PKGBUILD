@@ -57,11 +57,6 @@ source=(
   "logback.xml"
   "mod_event_pusher_http_defaults.patch"
   "mongooseim.toml"
-  "pgsql-script-initial-schema-mongooseim-6.0.0.sql"
-  "pgsql-script-migrations-6.0.0.sql"
-  "pgsql-script-migrations-6.2.0.sql"
-  "pgsql-script-migrations-6.2.1.sql"
-  "pgsql-script-migrations-6.3.2.sql"
   "policies.json"
   "service-protocol-auth.json"
   "service-protocol-http.json"
@@ -91,11 +86,6 @@ sha256sums=(
   'd1ec2c67cd15263fc84ffb891f4276d1e147084a3e4eb1bc1801de2ca5bf32e4'
   '1cb8dc15306308863da6b21b069b79d480fd461f1cf285b86d29e23b636771b8'
   'c1533d03481487243edf16f1b422029eb92e98969e6ac7918d0fe451740d3380'
-  'bd549578a744badabf201d9de028babe6a198533cf37d9b55521b8acc02d35e1'
-  'cf583dd0a4ccd21fdb04a4600792657a762609b3cda4322252643d3ee28e3002'
-  'f223f80047745435b2114430edf7d21e1fb288f28cc90180fb812e2a51341db8'
-  '846614d16daa0391ae156ad22697bc62f366cd5bbfce45af7fb6328284d23147'
-  '44ab2d5b79d2d1f51aea0b1bea38c3ef3e8f3b4b99c19c2b987e89d905bab370'
   '073efa7ea1a80e06a53c1678d0fa18b81f407a3b08b403adac6a6b4b2906880f'
   'ecca7efddcff1a5efe6d38fd64bf489638bdac94c6c5ec7178866354a9ad5a91'
   '58bf32b3212d9333edaec81260121a460c738ede9be5a26c29bd0a0f3c0ee3e9'
@@ -205,18 +195,6 @@ package() {
     "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/service-protocol-xmpp.json"
   install -Dm644 service-protocol-auth.json \
     "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/service-protocol-auth.json"
-
-  #Migration files
-  install -Dm644 pgsql-script-initial-schema-mongooseim-6.0.0.sql \
-    "${pkgdir}/etc/carbonio/message-dispatcher/sql-scripts/initial-schema.sql"
-  install -Dm644 pgsql-script-migrations-6.0.0.sql \
-    "${pkgdir}/etc/carbonio/message-dispatcher/sql-scripts/migrations/6.0.0.sql"
-  install -Dm644 pgsql-script-migrations-6.2.0.sql \
-    "${pkgdir}/etc/carbonio/message-dispatcher/sql-scripts/migrations/6.2.0.sql"
-  install -Dm644 pgsql-script-migrations-6.2.1.sql \
-    "${pkgdir}/etc/carbonio/message-dispatcher/sql-scripts/migrations/6.2.1.sql"
-  install -Dm644 pgsql-script-migrations-6.3.2.sql \
-    "${pkgdir}/etc/carbonio/message-dispatcher/sql-scripts/migrations/6.3.2.sql"
 }
 
 postinst() {

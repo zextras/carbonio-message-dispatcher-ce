@@ -29,6 +29,23 @@ SPDX-License-Identifier: AGPL-3.0-only
   </properties>
 
   <dependencies>
+
+    <dependency>
+      <groupId>com.orbitz.consul</groupId>
+      <artifactId>consul-client</artifactId>
+    </dependency>
+
+    <!-- Database -->
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-database-postgresql</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+    </dependency>
+
     <!-- Carbonio User Management -->
     <dependency>
       <groupId>com.zextras.carbonio.user-management</groupId>
