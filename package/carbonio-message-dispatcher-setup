@@ -139,6 +139,7 @@ export -n CONSUL_HTTP_TOKEN
 
 echo "==========================================================================================="
 echo "Carbonio Message Dispatcher correctly set!"
+echo "Database migration is now performed automatically, there's no need to do it manually anymore."
 echo "==========================================================================================="
 
 systemctl restart carbonio-message-dispatcher-auth.service
