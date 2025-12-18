@@ -490,3 +490,10 @@ CREATE TABLE domain_events (
     PRIMARY KEY(id)
 );
 CREATE INDEX i_domain_events_domain ON domain_events(domain);
+
+CREATE TABLE database_version
+(
+    version VARCHAR(16) NOT NULL,
+    PRIMARY KEY (version)
+);
+INSERT INTO database_version (version) VALUES ('6.0.0');

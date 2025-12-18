@@ -4,6 +4,7 @@
 
 package com.zextras.carbonio.message.dispatcher.auth.service.impl;
 
+import com.google.inject.Inject;
 import com.zextras.carbonio.message.dispatcher.auth.exception.FailedDependencyException;
 import com.zextras.carbonio.message.dispatcher.auth.exception.UnauthorizedException;
 import com.zextras.carbonio.message.dispatcher.auth.service.AuthenticationService;
@@ -21,6 +22,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
   private final UserManagementClient userManagementClient;
 
+  @Inject
   public AuthenticationServiceImpl(UserManagementClient userManagementClient) {
     this.userManagementClient = userManagementClient;
   }

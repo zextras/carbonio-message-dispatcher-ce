@@ -7,7 +7,7 @@ package com.zextras.carbonio.message.dispatcher.auth;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
-import com.zextras.carbonio.message.dispatcher.auth.config.Constant;
+import com.zextras.carbonio.message.dispatcher.auth.config.Constants;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.slf4j.LoggerFactory;
@@ -15,20 +15,20 @@ import org.slf4j.LoggerFactory;
 public class Main {
 
   public static void main(String[] args) throws Exception {
-    if (Files.exists(Path.of(Constant.LOGGER_CONFIG_PATH))) {
+    if (Files.exists(Path.of(Constants.LOGGER_CONFIG_PATH))) {
       loadLoggingConfigurations();
     }
     new Boot().boot();
   }
 
   private static void loadLoggingConfigurations() {
-    System.out.printf("Loading logging configurations from file '%s' ...%n", Constant.LOGGER_CONFIG_PATH);
+    System.out.printf("Loading logging configurations from file '%s' ...%n", Constants.LOGGER_CONFIG_PATH);
     LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
     JoranConfigurator configurator = new JoranConfigurator();
     configurator.setContext(context);
     context.reset();
     try {
-      configurator.doConfigure(Constant.LOGGER_CONFIG_PATH);
+      configurator.doConfigure(Constants.LOGGER_CONFIG_PATH);
       System.out.println("Logging configurations file loaded");
     } catch (JoranException e1) {
       System.out.println("Failed to load logging configurations file");
