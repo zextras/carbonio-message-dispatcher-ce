@@ -49,13 +49,6 @@ pipeline {
     }
 
     stage('Build and Publish Docker Image') {
-      when {
-        anyOf {
-          branch 'devel'
-          buildingTag()
-        }
-      }
-
       steps {
         script {
           dockerStage([
