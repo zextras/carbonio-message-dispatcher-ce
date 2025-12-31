@@ -64,7 +64,7 @@ pipeline {
             ocLabels: [
               title: 'Carbonio Message Dispatcher Community Edition',
               descriptionFile: 'docker/description.md',
-              version: isBuildingTag() ? env.GIT_TAG : 'devel'
+              version: env.GIT_TAG ?: 'devel'
             ]
           ])
 
@@ -74,7 +74,7 @@ pipeline {
             ocLabels: [
               title: 'Carbonio Message Dispatcher Community Edition DB',
               descriptionFile: 'docker/db/description.md',
-              version: isBuildingTag() ? env.GIT_TAG : 'devel'
+              version: env.GIT_TAG ?: 'devel'
             ]
           ])
         }
