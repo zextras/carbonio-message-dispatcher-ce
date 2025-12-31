@@ -47,4 +47,14 @@ public final class Constants {
     public static final String DEFAULT_USERNAME = "carbonio-message-dispatcher-db";
     public static final String DEFAULT_PASSWORD = "";
   }
+
+  public static final class ServiceDiscover {
+
+    private ServiceDiscover() {}
+
+    public static final String DEFAULT_HOST = "localhost";
+    public static final int DEFAULT_PORT = 8500;
+    public static final String HOST_PROPERTY = "carbonio.service-discover.host";
+    public static final String PORT_PROPERTY = "carbonio.service-discover.port";
+  }
 }

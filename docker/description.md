@@ -1,1 +1,1 @@
-Carbonio Message Broker configured with custom `app.config` and `mongooseim.toml`.
+Carbonio Message Dispatcher complete application image containing MongooseIM XMPP server and the auth module with Flyway database migrations.
