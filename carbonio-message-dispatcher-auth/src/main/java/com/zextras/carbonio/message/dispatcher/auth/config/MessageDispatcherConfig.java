@@ -97,10 +97,30 @@ public class MessageDispatcherConfig {
         .orElse(Constants.Database.DEFAULT_PASSWORD);
   }
 
+  private String getServiceDiscoverHost() {
+    return properties.getProperty(
+        Constants.ServiceDiscover.HOST_PROPERTY,
+        Constants.ServiceDiscover.DEFAULT_HOST);
+  }
+
+  private int getServiceDiscoverPort() {
+    return Integer.parseInt(properties.getProperty(
+        Constants.ServiceDiscover.PORT_PROPERTY,
+        String.valueOf(Constants.ServiceDiscover.DEFAULT_PORT)));
+  }
+
   private Optional<String> getConsulConfig(String key) {
     try {
-      return Consul.builder()
-          .withTokenAuth(System.getenv("CONSUL_HTTP_TOKEN"))
+      String consulUrl = MessageFormat.format(
+          "http://{0}:{1}",
+          getServiceDiscoverHost(),
+          String.valueOf(getServiceDiscoverPort()));
+      Consul.Builder consulBuilder = Consul.builder().withUrl(consulUrl);
+      String consulToken = System.getenv("CONSUL_HTTP_TOKEN");
+      if (consulToken != null && !consulToken.isEmpty()) {
+        consulBuilder.withTokenAuth(consulToken);
+      }
+      return consulBuilder
           .build()
           .keyValueClient()
           .getValueAsString(

@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2024 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
 [general]
   loglevel = "notice"
   hosts = ["carbonio"]
@@ -19,20 +23,21 @@
 
   [outgoing_pools.rdbms.default.connection]
     driver = "pgsql"
-    host = "carbonio-message-dispatcher-db"
-    port = 5432
-    database = "carbonio-message-dispatcher-db"
-    username = "carbonio-message-dispatcher-db"
-    password = "password"
+    host = "<db-host>"
+    port = <db-port>
+    database = "<db-name>"
+    username = "<db-username>"
+    password = "<db-password>"
     keepalive_interval = 30
 
 [listen]
   [[listen.c2s]]
     port = 10001
-    ip_address = "127.0.0.1"
+    ip_address = "0.0.0.0"
 
   [[listen.http]]
     port = 10000
+    ip_address = "0.0.0.0"
     transport.num_acceptors = 10
     transport.max_connections = 1024
 
@@ -45,8 +50,8 @@
       host = "_"
       path = "/api/graphql"
       schema_endpoint = "admin"
-      username = "admin"
-      password = "admin-password"
+      username = "<api-username>"
+      password = "<api-password>"
 
 [modules.mod_muc_light]
   backend = "rdbms"

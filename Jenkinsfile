@@ -43,6 +43,7 @@ pipeline {
             mvn -Dmaven.repo.local=$(pwd)/m2 -T1C compile
             mvn package -Dmaven.main.skip -Dmaven.repo.local=$(pwd)/m2
             cp carbonio-message-dispatcher-auth/target/carbonio-message-dispatcher-auth-fatjar.jar package/
+            cp carbonio-message-dispatcher-auth/target/carbonio-message-dispatcher-auth-fatjar.jar docker/
           '''
         }
       }
@@ -57,15 +58,6 @@ pipeline {
             ocLabels: [
               title: 'Carbonio Message Dispatcher Community Edition',
               descriptionFile: 'docker/description.md',
-            ]
-          ])
-
-          dockerStage([
-            imageName: 'carbonio-message-dispatcher-ce-db',
-            dockerfile: 'docker/db/Dockerfile',
-            ocLabels: [
-              title: 'Carbonio Message Dispatcher Community Edition DB',
-              descriptionFile: 'docker/db/description.md',
             ]
           ])
         }
