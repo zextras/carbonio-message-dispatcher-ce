@@ -49,13 +49,6 @@ pipeline {
     }
 
     stage('Build and Publish Docker Image') {
-      when {
-        anyOf {
-          branch 'devel'
-          buildingTag()
-        }
-      }
-
       steps {
         script {
           dockerStage([
@@ -64,7 +57,6 @@ pipeline {
             ocLabels: [
               title: 'Carbonio Message Dispatcher Community Edition',
               descriptionFile: 'docker/description.md',
-              version: isBuildingTag() ? env.GIT_TAG : 'devel'
             ]
           ])
 
@@ -74,7 +66,6 @@ pipeline {
             ocLabels: [
               title: 'Carbonio Message Dispatcher Community Edition DB',
               descriptionFile: 'docker/db/description.md',
-              version: isBuildingTag() ? env.GIT_TAG : 'devel'
             ]
           ])
         }
