@@ -175,7 +175,7 @@ pipeline {
                 script {
                     container('nodejs-20') {
                         prepareRelease(
-                            repoName: 'carbonio-notification-push'
+                            repoName: 'carbonio-message-dispatcher-ce'
                         )
                     }
                 }
@@ -196,6 +196,22 @@ pipeline {
                 script {
                     tagRelease()
                 }
+            }
+        }
+
+        stage('Build and Publish Docker Image') {
+            when {
+                not {
+                    expression { env.BRANCH_NAME.startsWith('PR-') }
+                }
+            }
+            steps {
+                buildAndPublishDockerImage(
+                    projectName: 'carbonio-message-dispatcher-ce',
+                    dockerfile: 'docker/Dockerfile',
+                    imageTitle: 'Carbonio Message Dispatcher CE',
+                    imageDescription: 'Carbonio Message Dispatcher CE Service'
+                )
             }
         }
     }
