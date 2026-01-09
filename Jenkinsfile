@@ -1,148 +1,202 @@
-// SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
+// SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
 library(
-  identifier: 'jenkins-lib-common@1.1.2',
-  retriever: modernSCM([
-    $class: 'GitSCMSource',
-    credentialsId: 'jenkins-integration-with-github-account',
-    remote: 'git@github.com:zextras/jenkins-lib-common.git',
-  ])
+    identifier: 'jenkins-dt3-lib@v1.2.0',
+    retriever: modernSCM([
+        $class: 'GitSCMSource',
+        remote: 'git@github.com:zextras/jenkins-dt3-lib.git',
+        credentialsId: 'jenkins-integration-with-github-account'
+    ])
 )
 
-properties(defaultPipelineProperties())
+library(
+    identifier: 'jenkins-packages-build-library@1.0.4',
+    retriever: modernSCM([
+        $class: 'GitSCMSource',
+        remote: 'git@github.com:zextras/jenkins-packages-build-library.git',
+        credentialsId: 'jenkins-integration-with-github-account'
+    ])
+)
 
 pipeline {
-  agent {
-    node {
-      label 'zextras-v1'
-    }
-  }
-
-  options {
-    buildDiscarder(logRotator(numToKeepStr: '5'))
-    skipDefaultCheckout()
-    timeout(time: 1, unit: 'HOURS')
-  }
-
-  stages {
-    stage('Setup') {
-      steps {
-        checkout scm
-        script {
-          gitMetadata()
+    agent {
+        node {
+            label 'zextras-v1'
         }
-      }
     }
 
-    stage('Compiling') {
-      steps {
-        container('jdk-21') {
-          sh '''
-            mvn -Dmaven.repo.local=$(pwd)/m2 -T1C compile
-            mvn package -Dmaven.main.skip -Dmaven.repo.local=$(pwd)/m2
-            cp carbonio-message-dispatcher-auth/target/carbonio-message-dispatcher-auth-fatjar.jar package/
-            cp carbonio-message-dispatcher-auth/target/carbonio-message-dispatcher-auth-fatjar.jar docker/
-          '''
-        }
-      }
+    environment {
+        JAVA_OPTS = '-Dfile.encoding=UTF8'
+        LC_ALL = 'C.UTF-8'
+        jenkins_build = 'true'
+        MVN_OPTS = '-B'
     }
 
-    stage('Build and Publish Docker Image') {
-      steps {
-        script {
-          dockerStage([
-            imageName: 'carbonio-message-dispatcher-ce',
-            dockerfile: 'docker/Dockerfile',
-            ocLabels: [
-              title: 'Carbonio Message Dispatcher Community Edition',
-              descriptionFile: 'docker/description.md',
-            ]
-          ])
-        }
-      }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '25'))
+        skipDefaultCheckout()
+        timeout(time: 2, unit: 'HOURS')
     }
 
-    stage('Build deb/rpm') {
-      steps {
-        echo 'Building deb/rpm packages'
-        withCredentials([
-          usernamePassword(
-            credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
-            passwordVariable: 'SECRET',
-            usernameVariable: 'USERNAME'
-          )
-        ]) {
-          script {
-            env.REPO_ENV = env.GIT_TAG ? 'rc' : 'devel'
-          }
-          buildStage([
-            prepare: true,
-            overrides: [
-              'ubuntu-jammy': [
-                preBuildScript: '''
-                  echo "machine zextras.jfrog.io" >> auth.conf
-                  echo "login ''' + USERNAME + '''" >> auth.conf
-                  echo "password ''' + SECRET + '''" >> auth.conf
-                  mv auth.conf /etc/apt
-                  echo "deb [trusted=yes] https://zextras.jfrog.io/artifactory/ubuntu-''' + env.REPO_ENV + ''' jammy main" \
-                  > zextras.list
-                  mv zextras.list /etc/apt/sources.list.d/
-                '''
-              ],
-              'ubuntu-noble': [
-                preBuildScript: '''
-                  echo "machine zextras.jfrog.io" >> auth.conf
-                  echo "login ''' + USERNAME + '''" >> auth.conf
-                  echo "password ''' + SECRET + '''" >> auth.conf
-                  mv auth.conf /etc/apt
-                  echo "deb [trusted=yes] https://zextras.jfrog.io/artifactory/ubuntu-''' + env.REPO_ENV + ''' noble main" \
-                  > zextras.list
-                  mv zextras.list /etc/apt/sources.list.d/
-                '''
-              ],
-              'rocky-8': [
-                preBuildScript: '''
-                  echo "[Zextras]" > zextras.repo
-                  echo "name=Zextras" >> zextras.repo
-                  echo "baseurl=https://''' + USERNAME + ':' + SECRET + '''@zextras.jfrog.io/artifactory/centos8-''' + env.REPO_ENV + '''/" >> zextras.repo
-                  echo "enabled=1" >> zextras.repo
-                  echo "gpgcheck=0" >> zextras.repo
-                  echo "gpgkey=https://''' + USERNAME + ':' + SECRET + '''@zextras.jfrog.io/artifactory/centos8-''' + env.REPO_ENV + '''/repomd.xml.key" >> zextras.repo
-                  mv zextras.repo /etc/yum.repos.d/zextras.repo
-                ''',
-              ],
-              'rocky-9': [
-                preBuildScript: '''
-                  echo "[Zextras]" > zextras.repo
-                  echo "name=Zextras" >> zextras.repo
-                  echo "baseurl=https://''' + USERNAME + ':' + SECRET + '''@zextras.jfrog.io/artifactory/rhel9-''' + env.REPO_ENV + '''/" >> zextras.repo
-                  echo "enabled=1" >> zextras.repo
-                  echo "gpgcheck=0" >> zextras.repo
-                  echo "gpgkey=https://''' + USERNAME + ':' + SECRET + '''@zextras.jfrog.io/artifactory/rhel9-''' + env.REPO_ENV + '''/repomd.xml.key" >> zextras.repo
-                  mv zextras.repo /etc/yum.repos.d/zextras.repo
-                ''',
-              ],
-            ]
-          ])
-        }
-      }
-    }
-
-    stage('Upload artifacts')
-    {
-      when {
-        expression { return uploadStage.shouldUpload() }
-      }
-      tools {
-        jfrog 'jfrog-cli'
-      }
-      steps {
-        uploadStage(
-          packages: yapHelper.resolvePackageNames()
+    parameters {
+        booleanParam(
+            name: 'PREPARE_RELEASE',
+            defaultValue: false,
+            description: 'Check this to prepare a new release (creates pre-release branch and PR)'
         )
-      }
     }
-  }
+
+    tools {
+        jfrog 'jfrog-cli'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    checkoutWithMetadata()
+                }
+            }
+        }
+
+        stage('Build jar') {
+            steps {
+                script {
+                    def profile = '-P dev'
+                    if (env.TAG_NAME) {
+                        profile = '-P prod'
+                    }
+                    container('jdk-21') {
+                        sh '''
+                            mvn ${MVN_OPTS} clean package ${profile}
+                            cp carbonio-message-dispatcher-auth/target/carbonio-message-dispatcher-auth-*-fatjar.jar package/carbonio-message-dispatcher-auth.jar
+                            cp carbonio-message-dispatcher-auth/target/carbonio-message-dispatcher-auth-*-fatjar.jar docker/carbonio-message-dispatcher-auth.jar
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Build deb/rpm') {
+            steps {
+                echo 'Building deb/rpm packages'
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
+                        passwordVariable: 'SECRET',
+                        usernameVariable: 'USERNAME'
+                    )
+                ]) {
+                    script {
+                        env.REPO_ENV = env.GIT_TAG ? 'rc' : 'devel'
+                    }
+                    buildStage([
+                        prepare: true,
+                        overrides: [
+                            'ubuntu-jammy': [
+                                preBuildScript: '''
+                                    echo "machine zextras.jfrog.io" >> auth.conf
+                                    echo "login ''' + USERNAME + '''" >> auth.conf
+                                    echo "password ''' + SECRET + '''" >> auth.conf
+                                    mv auth.conf /etc/apt
+                                    echo "deb [trusted=yes] https://zextras.jfrog.io/artifactory/ubuntu-''' + env.REPO_ENV + ''' jammy main" \
+                                    > zextras.list
+                                    mv zextras.list /etc/apt/sources.list.d/
+                                '''
+                            ],
+                            'ubuntu-noble': [
+                                preBuildScript: '''
+                                    echo "machine zextras.jfrog.io" >> auth.conf
+                                    echo "login ''' + USERNAME + '''" >> auth.conf
+                                    echo "password ''' + SECRET + '''" >> auth.conf
+                                    mv auth.conf /etc/apt
+                                    echo "deb [trusted=yes] https://zextras.jfrog.io/artifactory/ubuntu-''' + env.REPO_ENV + ''' noble main" \
+                                    > zextras.list
+                                    mv zextras.list /etc/apt/sources.list.d/
+                                '''
+                            ],
+                            'rocky-8': [
+                                preBuildScript: '''
+                                    echo "[Zextras]" > zextras.repo
+                                    echo "name=Zextras" >> zextras.repo
+                                    echo "baseurl=https://''' + USERNAME + ':' + SECRET + '''@zextras.jfrog.io/artifactory/centos8-''' + env.REPO_ENV + '''/" >> zextras.repo
+                                    echo "enabled=1" >> zextras.repo
+                                    echo "gpgcheck=0" >> zextras.repo
+                                    echo "gpgkey=https://''' + USERNAME + ':' + SECRET + '''@zextras.jfrog.io/artifactory/centos8-''' + env.REPO_ENV + '''/repomd.xml.key" >> zextras.repo
+                                    mv zextras.repo /etc/yum.repos.d/zextras.repo
+                                '''
+                            ],
+                            'rocky-9': [
+                                preBuildScript: '''
+                                    echo "[Zextras]" > zextras.repo
+                                    echo "name=Zextras" >> zextras.repo
+                                    echo "baseurl=https://''' + USERNAME + ':' + SECRET + '''@zextras.jfrog.io/artifactory/rhel9-''' + env.REPO_ENV + '''/" >> zextras.repo
+                                    echo "enabled=1" >> zextras.repo
+                                    echo "gpgcheck=0" >> zextras.repo
+                                    echo "gpgkey=https://''' + USERNAME + ':' + SECRET + '''@zextras.jfrog.io/artifactory/rhel9-''' + env.REPO_ENV + '''/repomd.xml.key" >> zextras.repo
+                                    mv zextras.repo /etc/yum.repos.d/zextras.repo
+                                '''
+                            ],
+                        ]
+                    ])
+                }
+            }
+        }
+
+        stage('Upload artifacts') {
+            steps {
+                uploadStage(
+                    packages: yapHelper.getPackageNames()
+                )
+            }
+        }
+
+        stage('Prepare Release') {
+            agent {
+                node {
+                    label 'nodejs-v1'
+                }
+            }
+            when {
+                allOf {
+                    branch 'devel'
+                    expression { params.PREPARE_RELEASE == true }
+                    not {
+                        expression {
+                            return env.GIT_COMMIT_MSG.contains('[skip ci]') ||
+                                   env.GIT_COMMIT_MSG.contains('chore(release):')
+                        }
+                    }
+                }
+            }
+            steps {
+                script {
+                    container('nodejs-20') {
+                        prepareRelease(
+                            repoName: 'carbonio-notification-push'
+                        )
+                    }
+                }
+            }
+        }
+
+        stage('Tag for release') {
+            when {
+                allOf {
+                    branch 'devel'
+                    expression {
+                        return env.GIT_COMMIT_MSG.contains('chore(release):') &&
+                               env.GIT_COMMIT_MSG.contains('[skip ci]')
+                    }
+                }
+            }
+            steps {
+                script {
+                    tagRelease()
+                }
+            }
+        }
+    }
 }

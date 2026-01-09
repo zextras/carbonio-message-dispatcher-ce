@@ -22,7 +22,7 @@ RUN mkdir -p /opt/carbonio-message-dispatcher \
              /var/log/carbonio/message-dispatcher
 
 # Copy the auth service JAR
-COPY docker/carbonio-message-dispatcher-auth-fatjar.jar /opt/carbonio-message-dispatcher/carbonio-message-dispatcher-auth.jar
+COPY docker/carbonio-message-dispatcher-auth.jar /opt/carbonio-message-dispatcher/carbonio-message-dispatcher-auth.jar
 
 # Copy configuration files
 COPY docker/mongooseim.toml /usr/lib/mongooseim/etc/mongooseim.toml

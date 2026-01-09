@@ -1,6 +1,6 @@
 pkgname="carbonio-message-dispatcher-ce"
 pkgver="0.16.0"
-pkgrel="1"
+pkgrel="SNAPSHOT"
 pkgdesc="Carbonio Message Dispatcher component"
 maintainer="Zextras <packages@zextras.com>"
 arch=('x86_64')
@@ -39,7 +39,7 @@ source=(
   "611-carbonio-message-dispatcher.sh"
   "app.config"
   "carbonio-message-dispatcher-auth"
-  "carbonio-message-dispatcher-auth-fatjar.jar"
+  "carbonio-message-dispatcher-auth.jar"
   "carbonio-message-dispatcher-auth-sidecar.service"
   "carbonio-message-dispatcher-auth.hcl"
   "carbonio-message-dispatcher-auth.service"
@@ -134,7 +134,7 @@ build() {
 package() {
   cd "${srcdir}"
 
-  install -Dm755 carbonio-message-dispatcher-auth-fatjar.jar \
+  install -Dm755 carbonio-message-dispatcher-auth.jar \
     "${pkgdir}/usr/share/carbonio/carbonio-message-dispatcher-auth.jar"
 
   #Overwriting mongoose files with ours

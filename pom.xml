@@ -15,18 +15,58 @@ SPDX-License-Identifier: AGPL-3.0-only
 
   <groupId>com.zextras.carbonio.message.dispatcher</groupId>
   <artifactId>carbonio-message-dispatcher</artifactId>
-  <version>0.16.0</version>
+  <version>${revision}${changelist}</version>
 
   <modules>
     <module>carbonio-message-dispatcher-auth</module>
   </modules>
 
+  <repositories>
+    <repository>
+      <id>artifactory</id>
+      <name>Zextras releases</name>
+      <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
+    </repository>
+
+    <repository>
+      <id>snapshots-repo</id>
+      <url>https://repo.zextras.io/maven/snapshot/</url>
+    </repository>
+
+    <repository>
+      <id>releases-repo</id>
+      <url>https://repo.zextras.io/maven/release/</url>
+    </repository>
+  </repositories>
+
+  <profiles>
+    <profile>
+      <id>dev</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <changelist>-SNAPSHOT</changelist>
+      </properties>
+    </profile>
+    <profile>
+      <id>prod</id>
+      <properties>
+        <changelist></changelist>
+      </properties>
+    </profile>
+  </profiles>
+
   <properties>
+    <!-- Maven CI Friendly properties -->
+    <revision>0.16.0</revision>
+    <!-- Dependencies -->
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
+    <!-- Consul -->
     <consul-client.version>1.5.3</consul-client.version>
+    <!-- Guava -->
     <guava.version>33.2.1-jre</guava.version>
     <!-- Database -->
     <flyway-database-postgresql.version>11.8.1</flyway-database-postgresql.version>
@@ -129,22 +169,4 @@ SPDX-License-Identifier: AGPL-3.0-only
       </plugins>
     </pluginManagement>
   </build>
-
-  <repositories>
-    <repository>
-      <id>artifactory</id>
-      <name>Zextras releases</name>
-      <url>https://zextras.jfrog.io/artifactory/public-maven-repo</url>
-    </repository>
-
-    <repository>
-      <id>snapshots-repo</id>
-      <url>https://repo.zextras.io/maven/snapshot/</url>
-    </repository>
-
-    <repository>
-      <id>releases-repo</id>
-      <url>https://repo.zextras.io/maven/release/</url>
-    </repository>
-  </repositories>
 </project>

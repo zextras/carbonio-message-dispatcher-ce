@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
   <parent>
     <groupId>com.zextras.carbonio.message.dispatcher</groupId>
     <artifactId>carbonio-message-dispatcher</artifactId>
-    <version>0.16.0</version>
+    <version>${revision}${changelist}</version>
   </parent>
 
   <artifactId>carbonio-message-dispatcher-auth</artifactId>
@@ -118,7 +118,7 @@ SPDX-License-Identifier: AGPL-3.0-only
                 </filter>
               </filters>
               <createDependencyReducedPom>false</createDependencyReducedPom>
-              <finalName>carbonio-message-dispatcher-auth-fatjar</finalName>
+              <finalName>carbonio-message-dispatcher-auth-${project.parent.version}-fatjar</finalName>
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <mainClass>com.zextras.carbonio.message.dispatcher.auth.Main</mainClass>
@@ -131,5 +131,4 @@ SPDX-License-Identifier: AGPL-3.0-only
       </plugin>
     </plugins>
   </build>
-
 </project>
