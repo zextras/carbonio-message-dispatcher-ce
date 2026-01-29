@@ -39,7 +39,7 @@
     port = 10000
     ip_address = "0.0.0.0"
     transport.num_acceptors = 100
-    transport.max_connections = 65536
+    transport.max_connections = "infinity"
 
     [[listen.http.handlers.mod_websockets]]
       host = "_"
