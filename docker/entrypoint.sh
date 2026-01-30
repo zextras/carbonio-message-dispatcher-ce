@@ -98,5 +98,8 @@ if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
 fi
 
 # Start MongooseIM in foreground
+# Increase file descriptor limit for high connection count
+ulimit -n 65536 2>/dev/null || echo "Warning: Could not set ulimit (requires container with --ulimit or privileged mode)"
+
 echo "Starting MongooseIM..."
 exec mongooseimctl foreground
