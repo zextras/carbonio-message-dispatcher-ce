@@ -2,5 +2,5 @@
   "Kind": "service-defaults",
   "Name": "carbonio-message-dispatcher-xmpp",
   "Protocol": "tcp",
-  "MaxInboundConnections": 0
+  "MaxInboundConnections": 65536
 }

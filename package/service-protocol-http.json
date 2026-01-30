@@ -2,5 +2,5 @@
   "Kind": "service-defaults",
   "Name": "carbonio-message-dispatcher-http",
   "Protocol": "tcp",
-  "MaxInboundConnections": 0
+  "MaxInboundConnections": 65536
 }
