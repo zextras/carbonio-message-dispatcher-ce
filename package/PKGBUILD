@@ -35,7 +35,7 @@ makedepends__yum=(
 )
 
 source=(
-  "https://github.com/esl/MongooseIM/archive/6.4.0.tar.gz"
+  "mongooseim::git+https://github.com/zextras/mongooseim#branch=devel"
   "611-carbonio-message-dispatcher.sh"
   "app.config"
   "carbonio-message-dispatcher-auth"
@@ -100,12 +100,12 @@ backup=(
 )
 
 prepare() {
-  cd "${srcdir}/MongooseIM-6.4.0"
+  cd "${srcdir}/mongooseim"
   patch -Np1 -i ../mod_event_pusher_http_defaults.patch
 }
 
 build() {
-  cd "${srcdir}/MongooseIM-6.4.0"
+  cd "${srcdir}/mongooseim"
 
   export PATH="/opt/zextras/common/bin/:$PATH"
   export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
