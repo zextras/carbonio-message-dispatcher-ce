@@ -43,8 +43,8 @@
   [[listen.http]]
     port = 10000
     ip_address = "127.78.0.10"
-    transport.num_acceptors = 10
-    transport.max_connections = 1024
+    transport.num_acceptors = 100
+    transport.max_connections = "infinity"
 
     [[listen.http.handlers.mod_websockets]]
       host = "_"
