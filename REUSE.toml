@@ -1,0 +1,46 @@
+version = 1
+SPDX-PackageName = "Carbonio Message Dispatcher"
+SPDX-PackageSupplier = "Smoky Beans <smokybeans@zextras.com>"
+SPDX-PackageDownloadLocation = "https://github.com/Zextras/carbonio-message-dispatcher-ce"
+
+[[annotations]]
+path = "README.md"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 Zextras"
+SPDX-License-Identifier = "AGPL-3.0-only"
+
+[[annotations]]
+path = "CHANGELOG.md"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2025 Zextras"
+SPDX-License-Identifier = "AGPL-3.0-only"
+
+[[annotations]]
+path = ".github/renovate.json"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2025 Zextras"
+SPDX-License-Identifier = "AGPL-3.0-only"
+
+[[annotations]]
+path = ".releaserc.json"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2025 Zextras"
+SPDX-License-Identifier = "AGPL-3.0-only"
+
+[[annotations]]
+path = "yap.json"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2023 Zextras"
+SPDX-License-Identifier = "AGPL-3.0-only"
+
+[[annotations]]
+path = "package/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2023 Zextras"
+SPDX-License-Identifier = "AGPL-3.0-only"
+
+[[annotations]]
+path = "docker/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2025 Zextras"
+SPDX-License-Identifier = "AGPL-3.0-only"
