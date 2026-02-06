@@ -64,18 +64,18 @@ SPDX-License-Identifier: AGPL-3.0-only
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <!-- Consul -->
-    <consul-client.version>1.5.3</consul-client.version>
-    <!-- Guava -->
-    <guava.version>33.2.1-jre</guava.version>
+    <!-- Carbonio User Management -->
+    <carbonio-user-management-sdk.version>1.0.1</carbonio-user-management-sdk.version>
     <!-- Database -->
     <flyway-database-postgresql.version>11.8.1</flyway-database-postgresql.version>
     <postgresql.version>42.7.3</postgresql.version>
-    <!-- Carbonio User Management -->
-    <carbonio-user-management-sdk.version>0.5.9</carbonio-user-management-sdk.version>
     <!-- Jetty -->
     <org.eclipse.jetty.version>12.0.25</org.eclipse.jetty.version>
     <org.eclipse.jetty.servlet.version>12.0.25</org.eclipse.jetty.servlet.version>
+    <!-- Consul Client -->
+    <consul-client.version>1.5.3</consul-client.version>
+    <!-- Guava -->
+    <guava.version>33.2.1-jre</guava.version>
     <!-- Logging -->
     <org.slf4j-api.version>2.0.17</org.slf4j-api.version>
     <logback-classic.version>1.5.18</logback-classic.version>
