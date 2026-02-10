@@ -65,7 +65,7 @@ SPDX-License-Identifier: AGPL-3.0-only
     <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- Carbonio User Management -->
-    <carbonio-user-management-sdk.version>1.0.1</carbonio-user-management-sdk.version>
+    <carbonio-user-management-sdk.version>1.0.2</carbonio-user-management-sdk.version>
     <!-- Database -->
     <flyway-database-postgresql.version>11.8.1</flyway-database-postgresql.version>
     <postgresql.version>42.7.3</postgresql.version>
