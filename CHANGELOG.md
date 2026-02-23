@@ -1,3 +1,18 @@
+## [1.0.0](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v0.16.0...v1.0.0) (2026-02-23)
+
+### ⚠ BREAKING CHANGES
+
+* change mongooseim with a custom version (#76)
+
+### Bug Fixes
+
+* don't limit persistent connections ([#75](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/75)) ([81f6223](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/81f622303f8165075430f6919b7ab2941d2331ec))
+* replace use of non existent function ([#71](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/71)) ([0cec49d](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/0cec49d5db152096429efe5a38d5fe7165e92e21))
+
+### Miscellaneous Chores
+
+* change mongooseim with a custom version ([#76](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/76)) ([65e34d7](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/65e34d79608d721e02ee4eeeb1aa583649f68793))
+
 ## [](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v0.16.0...v) (2026-01-09)
 
 ### Bug Fixes
