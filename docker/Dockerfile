@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-only
 
-FROM --platform=$BUILDPLATFORM erlangsolutions/mongooseim:6.4.0
+FROM --platform=$BUILDPLATFORM erlangsolutions/mongooseim:6.5.0
 
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
