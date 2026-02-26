@@ -68,8 +68,6 @@
   rooms_in_rosters = false
   max_occupants = 128
 
-[modules.mod_pin_message] 
-
 [modules.mod_disco]
   users_can_see_hidden_services = true
 

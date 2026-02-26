@@ -132,6 +132,9 @@ if [[ "$API_PASSWORD" == "" ]]; then
 fi
 sed "s/<api-password>/$API_PASSWORD/" /etc/carbonio/message-dispatcher/mongooseim.toml -i
 
+# Add the module to MongooseIM configuration
+echo -e "\n[modules.mod_pin_message]" >> /etc/carbonio/message-dispatcher/mongooseim.toml
+
 consul reload
 
 # Limit token visibility as much as possible
