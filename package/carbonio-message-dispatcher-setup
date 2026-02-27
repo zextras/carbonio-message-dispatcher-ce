@@ -133,7 +133,7 @@ fi
 sed "s/<api-password>/$API_PASSWORD/" /etc/carbonio/message-dispatcher/mongooseim.toml -i
 
 # Add the module to MongooseIM configuration
-echo -e "\n[modules.mod_pin_message]" >> /etc/carbonio/message-dispatcher/mongooseim.toml
+grep -qxF "[modules.mod_pin_message]" /etc/carbonio/message-dispatcher/mongooseim.toml || echo -e "\n[modules.mod_pin_message]" >> /etc/carbonio/message-dispatcher/mongooseim.toml
 
 consul reload
 
