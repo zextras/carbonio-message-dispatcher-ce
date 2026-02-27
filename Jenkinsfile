@@ -208,12 +208,21 @@ pipeline {
                 }
             }
             steps {
-                buildAndPublishDockerImage(
-                    projectName: 'carbonio-message-dispatcher-ce',
-                    dockerfile: 'docker/Dockerfile',
-                    imageTitle: 'Carbonio Message Dispatcher CE',
-                    imageDescription: 'Carbonio Message Dispatcher CE Service'
-                )
+                container('dind') {
+                    sh './docker/build_mongoose_docker_img.sh'
+                        withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
+                            sh '''
+                                docker tag mongooseim:latest registry.dev.zextras.com/dev/mongooseim-ce:latest
+                                docker push registry.dev.zextras.com/dev/mongooseim-ce:latest
+                            '''
+                        buildAndPublishDockerImage(
+                            projectName: 'carbonio-message-dispatcher',
+                            dockerfile: 'docker/Dockerfile',
+                            imageTitle: 'Carbonio Message Dispatcher',
+                            imageDescription: 'Carbonio Message Dispatcher Service'
+                        )
+                    }
+                }
             }
         }
     }

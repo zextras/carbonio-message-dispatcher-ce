@@ -1,3 +1,9 @@
+## [1.1.0](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.0.0...v1.1.0) (2026-02-26)
+
+### Features
+
+* add pin_message table and update MongooseIM configuration ([#86](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/86)) ([d91b25e](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/d91b25e7314dd50956fef55ba1acb2d28a9f7f78))
+
 ## [1.0.0](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v0.16.0...v1.0.0) (2026-02-23)
 
 ### ⚠ BREAKING CHANGES
