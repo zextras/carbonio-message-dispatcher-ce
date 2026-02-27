@@ -1,3 +1,9 @@
+## [1.1.1](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.1.0...v1.1.1) (2026-02-27)
+
+### Bug Fixes
+
+* improve MongooseIM configuration handling ([#88](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/88)) ([f61fc5f](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/f61fc5f720fafebbfd9539e9c5a8263c4cb0c710))
+
 ## [1.1.0](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.0.0...v1.1.0) (2026-02-26)
 
 ### Features
