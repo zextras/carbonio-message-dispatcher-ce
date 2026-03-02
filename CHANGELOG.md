@@ -1,3 +1,9 @@
+## [1.1.2](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.1.1...v1.1.2) (2026-03-02)
+
+### Bug Fixes
+
+* prod package name ([#92](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/92)) ([ca6fff4](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/ca6fff4371a5f5b47daa09eccf41648b35abb861))
+
 ## [1.1.1](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.1.0...v1.1.1) (2026-02-27)
 
 ### Bug Fixes
