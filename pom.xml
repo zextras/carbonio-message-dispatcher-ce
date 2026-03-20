@@ -65,7 +65,9 @@ SPDX-License-Identifier: AGPL-3.0-only
     <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- Carbonio User Management -->
-    <carbonio-user-management-sdk.version>1.0.2</carbonio-user-management-sdk.version>
+    <carbonio-user-management-grpc-sdk.version>1.0.3-SNAPSHOT-f5ffe813</carbonio-user-management-grpc-sdk.version>
+    <!-- gRPC -->
+    <io.grpc.version>1.73.0</io.grpc.version>
     <!-- Database -->
     <flyway-database-postgresql.version>11.8.1</flyway-database-postgresql.version>
     <postgresql.version>42.7.3</postgresql.version>
@@ -74,6 +76,8 @@ SPDX-License-Identifier: AGPL-3.0-only
     <org.eclipse.jetty.servlet.version>12.0.25</org.eclipse.jetty.servlet.version>
     <!-- Consul Client -->
     <consul-client.version>1.5.3</consul-client.version>
+    <!-- Guice -->
+    <guice.version>7.0.0</guice.version>
     <!-- Guava -->
     <guava.version>33.2.1-jre</guava.version>
     <!-- Logging -->
@@ -86,6 +90,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>com.google.inject</groupId>
+        <artifactId>guice</artifactId>
+        <version>${guice.version}</version>
+      </dependency>
+
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
@@ -120,8 +130,15 @@ SPDX-License-Identifier: AGPL-3.0-only
       <!-- Carbonio User Management -->
       <dependency>
         <groupId>com.zextras.carbonio.user-management</groupId>
-        <artifactId>carbonio-user-management-sdk</artifactId>
-        <version>${carbonio-user-management-sdk.version}</version>
+        <artifactId>carbonio-user-management-grpc-sdk</artifactId>
+        <version>${carbonio-user-management-grpc-sdk.version}</version>
+      </dependency>
+
+      <!-- gRPC dependencies -->
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-netty-shaded</artifactId>
+        <version>${io.grpc.version}</version>
       </dependency>
 
       <!-- Jetty dependencies -->
