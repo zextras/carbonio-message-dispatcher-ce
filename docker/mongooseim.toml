@@ -7,7 +7,6 @@
   hosts = ["carbonio"]
   default_server_domain = "carbonio"
   language = "en"
-  rdbms_server_type = "pgsql"
 
 [auth.dummy]
   base_time = 5
@@ -24,7 +23,7 @@
   [outgoing_pools.rdbms.default.connection]
     driver = "pgsql"
     host = "<db-host>"
-    port = <db-port>
+    port = "<db-port>"
     database = "<db-name>"
     username = "<db-username>"
     password = "<db-password>"
@@ -41,7 +40,7 @@
     transport.num_acceptors = 100
     transport.max_connections = "infinity"
 
-    [[listen.http.handlers.mod_websockets]]
+    [[listen.http.handlers.mongoose_websocket_handler]]
       host = "_"
       path = "/ws-xmpp"
       ping_rate = 30_000
@@ -101,7 +100,8 @@
   backend = "rdbms"
 
 [modules.mod_presence]
-[modules.mod_pin_message]
 
 [services.service_mongoose_system_metrics]
   report = false
+
+[modules.mod_pin_message]
