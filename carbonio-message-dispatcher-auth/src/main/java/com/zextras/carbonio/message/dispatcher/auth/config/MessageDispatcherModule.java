@@ -11,9 +11,11 @@ import com.zextras.carbonio.message.dispatcher.auth.dal.DatabaseManager;
 import com.zextras.carbonio.message.dispatcher.auth.dal.impl.DatabaseManagerFlyway;
 import com.zextras.carbonio.message.dispatcher.auth.service.AuthenticationService;
 import com.zextras.carbonio.message.dispatcher.auth.service.impl.AuthenticationServiceImpl;
-import com.zextras.carbonio.usermanagement.UserManagementClient;
+import com.zextras.carbonio.user_management.sdk.grpc.UserManagementServiceGrpc;
+import com.zextras.carbonio.user_management.sdk.grpc.UserManagementServiceGrpc.UserManagementServiceBlockingStub;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
 import javax.sql.DataSource;
-
 import org.postgresql.ds.PGSimpleDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,13 +53,19 @@ public class MessageDispatcherModule extends AbstractModule {
 
   @Provides
   @Singleton
-  public UserManagementClient provideUserManagementClient(MessageDispatcherConfig config) {
-    String userManagementUrl = String.format(
-        "http://%s:%s",
-        config.getUserManagementHost(),
-        config.getUserManagementPort()
-    );
-    logger.info("Creating UserManagementClient with URL: {}", userManagementUrl);
-    return UserManagementClient.atURL(userManagementUrl);
+  public ManagedChannel provideUserManagementChannel(MessageDispatcherConfig config) {
+    String host = config.getUserManagementHost();
+    int port = config.getUserManagementPort();
+    logger.info("Creating gRPC channel to user-management at {}:{}", host, port);
+    return ManagedChannelBuilder.forAddress(host, port)
+        .usePlaintext()
+        .build();
+  }
+
+  @Provides
+  @Singleton
+  public UserManagementServiceBlockingStub provideUserManagementStub(
+      ManagedChannel userManagementChannel) {
+    return UserManagementServiceGrpc.newBlockingStub(userManagementChannel);
   }
 }
