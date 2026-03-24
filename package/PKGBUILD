@@ -8,6 +8,7 @@ license=("AGPL-3.0-only")
 section="admin"
 priority="optional"
 url="https://www.zextras.com/"
+_tag=6.5.0
 depends=(
   "carbonio-erlang"
   "carbonio-openssl"
@@ -35,7 +36,7 @@ makedepends__yum=(
 )
 
 source=(
-  "mongooseim::git+https://github.com/zextras/mongooseim#tag=6.4.0-1"
+  "mongooseim::git+https://github.com/zextras/mongooseim#tag=${_tag}-1"
   "611-carbonio-message-dispatcher.sh"
   "app.config"
   "carbonio-message-dispatcher-auth"
@@ -147,7 +148,7 @@ package() {
   install -dm755 "${pkgdir}/opt/zextras/common/lib/mongooseim/log"
 
   #Args files
-  cp "${pkgdir}/opt/zextras/common/lib/mongooseim/releases/6.4.0/vm.args" \
+  cp "${pkgdir}/opt/zextras/common/lib/mongooseim/releases/${_tag}/vm.args" \
     "${pkgdir}/etc/carbonio/message-dispatcher/vm.args"
   cp "${pkgdir}/opt/zextras/common/lib/mongooseim/etc/vm.dist.args.example" \
     "${pkgdir}/etc/carbonio/message-dispatcher/vm.dist.args"
