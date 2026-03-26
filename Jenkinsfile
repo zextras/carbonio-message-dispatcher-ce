@@ -217,7 +217,7 @@ pipeline {
                                 docker push registry.dev.zextras.com/dev/mongooseim-ce:latest
                             '''
                         buildAndPublishDockerImage(
-                            projectName: 'carbonio-message-dispatcher',
+                            projectName: 'carbonio-message-dispatcher-ce',
                             dockerfile: 'docker/Dockerfile',
                             imageTitle: 'Carbonio Message Dispatcher',
                             imageDescription: 'Carbonio Message Dispatcher Service'

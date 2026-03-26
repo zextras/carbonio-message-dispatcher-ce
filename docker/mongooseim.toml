@@ -23,7 +23,7 @@
   [outgoing_pools.rdbms.default.connection]
     driver = "pgsql"
     host = "<db-host>"
-    port = "<db-port>"
+    port = <db-port>
     database = "<db-name>"
     username = "<db-username>"
     password = "<db-password>"
