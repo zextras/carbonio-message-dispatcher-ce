@@ -160,6 +160,8 @@ package() {
     "${pkgdir}/usr/bin/carbonio-message-dispatcher-auth"
   install -Dm755 carbonio-message-dispatcher-setup \
     "${pkgdir}/usr/bin/carbonio-message-dispatcher-setup"
+  install -Dm755 carbonio-message-dispatcher-config-setup \
+    "${pkgdir}/usr/bin/carbonio-message-dispatcher-config-setup"
   install -Dm644 611-carbonio-message-dispatcher.sh \
     "${pkgdir}/etc/zextras/pending-setups.d/611-carbonio-message-dispatcher.sh"
   install -Dm644 carbonio-message-dispatcher.service \
