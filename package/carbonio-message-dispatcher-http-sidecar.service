@@ -7,7 +7,9 @@ PartOf=service-discover.target
 
 [Service]
 User=carbonio-message-dispatcher
-ExecStart=/usr/bin/consul connect envoy \
+Type=notify
+NotifyAccess=all
+ExecStart=/usr/bin/service-discover-wrapper.sh \
     -token-file /etc/carbonio/message-dispatcher/service-discover/token \
     -admin-bind localhost:0 \
     -sidecar-for carbonio-message-dispatcher-http
