@@ -1,5 +1,5 @@
 [Unit]
-Description=Carbonio Message Dispatcher HTTP sidecar proxy
+Description=Carbonio Message Dispatcher HTTP Sidecar
 Documentation=https://docs.zextras.com/
 Requires=network-online.target
 After=network-online.target service-discover.service
