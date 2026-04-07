@@ -42,13 +42,16 @@ source=(
   "carbonio-message-dispatcher-auth"
   "carbonio-message-dispatcher-auth.jar"
   "carbonio-message-dispatcher-auth-sidecar.service"
+  "carbonio-message-dispatcher-auth-sidecar-legacy.service"
   "carbonio-message-dispatcher-auth.hcl"
   "carbonio-message-dispatcher-auth.service"
   "carbonio-message-dispatcher-http-sidecar.service"
+  "carbonio-message-dispatcher-http-sidecar-legacy.service"
   "carbonio-message-dispatcher-http.hcl"
   "carbonio-message-dispatcher-setup"
   "carbonio-message-dispatcher-config-setup"
   "carbonio-message-dispatcher-xmpp-sidecar.service"
+  "carbonio-message-dispatcher-xmpp-sidecar-legacy.service"
   "carbonio-message-dispatcher-xmpp.hcl"
   "carbonio-message-dispatcher.service"
   "configure.vars.config"
@@ -70,14 +73,17 @@ sha256sums=(
   'f7384b4fd538b267f8c7a708185a9c56f5444ec04526d4b85ca5068f538d1abc'
   'fc36795b485260f2048bf6802f942be0e427c57a09b020b33be457b655a98625'
   'SKIP'
-  'e1ecce23165a83bee817dcc3ef014eb4ee8df57446beafe84f773a81cbdedcba'
+  '22436a5aaf79da495165c034d21778e86201d02db7acb4eee54103e0cb561217'
+  '2442275d11c2b7230f688e8b1f32d6e7924cf810a485ae852e811074c854bc70'
   '82eac2e8f000be89a7d850c7dc5756084fa6d002e0ec355c8fc3736d70a39660'
   '52403661267da54747e3b09e5d4a81775722a96b513c0b42265e4a2ac0366d1e'
-  '8dd56e4b4accc01c65fe665306f0b8002904ac08d36229b84976b8a293843494'
+  '8183de3a78f0113ffee64344b86405ebcc8cc006f06ef77d1f94c46dada7a13f'
+  '24350bb773e219d46f0797fef460530087478fdb50041a36bb9cfea719014e07'
   'b4a330c34a44be520df35498d7f8173355f63ed79d241cbaab454a3ecd96d8a1'
   '69c62a4e701cd2048640fbe69d697bf53be3332783522a072b0173271e0b0cad'
   '20b52f96c87a680939e5c445803453e701539a000ffb384c304e0650f9c7a099'
-  '7aa72a9f6f63a8c16d8d7f0cdd9304ab03a7dac5f404945ca5b46080809c30c7'
+  '2f08f2a7a59bbee5a6e89fa8e3497728a659b577d5ed0fb1c32177e1648e90b7'
+  '7ef5363b8ec4036a817ccdf4d98ab8fef385d17c2f9f17440801fce28bd83bd2'
   '0312bb4d66fd0ed34dfa4dc9f38bb253ed6822c71390cd2a858b36bb239a2523'
   'bd45fe803c76000fa0c2fc04478083b16766c1bf4713e5f6712ddb18356fac4c'
   'a55ee89a02e901831baf61faa3b22127ae93e4cccac8d6f1032bfa4202985089'
@@ -134,7 +140,7 @@ build() {
   make install
 }
 
-package() {
+_package_common() {
   cd "${srcdir}"
 
   install -Dm755 carbonio-message-dispatcher-auth.jar \
@@ -168,12 +174,6 @@ package() {
     "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher.service"
   install -Dm644 carbonio-message-dispatcher-auth.service \
     "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-auth.service"
-  install -Dm644 carbonio-message-dispatcher-http-sidecar.service \
-    "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-http-sidecar.service"
-  install -Dm644 carbonio-message-dispatcher-xmpp-sidecar.service \
-    "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-xmpp-sidecar.service"
-  install -Dm644 carbonio-message-dispatcher-auth-sidecar.service \
-    "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-auth-sidecar.service"
   install -Dm644 carbonio-message-dispatcher-http.hcl \
     "${pkgdir}/etc/zextras/service-discover/carbonio-message-dispatcher-http.hcl"
   install -Dm644 carbonio-message-dispatcher-xmpp.hcl \
@@ -197,6 +197,34 @@ package() {
   install -Dm644 service-protocol-auth.json \
     "${pkgdir}/etc/carbonio/message-dispatcher/service-discover/service-protocol-auth.json"
 }
+
+_package_systemd() {
+  _package_common
+
+  cd "${srcdir}"
+  install -Dm644 carbonio-message-dispatcher-auth-sidecar.service \
+    "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-auth-sidecar.service"
+  install -Dm644 carbonio-message-dispatcher-http-sidecar.service \
+    "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-http-sidecar.service"
+  install -Dm644 carbonio-message-dispatcher-xmpp-sidecar.service \
+    "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-xmpp-sidecar.service"
+}
+
+_package_legacy() {
+  _package_common
+
+  cd "${srcdir}"
+  install -Dm644 carbonio-message-dispatcher-auth-sidecar-legacy.service \
+    "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-auth-sidecar.service"
+  install -Dm644 carbonio-message-dispatcher-http-sidecar-legacy.service \
+    "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-http-sidecar.service"
+  install -Dm644 carbonio-message-dispatcher-xmpp-sidecar-legacy.service \
+    "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-xmpp-sidecar.service"
+}
+
+package() { _package_systemd; }
+package__rocky_8() { _package_legacy; }
+package__ubuntu_jammy() { _package_legacy; }
 
 postinst() {
   getent group 'carbonio-message-dispatcher' >/dev/null \

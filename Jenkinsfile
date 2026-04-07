@@ -12,7 +12,7 @@ library(
 )
 
 library(
-    identifier: 'jenkins-lib-common@1.4.0',
+    identifier: 'jenkins-lib-common@1.5.0',
     retriever: modernSCM([
         $class: 'GitSCMSource',
         credentialsId: 'jenkins-integration-with-github-account',
@@ -95,6 +95,7 @@ pipeline {
                     }
                     buildPackages([
                         buildStageConfig: [
+                            buildFlags: ' -sd ',
                             prepare: true,
                             overrides: [
                                 'ubuntu-jammy': [
