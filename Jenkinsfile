@@ -63,20 +63,15 @@ pipeline {
             }
         }
 
-        stage('Build jar') {
+        stage('Maven') {
             steps {
                 script {
-                    def profile = '-P dev'
-                    if (env.TAG_NAME) {
-                        profile = '-P prod'
-                    }
-                    container('jdk-21') {
-                        sh """
-                            mvn ${MVN_OPTS} clean package ${profile}
+                    mavenStage(
+                        postBuildScript: '''
                             cp carbonio-message-dispatcher-auth/target/carbonio-message-dispatcher-auth-*-fatjar.jar package/carbonio-message-dispatcher-auth.jar
                             cp carbonio-message-dispatcher-auth/target/carbonio-message-dispatcher-auth-*-fatjar.jar docker/carbonio-message-dispatcher-auth.jar
-                        """
-                    }
+                        '''
+                    )
                 }
             }
         }
