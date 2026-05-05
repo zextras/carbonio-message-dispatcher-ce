@@ -1,3 +1,15 @@
+## [1.2.0](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.1.2...v1.2.0) (2026-05-05)
+
+### Features
+
+* migrate to gRPC UM SDK ([#100](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/100)) ([ae64dd1](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/ae64dd1230611ce843e85a6fa35b6a4e87574990))
+* systemd hardening and service-discover.target orchestration ([#103](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/103)) ([e73960b](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/e73960be85cb4e4e91e1e76dcd826f801facd2a5))
+
+### Bug Fixes
+
+* mongooseim toml port type ([#102](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/102)) ([ee09308](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/ee093082d8e78df8acab7d3fd7a775f3b46d7b98))
+* use /bin/sh shebang in buid_mongoose_docker_img.sh ([#97](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/97)) ([6b5bb80](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/6b5bb8019172d09e96d1993170e7d94df1242ddd))
+
 ## [1.1.2](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.1.1...v1.1.2) (2026-03-02)
 
 ### Bug Fixes
