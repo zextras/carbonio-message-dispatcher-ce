@@ -76,15 +76,47 @@ pipeline {
             }
         }
 
-        stage('Build deb/rpm') {
-            steps {
-                buildPackages([
-                    buildStageConfig: [
-                        addCarbonioRepos: true,
-                        carbonioRepoCredentialId: 'artifactory-jenkins-gradle-properties-splitted',
-                        prepare: true,
-                    ]
-                ])
+        stage('Build') {
+            failFast false
+            parallel {
+                stage('Build and Publish Docker Image') {
+                    when {
+                        not {
+                            expression { env.BRANCH_NAME.startsWith('PR-') }
+                        }
+                    }
+                    steps {
+                        catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                            container('dind') {
+                                sh './docker/build_mongoose_docker_img.sh'
+                                withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
+                                    sh '''
+                                        docker tag mongooseim:latest registry.dev.zextras.com/dev/mongooseim-ce:latest
+                                        docker push registry.dev.zextras.com/dev/mongooseim-ce:latest
+                                    '''
+                                    buildAndPublishDockerImage(
+                                        projectName: 'carbonio-message-dispatcher-ce',
+                                        dockerfile: 'docker/Dockerfile',
+                                        imageTitle: 'Carbonio Message Dispatcher',
+                                        imageDescription: 'Carbonio Message Dispatcher Service'
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                stage('Build deb/rpm') {
+                    steps {
+                        buildPackages([
+                            buildStageConfig: [
+                                addCarbonioRepos: true,
+                                carbonioRepoCredentialId: 'artifactory-jenkins-gradle-properties-splitted',
+                                prepare: true,
+                            ]
+                        ])
+                    }
+                }
             }
         }
 
@@ -138,31 +170,6 @@ pipeline {
             steps {
                 script {
                     tagRelease()
-                }
-            }
-        }
-
-        stage('Build and Publish Docker Image') {
-            when {
-                not {
-                    expression { env.BRANCH_NAME.startsWith('PR-') }
-                }
-            }
-            steps {
-                container('dind') {
-                    sh './docker/build_mongoose_docker_img.sh'
-                        withDockerRegistry(credentialsId: 'private-registry', url: 'https://registry.dev.zextras.com') {
-                            sh '''
-                                docker tag mongooseim:latest registry.dev.zextras.com/dev/mongooseim-ce:latest
-                                docker push registry.dev.zextras.com/dev/mongooseim-ce:latest
-                            '''
-                        buildAndPublishDockerImage(
-                            projectName: 'carbonio-message-dispatcher-ce',
-                            dockerfile: 'docker/Dockerfile',
-                            imageTitle: 'Carbonio Message Dispatcher',
-                            imageDescription: 'Carbonio Message Dispatcher Service'
-                        )
-                    }
                 }
             }
         }
