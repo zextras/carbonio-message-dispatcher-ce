@@ -12,7 +12,7 @@ library(
 )
 
 library(
-    identifier: 'jenkins-lib-common@1.7.3',
+    identifier: 'jenkins-lib-common@1.7.5',
     retriever: modernSCM([
         $class: 'GitSCMSource',
         credentialsId: 'jenkins-integration-with-github-account',
@@ -81,7 +81,6 @@ pipeline {
                 buildPackages([
                     buildStageConfig: [
                         addCarbonioRepos: true,
-                        carbonioRepoCredentialId: 'artifactory-jenkins-gradle-properties-splitted',
                         prepare: true,
                     ]
                 ])
