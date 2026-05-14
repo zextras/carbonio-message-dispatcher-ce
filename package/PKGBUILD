@@ -32,7 +32,7 @@ makedepends__yum=(
 )
 
 source=(
-  "mongooseim::git+https://github.com/zextras/mongooseim#tag=${_tag}-1"
+  "mongooseim::git+https://github.com/zextras/mongooseim#tag=${_tag}-2"
   "611-carbonio-message-dispatcher.sh"
   "app.config"
   "carbonio-message-dispatcher-auth"
