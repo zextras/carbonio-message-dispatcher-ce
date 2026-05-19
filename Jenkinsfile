@@ -79,10 +79,12 @@ pipeline {
         stage('Build deb/rpm') {
             steps {
                 echo 'Building deb/rpm packages'
-                buildStage(
-                    addCarbonioRepos: true,
-                    parallelBuilds: false,
-                    prepare: true,
+                buildPackages(
+                    buildStageConfig: [
+                        addCarbonioRepos: true,
+                        parallelBuilds: false,
+                        prepare: true,
+                    ]
                 )
             }
         }
