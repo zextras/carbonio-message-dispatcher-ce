@@ -3,6 +3,7 @@
   "description": "Message Dispatcher component for Carbonio CE",
   "buildDir": "/tmp/",
   "output": "artifacts",
+  "skipDeps": ["pending-setups", "service-discover"],
   "projects": [
     {
       "name": "package"
