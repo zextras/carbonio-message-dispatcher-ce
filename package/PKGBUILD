@@ -15,6 +15,7 @@ depends=(
   "jq"
   "pending-setups"
   "service-discover"
+  "service-discover-base"
 )
 makedepends__apt=(
   "carbonio-elixir"
