@@ -91,9 +91,7 @@ pipeline {
 
         stage('Upload artifacts') {
             steps {
-                uploadStage(
-                    packages: yapHelper.getPackageNames()
-                )
+                uploadStage()
             }
         }
 
