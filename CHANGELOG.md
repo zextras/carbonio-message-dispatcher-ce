@@ -1,3 +1,10 @@
+## [1.2.4](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.2.3...v1.2.4) (2026-05-27)
+
+### Bug Fixes
+
+* **deps:** add explicit service-discover-base dependency ([#120](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/120)) ([ee6f1e5](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/ee6f1e5ef9ca21515725db78a90e01fc8c2d9ec0))
+* restore buildPackages function in Jenkinsfile ([#119](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/119)) ([ada3660](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/ada36606cb4474bb2ed02e468f15363b3e59815a))
+
 ## [1.2.3](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.2.2...v1.2.3) (2026-05-19)
 
 ## [1.2.2](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.2.1...v1.2.2) (2026-05-06)

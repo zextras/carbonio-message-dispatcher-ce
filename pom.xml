@@ -59,7 +59,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
   <properties>
     <!-- Maven CI Friendly properties -->
-    <revision>1.2.3</revision>
+    <revision>1.2.4</revision>
     <!-- SonarQube -->
     <sonar.projectKey>com.zextras.carbonio.message.dispatcher:carbonio-message-dispatcher-ce</sonar.projectKey>
     <!-- Dependencies -->
