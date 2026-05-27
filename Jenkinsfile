@@ -12,7 +12,7 @@ library(
 )
 
 library(
-    identifier: 'jenkins-lib-common@v2.7.0',
+    identifier: 'jenkins-lib-common@v2.8.7',
     retriever: modernSCM([
         $class: 'GitSCMSource',
         credentialsId: 'jenkins-integration-with-github-account',
@@ -91,9 +91,7 @@ pipeline {
 
         stage('Upload artifacts') {
             steps {
-                uploadStage(
-                    packages: yapHelper.getPackageNames()
-                )
+                uploadStage()
             }
         }
 
