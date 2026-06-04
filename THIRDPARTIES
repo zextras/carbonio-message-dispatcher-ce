@@ -48,7 +48,7 @@ Apache-2.0 (https://spdx.org/licenses/Apache-2.0.html) applies to:
 
 BSD-2-Clause (https://spdx.org/licenses/BSD-2-Clause.html) applies to:
 
-  PostgreSQL JDBC Driver (org.postgresql:postgresql:42.7.3)
+  PostgreSQL JDBC Driver (org.postgresql:postgresql:42.7.11)
 
 BSD-3-Clause (https://spdx.org/licenses/BSD-3-Clause.html) applies to:
 
