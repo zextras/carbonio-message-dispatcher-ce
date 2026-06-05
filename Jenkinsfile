@@ -36,5 +36,4 @@ dt3_pipeline(
     ],
     sonarqube: true,
     reuse: [projectType: 'CE'],
-    gitleaks: true
 )
