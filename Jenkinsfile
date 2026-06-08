@@ -16,24 +16,13 @@ dt3_pipeline(
     appModule: 'carbonio-message-dispatcher-auth',
     mavenPublish: [],
     packaging: [
-        pkgbuildPath: 'package/PKGBUILD',
         prepare: true,
         addCarbonioRepos: true,
         ubuntuSinglePkg: false,
         rockySinglePkg: false,
-        overrides: [
-            ubuntu: [
-                preBuildScript: '''
-                    cp carbonio-message-dispatcher-auth/target/carbonio-message-dispatcher-auth-*-fatjar.jar package/carbonio-message-dispatcher-auth.jar
-                ''',
-            ],
-            rocky: [
-                preBuildScript: '''
-                    cp carbonio-message-dispatcher-auth/target/carbonio-message-dispatcher-auth-*-fatjar.jar package/carbonio-message-dispatcher-auth.jar
-                ''',
-            ],
-        ],
+        preBuildScript: '''
+            cp carbonio-message-dispatcher-auth/target/carbonio-message-dispatcher-auth-*-fatjar.jar package/carbonio-message-dispatcher-auth.jar
+        ''',
     ],
-    sonarqube: true,
     reuse: [projectType: 'CE'],
 )
