@@ -18,8 +18,6 @@ dt3_pipeline(
     packaging: [
         prepare: true,
         addCarbonioRepos: true,
-        ubuntuSinglePkg: false,
-        rockySinglePkg: false,
         preBuildScript: '''
             cp carbonio-message-dispatcher-auth/target/carbonio-message-dispatcher-auth-*-fatjar.jar package/carbonio-message-dispatcher-auth.jar
         ''',
