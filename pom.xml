@@ -69,7 +69,7 @@ SPDX-License-Identifier: AGPL-3.0-only
     <!-- Carbonio User Management -->
     <carbonio-user-management-grpc-sdk.version>1.1.1-1</carbonio-user-management-grpc-sdk.version>
     <!-- gRPC -->
-    <io.grpc.version>1.73.0</io.grpc.version>
+    <io.grpc.version>1.82.0</io.grpc.version>
     <!-- Database -->
     <flyway-database-postgresql.version>11.8.1</flyway-database-postgresql.version>
     <postgresql.version>42.7.11</postgresql.version>
