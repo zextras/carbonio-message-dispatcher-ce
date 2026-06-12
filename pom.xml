@@ -67,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
     <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- Carbonio User Management -->
-    <carbonio-user-management-grpc-sdk.version>1.0.3-dev.21.79fc3fa2</carbonio-user-management-grpc-sdk.version>
+    <carbonio-user-management-grpc-sdk.version>1.1.1-1</carbonio-user-management-grpc-sdk.version>
     <!-- gRPC -->
     <io.grpc.version>1.82.0</io.grpc.version>
     <!-- Database -->
