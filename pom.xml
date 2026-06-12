@@ -74,8 +74,8 @@ SPDX-License-Identifier: AGPL-3.0-only
     <flyway-database-postgresql.version>11.8.1</flyway-database-postgresql.version>
     <postgresql.version>42.7.11</postgresql.version>
     <!-- Jetty -->
-    <org.eclipse.jetty.version>12.0.25</org.eclipse.jetty.version>
-    <org.eclipse.jetty.servlet.version>12.0.25</org.eclipse.jetty.servlet.version>
+    <org.eclipse.jetty.version>12.1.10</org.eclipse.jetty.version>
+    <org.eclipse.jetty.servlet.version>12.1.10</org.eclipse.jetty.servlet.version>
     <!-- Consul Client -->
     <consul-client.version>1.5.3</consul-client.version>
     <!-- Guice -->
