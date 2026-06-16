@@ -15,7 +15,7 @@ import com.zextras.carbonio.message.dispatcher.auth.service.AuthenticationServic
 import com.zextras.carbonio.message.dispatcher.auth.web.api.CheckPasswordApi;
 import com.zextras.carbonio.message.dispatcher.auth.web.api.HealthApi;
 import com.zextras.carbonio.message.dispatcher.auth.web.api.UserExistsApi;
-import jakarta.servlet.ServletRegistration.Dynamic;
+import jakarta.servlet.Servlet;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.URI;
@@ -32,7 +32,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.postgresql.ds.PGSimpleDataSource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -40,18 +39,16 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 class ServerBootIT {
 
-  @Container
-  static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15-alpine");
+  @Container static PostgreSQLContainer<?> postgres = PostgresTestSupport.newContainer();
 
-  private static Server server;
-  private static HttpClient httpClient;
   private static String baseUrl;
+  private static HttpClient httpClient;
+  private static Server server;
   private static AuthenticationService mockAuthService;
 
   @BeforeAll
   static void setUp() throws Exception {
-    PGSimpleDataSource dataSource = buildDataSource(postgres);
-    new DatabaseManagerFlyway(dataSource).initialize();
+    new DatabaseManagerFlyway(PostgresTestSupport.dataSourceFor(postgres)).initialize();
 
     int port;
     try (ServerSocket socket = new ServerSocket(0)) {
@@ -61,28 +58,19 @@ class ServerBootIT {
 
     mockAuthService = Mockito.mock(AuthenticationService.class);
 
-    server = new Server(new InetSocketAddress("localhost", port));
-    ContextHandlerCollection handlers = new ContextHandlerCollection();
     ServletContextHandler context = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
+    registerServlet(
+        context,
+        "CheckPasswordServlet",
+        CheckPasswordApi.create(mockAuthService),
+        "/check_password");
+    registerServlet(context, "UserExistsServlet", UserExistsApi.create(), "/user_exists");
+    registerServlet(context, "HealthServlet", HealthApi.create(), "/health/ready");
 
-    context.addServletContainerInitializer(
-        (c, ctx) -> {
-          Dynamic servlet =
-              ctx.addServlet("CheckPasswordServlet", CheckPasswordApi.create(mockAuthService));
-          servlet.addMapping("/check_password");
-        });
-    context.addServletContainerInitializer(
-        (c, ctx) -> {
-          Dynamic servlet = ctx.addServlet("UserExistsServlet", UserExistsApi.create());
-          servlet.addMapping("/user_exists");
-        });
-    context.addServletContainerInitializer(
-        (c, ctx) -> {
-          Dynamic servlet = ctx.addServlet("HealthServlet", HealthApi.create());
-          servlet.addMapping("/health/ready");
-        });
-
+    ContextHandlerCollection handlers = new ContextHandlerCollection();
     handlers.addHandler(context);
+
+    server = new Server(new InetSocketAddress("localhost", port));
     server.setHandler(handlers);
     server.start();
 
@@ -159,13 +147,9 @@ class ServerBootIT {
         HttpRequest.newBuilder(URI.create(baseUrl + path)).GET().build(), BodyHandlers.ofString());
   }
 
-  private static PGSimpleDataSource buildDataSource(PostgreSQLContainer<?> container) {
-    PGSimpleDataSource ds = new PGSimpleDataSource();
-    ds.setServerNames(new String[] {container.getHost()});
-    ds.setPortNumbers(new int[] {container.getMappedPort(5432)});
-    ds.setDatabaseName(container.getDatabaseName());
-    ds.setUser(container.getUsername());
-    ds.setPassword(container.getPassword());
-    return ds;
+  private static void registerServlet(
+      ServletContextHandler context, String name, Servlet servlet, String path) {
+    context.addServletContainerInitializer(
+        (classes, ctx) -> ctx.addServlet(name, servlet).addMapping(path));
   }
 }

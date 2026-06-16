@@ -4,16 +4,17 @@
 
 package com.zextras.carbonio.message.dispatcher.auth.dal.impl;
 
+import static com.zextras.carbonio.message.dispatcher.auth.PostgresTestSupport.dataSourceFor;
+import static com.zextras.carbonio.message.dispatcher.auth.PostgresTestSupport.newContainer;
+import static com.zextras.carbonio.message.dispatcher.auth.PostgresTestSupport.tableExists;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
+import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.postgresql.ds.PGSimpleDataSource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -21,15 +22,17 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 class DatabaseMigrationIT {
 
-  @Container
-  static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15-alpine");
+  private static final List<String> EXPECTED_TABLES =
+      List.of("users", "fast_auth_token", "pin_message", "blocklist", "discovery_nodes", "caps");
 
-  private static PGSimpleDataSource dataSource;
+  @Container static PostgreSQLContainer<?> postgres = newContainer();
+
+  private static DataSource dataSource;
   private static DatabaseManagerFlyway databaseManager;
 
   @BeforeAll
   static void setUp() {
-    dataSource = buildDataSource(postgres);
+    dataSource = dataSourceFor(postgres);
     databaseManager = new DatabaseManagerFlyway(dataSource);
     databaseManager.initialize();
   }
@@ -43,34 +46,23 @@ class DatabaseMigrationIT {
 
   @Test
   void allExpectedTablesExist() throws Exception {
-    try (Connection conn = dataSource.getConnection()) {
-      DatabaseMetaData meta = conn.getMetaData();
-      for (String table :
-          List.of(
-              "users", "fast_auth_token", "pin_message", "blocklist", "discovery_nodes", "caps")) {
-        try (ResultSet rs = meta.getTables(null, null, table, new String[] {"TABLE"})) {
-          assertTrue(rs.next(), "Missing table: " + table);
-        }
-      }
+    for (String table : EXPECTED_TABLES) {
+      assertTrue(tableExists(dataSource, table), "Missing table: " + table);
     }
   }
 
   @Test
   void legacyVersionTableIsDropped() throws Exception {
-    try (Connection conn = dataSource.getConnection()) {
-      DatabaseMetaData meta = conn.getMetaData();
-      try (ResultSet rs = meta.getTables(null, null, "database_version", new String[] {"TABLE"})) {
-        assertFalse(rs.next(), "database_version should have been dropped by V5");
-      }
-    }
+    assertFalse(
+        tableExists(dataSource, "database_version"),
+        "database_version should have been dropped by V5");
   }
 
   @Test
   void legacyBaselineMigrationFrom621() throws Exception {
-    try (PostgreSQLContainer<?> legacy = new PostgreSQLContainer<>("postgres:15-alpine")) {
+    try (PostgreSQLContainer<?> legacy = newContainer()) {
       legacy.start();
-
-      PGSimpleDataSource legacyDataSource = buildDataSource(legacy);
+      DataSource legacyDataSource = dataSourceFor(legacy);
 
       try (Connection conn = legacyDataSource.getConnection();
           Statement stmt = conn.createStatement()) {
@@ -84,28 +76,13 @@ class DatabaseMigrationIT {
       assertEquals("7", legacyManager.getDatabaseVersion());
       assertTrue(legacyManager.isDatabaseCorrectVersion());
 
-      try (Connection conn = legacyDataSource.getConnection()) {
-        DatabaseMetaData meta = conn.getMetaData();
-        for (String table : List.of("fast_auth_token", "pin_message", "blocklist")) {
-          try (ResultSet rs = meta.getTables(null, null, table, new String[] {"TABLE"})) {
-            assertTrue(rs.next(), "Missing table after legacy migration: " + table);
-          }
-        }
-        try (ResultSet rs =
-            meta.getTables(null, null, "database_version", new String[] {"TABLE"})) {
-          assertFalse(rs.next(), "database_version should have been dropped");
-        }
+      for (String table : List.of("fast_auth_token", "pin_message", "blocklist")) {
+        assertTrue(
+            tableExists(legacyDataSource, table), "Missing table after legacy migration: " + table);
       }
+      assertFalse(
+          tableExists(legacyDataSource, "database_version"),
+          "database_version should have been dropped");
     }
-  }
-
-  private static PGSimpleDataSource buildDataSource(PostgreSQLContainer<?> container) {
-    PGSimpleDataSource ds = new PGSimpleDataSource();
-    ds.setServerNames(new String[] {container.getHost()});
-    ds.setPortNumbers(new int[] {container.getMappedPort(5432)});
-    ds.setDatabaseName(container.getDatabaseName());
-    ds.setUser(container.getUsername());
-    ds.setPassword(container.getPassword());
-    return ds;
   }
 }
