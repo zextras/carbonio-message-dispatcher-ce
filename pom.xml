@@ -71,7 +71,7 @@ SPDX-License-Identifier: AGPL-3.0-only
     <!-- gRPC -->
     <io.grpc.version>1.82.0</io.grpc.version>
     <!-- Database -->
-    <flyway-database-postgresql.version>11.8.1</flyway-database-postgresql.version>
+    <flyway-database-postgresql.version>11.20.3</flyway-database-postgresql.version>
     <postgresql.version>42.7.11</postgresql.version>
     <!-- Jetty -->
     <org.eclipse.jetty.version>12.0.25</org.eclipse.jetty.version>
@@ -81,10 +81,10 @@ SPDX-License-Identifier: AGPL-3.0-only
     <!-- Guice -->
     <guice.version>7.0.0</guice.version>
     <!-- Guava -->
-    <guava.version>33.2.1-jre</guava.version>
+    <guava.version>33.6.0-jre</guava.version>
     <!-- Logging -->
     <org.slf4j-api.version>2.0.18</org.slf4j-api.version>
-    <logback-classic.version>1.5.18</logback-classic.version>
+    <logback-classic.version>1.5.34</logback-classic.version>
     <!-- Plugins -->
     <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
     <maven-shade-plugin.version>3.6.2</maven-shade-plugin.version>
