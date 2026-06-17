@@ -8,11 +8,11 @@ import com.zextras.carbonio.message.dispatcher.auth.exception.FailedDependencyEx
 import com.zextras.carbonio.message.dispatcher.auth.exception.UnauthorizedException;
 import com.zextras.carbonio.message.dispatcher.auth.service.AuthenticationService;
 import com.zextras.carbonio.message.dispatcher.auth.utility.Utilities;
-import java.util.Map;
-import java.util.Optional;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Map;
+import java.util.Optional;
 
 public class CheckPasswordApi extends HttpServlet {
 
@@ -38,20 +38,14 @@ public class CheckPasswordApi extends HttpServlet {
     }
     try {
       Optional<String> userId = authenticationService.validateToken(token);
-      if (userId.isPresent()) {
-        if (userId.get().equals(user)) {
-          response.getWriter().print(true);
-          response.setContentLength(4);
-          response.setStatus(200);
-        } else {
-          response.getWriter().print(false);
-          response.setContentLength(5);
-          response.setStatus(401);
-        }
+      if (userId.isPresent() && userId.get().equals(user)) {
+        response.setStatus(200);
+        response.setContentLength(4);
+        response.getWriter().print(true);
       } else {
-        response.getWriter().print(false);
-        response.setContentLength(5);
         response.setStatus(401);
+        response.setContentLength(5);
+        response.getWriter().print(false);
       }
     } catch (UnauthorizedException unauthorizedException) {
       response.setStatus(401);

@@ -67,27 +67,34 @@ SPDX-License-Identifier: AGPL-3.0-only
     <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- Carbonio User Management -->
-    <carbonio-user-management-grpc-sdk.version>1.0.3-dev.21.79fc3fa2</carbonio-user-management-grpc-sdk.version>
+    <carbonio-user-management-grpc-sdk.version>1.1.1-1</carbonio-user-management-grpc-sdk.version>
     <!-- gRPC -->
-    <io.grpc.version>1.73.0</io.grpc.version>
+    <io.grpc.version>1.82.0</io.grpc.version>
     <!-- Database -->
-    <flyway-database-postgresql.version>11.8.1</flyway-database-postgresql.version>
+    <flyway-database-postgresql.version>12.8.1</flyway-database-postgresql.version>
+    <jackson-annotations.version>2.22</jackson-annotations.version>
     <postgresql.version>42.7.11</postgresql.version>
     <!-- Jetty -->
-    <org.eclipse.jetty.version>12.0.25</org.eclipse.jetty.version>
-    <org.eclipse.jetty.servlet.version>12.0.25</org.eclipse.jetty.servlet.version>
+    <org.eclipse.jetty.version>12.1.10</org.eclipse.jetty.version>
+    <org.eclipse.jetty.servlet.version>12.1.10</org.eclipse.jetty.servlet.version>
     <!-- Consul Client -->
     <consul-client.version>1.5.3</consul-client.version>
     <!-- Guice -->
     <guice.version>7.0.0</guice.version>
     <!-- Guava -->
-    <guava.version>33.2.1-jre</guava.version>
+    <guava.version>33.6.0-jre</guava.version>
     <!-- Logging -->
-    <org.slf4j-api.version>2.0.17</org.slf4j-api.version>
-    <logback-classic.version>1.5.18</logback-classic.version>
+    <org.slf4j-api.version>2.0.18</org.slf4j-api.version>
+    <logback-classic.version>1.5.34</logback-classic.version>
     <!-- Plugins -->
     <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
     <maven-shade-plugin.version>3.6.2</maven-shade-plugin.version>
+    <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
+    <maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
+    <!-- Test -->
+    <junit-jupiter.version>5.11.4</junit-jupiter.version>
+    <testcontainers.version>1.21.4</testcontainers.version>
+    <mockito.version>5.23.0</mockito.version>
   </properties>
 
   <dependencyManagement>
@@ -102,6 +109,12 @@ SPDX-License-Identifier: AGPL-3.0-only
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
         <version>${guava.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${jackson-annotations.version}</version>
       </dependency>
 
       <dependency>
@@ -168,6 +181,35 @@ SPDX-License-Identifier: AGPL-3.0-only
         <artifactId>logback-classic</artifactId>
         <version>${logback-classic.version}</version>
       </dependency>
+
+      <!-- Test -->
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>${junit-jupiter.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>${testcontainers.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>${testcontainers.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${mockito.version}</version>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -184,6 +226,18 @@ SPDX-License-Identifier: AGPL-3.0-only
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
           <version>${maven-shade-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven-surefire-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${maven-failsafe-plugin.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
