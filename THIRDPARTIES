@@ -1,44 +1,46 @@
 AGPL-3.0-only (https://spdx.org/licenses/AGPL-3.0-only.html) applies to:
 
-  Carbonio User Management - gRPC SDK (com.zextras.carbonio.user-management:carbonio-user-management-grpc-sdk:1.0.3-dev.21.79fc3fa2)
+  Carbonio User Management - gRPC SDK (com.zextras.carbonio.user-management:carbonio-user-management-grpc-sdk:1.1.1-1)
 
 Apache-2.0 (https://spdx.org/licenses/Apache-2.0.html) applies to:
 
   Apache Commons Lang (org.apache.commons:commons-lang3:3.11)
   consul-client (com.orbitz.consul:consul-client:1.5.3)
   Converter: Jackson (com.squareup.retrofit2:converter-jackson:2.9.0)
-  Core :: HTTP (org.eclipse.jetty:jetty-http:12.0.25)
-  Core :: IO (org.eclipse.jetty:jetty-io:12.0.25)
-  Core :: Security (org.eclipse.jetty:jetty-security:12.0.25)
-  Core :: Server (org.eclipse.jetty:jetty-server:12.0.25)
-  Core :: Sessions (org.eclipse.jetty:jetty-session:12.0.25)
-  Core :: Utilities (org.eclipse.jetty:jetty-util:12.0.25)
-  EE10 :: Servlet (org.eclipse.jetty.ee10:jetty-ee10-servlet:12.0.25)
-  error-prone annotations (com.google.errorprone:error_prone_annotations:2.26.1)
-  FindBugs-jsr305 (com.google.code.findbugs:jsr305:3.0.2)
-  flyway-core (org.flywaydb:flyway-core:11.8.1)
-  flyway-database-postgresql (org.flywaydb:flyway-database-postgresql:11.8.1)
+  Core :: HTTP (org.eclipse.jetty:jetty-http:12.1.10)
+  Core :: IO (org.eclipse.jetty:jetty-io:12.1.10)
+  Core :: Security (org.eclipse.jetty:jetty-security:12.1.10)
+  Core :: Server (org.eclipse.jetty:jetty-server:12.1.10)
+  Core :: Sessions (org.eclipse.jetty:jetty-session:12.1.10)
+  Core :: Utilities (org.eclipse.jetty:jetty-util:12.1.10)
+  EE10 :: Servlet (org.eclipse.jetty.ee10:jetty-ee10-servlet:12.1.10)
+  error-prone annotations (com.google.errorprone:error_prone_annotations:2.47.0)
+  FindBugs-jsr305 (com.google.code.findbugs:jsr305:1.3.9)
+  flyway-core (org.flywaydb:flyway-core:12.8.1)
+  flyway-database-postgresql (org.flywaydb:flyway-database-postgresql:12.8.1)
   Google Android Annotations Library (com.google.android:annotations:4.1.1.4)
   Google Guice - Core Library (com.google.inject:guice:7.0.0)
-  Gson (com.google.code.gson:gson:2.11.0)
-  Guava InternalFutureFailureAccess and InternalFutures (com.google.guava:failureaccess:1.0.2)
+  Gson (com.google.code.gson:gson:2.13.2)
+  Guava InternalFutureFailureAccess and InternalFutures (com.google.guava:failureaccess:1.0.3)
   Guava ListenableFuture only (com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava)
-  Guava: Google Core Libraries for Java (com.google.guava:guava:33.2.1-jre)
+  Guava: Google Core Libraries for Java (com.google.guava:guava:33.6.0-jre)
   IntelliJ IDEA Annotations (org.jetbrains:annotations:13.0)
-  io.grpc:grpc-api (io.grpc:grpc-api:1.73.0)
-  io.grpc:grpc-context (io.grpc:grpc-context:1.73.0)
-  io.grpc:grpc-core (io.grpc:grpc-core:1.73.0)
-  io.grpc:grpc-netty-shaded (io.grpc:grpc-netty-shaded:1.73.0)
+  io.grpc:grpc-api (io.grpc:grpc-api:1.82.0)
+  io.grpc:grpc-context (io.grpc:grpc-context:1.82.0)
+  io.grpc:grpc-core (io.grpc:grpc-core:1.82.0)
+  io.grpc:grpc-netty-shaded (io.grpc:grpc-netty-shaded:1.82.0)
   io.grpc:grpc-protobuf (io.grpc:grpc-protobuf:1.79.0)
   io.grpc:grpc-protobuf-lite (io.grpc:grpc-protobuf-lite:1.79.0)
   io.grpc:grpc-stub (io.grpc:grpc-stub:1.79.0)
-  io.grpc:grpc-util (io.grpc:grpc-util:1.73.0)
-  J2ObjC Annotations (com.google.j2objc:j2objc-annotations:3.0.0)
+  io.grpc:grpc-util (io.grpc:grpc-util:1.82.0)
+  J2ObjC Annotations (com.google.j2objc:j2objc-annotations:3.1)
   Jackson datatype: Guava (com.fasterxml.jackson.datatype:jackson-datatype-guava:2.12.0)
   Jackson datatype: jdk8 (com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.12.0)
-  Jackson-annotations (com.fasterxml.jackson.core:jackson-annotations:2.12.0)
+  Jackson-annotations (com.fasterxml.jackson.core:jackson-annotations:2.22)
   Jackson-core (com.fasterxml.jackson.core:jackson-core:2.12.0)
+  Jackson-core (tools.jackson.core:jackson-core:3.1.1)
   jackson-databind (com.fasterxml.jackson.core:jackson-databind:2.12.0)
+  jackson-databind (tools.jackson.core:jackson-databind:3.1.1)
   Jakarta Dependency Injection (jakarta.inject:jakarta.inject-api:2.0.1)
   okhttp (com.squareup.okhttp3:okhttp:4.9.0)
   Okio (com.squareup.okio:okio:2.8.0)
@@ -54,44 +56,37 @@ BSD-3-Clause (https://spdx.org/licenses/BSD-3-Clause.html) applies to:
 
   Protocol Buffers [Core] (com.google.protobuf:protobuf-java:4.33.2)
 
-EPL-1.0 (https://spdx.org/licenses/EPL-1.0.html) applies to:
-
-  Logback Classic Module (ch.qos.logback:logback-classic:1.5.18)
-  Logback Core Module (ch.qos.logback:logback-core:1.5.18)
-
 EPL-2.0 (https://spdx.org/licenses/EPL-2.0.html) applies to:
 
+  Core :: HTTP (org.eclipse.jetty:jetty-http:12.1.10)
+  Core :: IO (org.eclipse.jetty:jetty-io:12.1.10)
+  Core :: Security (org.eclipse.jetty:jetty-security:12.1.10)
+  Core :: Server (org.eclipse.jetty:jetty-server:12.1.10)
+  Core :: Sessions (org.eclipse.jetty:jetty-session:12.1.10)
+  Core :: Utilities (org.eclipse.jetty:jetty-util:12.1.10)
+  EE10 :: Servlet (org.eclipse.jetty.ee10:jetty-ee10-servlet:12.1.10)
   Jakarta Annotations API (jakarta.annotation:jakarta.annotation-api:3.0.0)
   Jakarta Servlet (jakarta.servlet:jakarta.servlet-api:6.0.0)
-
-Eclipse Public License - Version 2.0 (https://spdx.org/licenses/Eclipse Public License - Version 2.0.html) applies to:
-
-  Core :: HTTP (org.eclipse.jetty:jetty-http:12.0.25)
-  Core :: IO (org.eclipse.jetty:jetty-io:12.0.25)
-  Core :: Security (org.eclipse.jetty:jetty-security:12.0.25)
-  Core :: Server (org.eclipse.jetty:jetty-server:12.0.25)
-  Core :: Sessions (org.eclipse.jetty:jetty-session:12.0.25)
-  Core :: Utilities (org.eclipse.jetty:jetty-util:12.0.25)
-  EE10 :: Servlet (org.eclipse.jetty.ee10:jetty-ee10-servlet:12.0.25)
-
-GNU Lesser General Public License (https://spdx.org/licenses/GNU Lesser General Public License.html) applies to:
-
-  Logback Classic Module (ch.qos.logback:logback-classic:1.5.18)
-  Logback Core Module (ch.qos.logback:logback-core:1.5.18)
+  Logback Classic Module (ch.qos.logback:logback-classic:1.5.34)
+  Logback Core Module (ch.qos.logback:logback-core:1.5.34)
 
 GPL2 w/ CPE (https://spdx.org/licenses/GPL2 w/ CPE.html) applies to:
 
   Jakarta Annotations API (jakarta.annotation:jakarta.annotation-api:3.0.0)
   Jakarta Servlet (jakarta.servlet:jakarta.servlet-api:6.0.0)
 
+LGPL-2.1-only (https://spdx.org/licenses/LGPL-2.1-only.html) applies to:
+
+  Logback Classic Module (ch.qos.logback:logback-classic:1.5.34)
+  Logback Core Module (ch.qos.logback:logback-core:1.5.34)
+
 MIT (https://spdx.org/licenses/MIT.html) applies to:
 
-  Checker Qual (org.checkerframework:checker-qual:3.42.0)
-  SLF4J API Module (org.slf4j:slf4j-api:2.0.17)
+  SLF4J API Module (org.slf4j:slf4j-api:2.0.18)
 
 MIT license (https://spdx.org/licenses/MIT license.html) applies to:
 
-  Animal Sniffer Annotations (org.codehaus.mojo:animal-sniffer-annotations:1.24)
+  Animal Sniffer Annotations (org.codehaus.mojo:animal-sniffer-annotations:1.27)
 
 Public Domain (https://spdx.org/licenses/Public Domain.html) applies to:
 
@@ -99,6 +94,7 @@ Public Domain (https://spdx.org/licenses/Public Domain.html) applies to:
 
 The Apache License, Version 2.0 (https://spdx.org/licenses/The Apache License, Version 2.0.html) applies to:
 
+  JSpecify annotations (org.jspecify:jspecify:1.0.0)
   org.jetbrains.kotlin:kotlin-stdlib (org.jetbrains.kotlin:kotlin-stdlib:1.4.10)
   org.jetbrains.kotlin:kotlin-stdlib-common (org.jetbrains.kotlin:kotlin-stdlib-common:1.4.0)
 
