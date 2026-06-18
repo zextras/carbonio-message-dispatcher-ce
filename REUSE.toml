@@ -46,7 +46,7 @@ SPDX-FileCopyrightText = "2025 Zextras"
 SPDX-License-Identifier = "AGPL-3.0-only"
 
 [[annotations]]
-path = "**"
+path = "THIRDPARTIES"
 precedence = "aggregate"
-SPDX-FileCopyrightText = "2026 Zextras <https://www.zextras.com>"
+SPDX-FileCopyrightText = "2023 Zextras <https://www.zextras.com>"
 SPDX-License-Identifier = "AGPL-3.0-only"
