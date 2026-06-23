@@ -1,3 +1,22 @@
+## [1.3.0](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.2.4...v1.3.0) (2026-06-23)
+
+### Features
+
+* **reuse:** re-sync stale THIRDPARTIES ([#130](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/130)) ([ee399e3](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/ee399e349c5fcb50aa27f45f63454df4db77ea71))
+
+### Bug Fixes
+
+* **deps:** update database migration tools to v11.20.3 ([#91](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/91)) ([9058ebe](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/9058ebe604f93229e6389850fb6e14bd54032621))
+* **deps:** update database migration tools to v12 ([#99](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/99)) ([f8d4233](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/f8d4233fdc92d1960fc84b48113c1d905aa67ff2))
+* **deps:** update database migration tools to v12.9.0 ([#128](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/128)) ([5284277](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/528427707e33140d38fc2ff8e79d7aeb9c95d34f))
+* **deps:** update dependency com.zextras.carbonio.user-management:carbonio-user-management-grpc-sdk to v1.1.1-1 ([#106](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/106)) ([7cd67ac](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/7cd67acf83be75b98a1f591dafee9ac0338610ad))
+* **deps:** update dependency org.postgresql:postgresql to v42.7.11 ([#80](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/80)) ([286ab8f](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/286ab8f4b891bba7e57f69465bc7388809148d34))
+* **deps:** update google libraries to v33.6.0-jre ([#83](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/83)) ([f076ce8](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/f076ce8de23d374fb26149831ad7878a4c4f78c2))
+* **deps:** update grpc-java monorepo to v1.82.0 ([#114](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/114)) ([9a1ffc7](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/9a1ffc758cdcc3d6bc731e1fefc8f680e0807ca7))
+* **deps:** update jetty to v12.1.10 ([#98](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/98)) ([bd1c06a](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/bd1c06aaddfbb26147a8da64fec9861882b6591b))
+* **deps:** update logback to v1.5.34 ([#70](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/70)) ([f843247](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/f843247c0091a8fca0a7ee5fbc3ce96867fc3744))
+* **deps:** update slf4j to v2.0.18 ([#123](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/123)) ([df598a7](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/df598a75093ca7f35e000594469f1255a2a56b53))
+
 ## [1.2.4](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.2.3...v1.2.4) (2026-05-27)
 
 ### Bug Fixes
