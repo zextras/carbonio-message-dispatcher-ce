@@ -11,7 +11,6 @@ import com.zextras.carbonio.message.dispatcher.auth.service.AuthenticationServic
 import com.zextras.carbonio.user_management.sdk.rest.ApiException;
 import com.zextras.carbonio.user_management.sdk.rest.api.UserResourceApi;
 import com.zextras.carbonio.user_management.sdk.rest.model.MyselfDto;
-import java.util.Map;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,8 +30,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   @Override
   public Optional<String> validateToken(String token) {
     try {
-      Map<String, String> headers = Map.of("Cookie", "ZM_AUTH_TOKEN=" + token);
-      MyselfDto response = userResourceApi.internalUsersMyselfGet(headers);
+      MyselfDto response = userResourceApi.internalUsersMyselfGet(token);
       String userId = response.getInfo().getUserId();
       LOGGER.debug("Validated user with id: {}", userId);
       return Optional.of(userId);

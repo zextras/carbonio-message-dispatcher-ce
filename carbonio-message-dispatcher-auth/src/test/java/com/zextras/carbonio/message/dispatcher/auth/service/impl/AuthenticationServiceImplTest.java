@@ -7,7 +7,6 @@ package com.zextras.carbonio.message.dispatcher.auth.service.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -21,9 +20,9 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link AuthenticationServiceImpl}, proving the gRPC to REST SDK swap: {@link
- * UserResourceApi#internalUsersMyselfGet(java.util.Map)} is called instead of the old blocking
- * stub, and {@link ApiException} status codes are mapped the same way the old {@code
- * StatusRuntimeException} codes were.
+ * UserResourceApi#internalUsersMyselfGet(String)} is called with the auth token as an explicit
+ * header param instead of the old blocking stub, and {@link ApiException} status codes are
+ * mapped the same way the old {@code StatusRuntimeException} codes were.
  */
 class AuthenticationServiceImplTest {
 
@@ -32,7 +31,7 @@ class AuthenticationServiceImplTest {
     UserResourceApi userResourceApi = mock(UserResourceApi.class);
     UserInfoDto userInfo = new UserInfoDto().userId("user-123");
     MyselfDto myself = new MyselfDto().info(userInfo);
-    when(userResourceApi.internalUsersMyselfGet(anyMap())).thenReturn(myself);
+    when(userResourceApi.internalUsersMyselfGet("valid-token")).thenReturn(myself);
 
     AuthenticationServiceImpl authenticationService = new AuthenticationServiceImpl(userResourceApi);
 
@@ -45,7 +44,7 @@ class AuthenticationServiceImplTest {
   @Test
   void validateTokenThrowsUnauthorizedOn401() throws Exception {
     UserResourceApi userResourceApi = mock(UserResourceApi.class);
-    when(userResourceApi.internalUsersMyselfGet(anyMap()))
+    when(userResourceApi.internalUsersMyselfGet("bad-token"))
         .thenThrow(new ApiException(401, "Unauthorized"));
 
     AuthenticationServiceImpl authenticationService = new AuthenticationServiceImpl(userResourceApi);
