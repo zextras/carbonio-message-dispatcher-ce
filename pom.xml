@@ -37,6 +37,12 @@ SPDX-License-Identifier: AGPL-3.0-only
       <id>releases-repo</id>
       <url>https://repo.zextras.io/maven/release/</url>
     </repository>
+
+    <repository>
+      <id>zextras-java-sdk</id>
+      <name>Zextras public maven repo</name>
+      <url>https://zextras.jfrog.io/artifactory/java-sdk</url>
+    </repository>
   </repositories>
 
   <profiles>
@@ -67,9 +73,7 @@ SPDX-License-Identifier: AGPL-3.0-only
     <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- Carbonio User Management -->
-    <carbonio-user-management-grpc-sdk.version>1.1.1-1</carbonio-user-management-grpc-sdk.version>
-    <!-- gRPC -->
-    <io.grpc.version>1.82.0</io.grpc.version>
+    <carbonio-user-management-rest-sdk.version>1.2.5-SNAPSHOT.161.d4c8d51b</carbonio-user-management-rest-sdk.version>
     <!-- Database -->
     <flyway-database-postgresql.version>12.9.0</flyway-database-postgresql.version>
     <jackson-annotations.version>2.22</jackson-annotations.version>
@@ -145,15 +149,8 @@ SPDX-License-Identifier: AGPL-3.0-only
       <!-- Carbonio User Management -->
       <dependency>
         <groupId>com.zextras.carbonio.user-management</groupId>
-        <artifactId>carbonio-user-management-grpc-sdk</artifactId>
-        <version>${carbonio-user-management-grpc-sdk.version}</version>
-      </dependency>
-
-      <!-- gRPC dependencies -->
-      <dependency>
-        <groupId>io.grpc</groupId>
-        <artifactId>grpc-netty-shaded</artifactId>
-        <version>${io.grpc.version}</version>
+        <artifactId>carbonio-user-management-rest-sdk</artifactId>
+        <version>${carbonio-user-management-rest-sdk.version}</version>
       </dependency>
 
       <!-- Jetty dependencies -->

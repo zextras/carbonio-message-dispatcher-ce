@@ -11,10 +11,9 @@ import com.zextras.carbonio.message.dispatcher.auth.dal.DatabaseManager;
 import com.zextras.carbonio.message.dispatcher.auth.dal.impl.DatabaseManagerFlyway;
 import com.zextras.carbonio.message.dispatcher.auth.service.AuthenticationService;
 import com.zextras.carbonio.message.dispatcher.auth.service.impl.AuthenticationServiceImpl;
-import com.zextras.carbonio.user_management.sdk.grpc.UserManagementServiceGrpc;
-import com.zextras.carbonio.user_management.sdk.grpc.UserManagementServiceGrpc.UserManagementServiceBlockingStub;
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
+import com.zextras.carbonio.user_management.sdk.rest.ApiClient;
+import com.zextras.carbonio.user_management.sdk.rest.api.UserResourceApi;
+import java.net.http.HttpClient;
 import javax.sql.DataSource;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.slf4j.Logger;
@@ -53,19 +52,15 @@ public class MessageDispatcherModule extends AbstractModule {
 
   @Provides
   @Singleton
-  public ManagedChannel provideUserManagementChannel(MessageDispatcherConfig config) {
+  public UserResourceApi provideUserResourceApi(MessageDispatcherConfig config) {
     String host = config.getUserManagementHost();
     int port = config.getUserManagementPort();
-    logger.info("Creating gRPC channel to user-management at {}:{}", host, port);
-    return ManagedChannelBuilder.forAddress(host, port)
-        .usePlaintext()
-        .build();
-  }
-
-  @Provides
-  @Singleton
-  public UserManagementServiceBlockingStub provideUserManagementStub(
-      ManagedChannel userManagementChannel) {
-    return UserManagementServiceGrpc.newBlockingStub(userManagementChannel);
+    String baseUrl = "http://" + host + ":" + port;
+    logger.info("Creating REST client for user-management at {}", baseUrl);
+    HttpClient.Builder httpClientBuilder =
+        HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1);
+    ApiClient apiClient =
+        new ApiClient(httpClientBuilder, ApiClient.createDefaultObjectMapper(), baseUrl);
+    return new UserResourceApi(apiClient);
   }
 }
