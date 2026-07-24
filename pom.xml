@@ -77,6 +77,15 @@ SPDX-License-Identifier: AGPL-3.0-only
     <!-- Database -->
     <flyway-database-postgresql.version>12.9.0</flyway-database-postgresql.version>
     <jackson-annotations.version>2.22</jackson-annotations.version>
+    <!-- Must stay aligned with jackson-annotations and with the version the
+         carbonio-user-management-rest-sdk was generated against, otherwise the
+         SDK's ApiClient throws NoClassDefFoundError at runtime (e.g. missing
+         com.fasterxml.jackson.databind.ser.std.ToEmptyObjectSerializer, added
+         in jackson-databind 2.16). Without this pin, transitive resolution
+         picks up the much older jackson-databind:2.12.0 pulled in by
+         consul-client's converter-jackson dependency. -->
+    <jackson-databind.version>2.22.0</jackson-databind.version>
+    <jackson-core.version>2.22.0</jackson-core.version>
     <postgresql.version>42.7.11</postgresql.version>
     <!-- Jetty -->
     <org.eclipse.jetty.version>12.1.10</org.eclipse.jetty.version>
@@ -119,6 +128,18 @@ SPDX-License-Identifier: AGPL-3.0-only
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-annotations</artifactId>
         <version>${jackson-annotations.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson-databind.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson-core.version}</version>
       </dependency>
 
       <dependency>
