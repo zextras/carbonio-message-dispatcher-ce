@@ -104,6 +104,7 @@ SPDX-License-Identifier: AGPL-3.0-only
     <maven-shade-plugin.version>3.6.2</maven-shade-plugin.version>
     <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
     <maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
+    <sonar-maven-plugin.version>5.5.0.6356</sonar-maven-plugin.version>
     <!-- Test -->
     <junit-jupiter.version>6.1.0</junit-jupiter.version>
     <testcontainers.version>1.21.4</testcontainers.version>
@@ -259,5 +260,15 @@ SPDX-License-Identifier: AGPL-3.0-only
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <!-- Maven Central dropped the "sonar" prefix from the org.codehaus.mojo group
+           metadata, so mvn sonar:sonar can no longer resolve the plugin prefix on its own.
+           Declaring it here makes the prefix resolvable from the project. -->
+      <plugin>
+        <groupId>org.sonarsource.scanner.maven</groupId>
+        <artifactId>sonar-maven-plugin</artifactId>
+        <version>${sonar-maven-plugin.version}</version>
+      </plugin>
+    </plugins>
   </build>
 </project>
