@@ -1,7 +1,6 @@
 AGPL-3.0-only (https://spdx.org/licenses/AGPL-3.0-only.html) applies to:
 
-  Carbonio Quarkus Extensions - REST SDK Support (com.zextras.carbonio.quarkus:carbonio-quarkus-extensions-rest-sdk-support:1.11.2-SNAPSHOT.139.8431ab3c)
-  Carbonio User Management - REST SDK (com.zextras.carbonio.user-management:carbonio-user-management-rest-sdk:1.2.5-SNAPSHOT.161.d4c8d51b)
+  Carbonio User Management - REST SDK (com.zextras.carbonio.user-management:carbonio-user-management-rest-sdk:1.3.0-1)
 
 Apache-2.0 (https://spdx.org/licenses/Apache-2.0.html) applies to:
 
@@ -29,9 +28,9 @@ Apache-2.0 (https://spdx.org/licenses/Apache-2.0.html) applies to:
   Jackson datatype: jdk8 (com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.12.0)
   Jackson datatype: JSR310 (com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.22.0)
   Jackson-annotations (com.fasterxml.jackson.core:jackson-annotations:2.22)
-  Jackson-core (com.fasterxml.jackson.core:jackson-core:2.12.0)
+  Jackson-core (com.fasterxml.jackson.core:jackson-core:2.22.0)
   Jackson-core (tools.jackson.core:jackson-core:3.1.1)
-  jackson-databind (com.fasterxml.jackson.core:jackson-databind:2.12.0)
+  jackson-databind (com.fasterxml.jackson.core:jackson-databind:2.22.0)
   jackson-databind (tools.jackson.core:jackson-databind:3.1.1)
   Jakarta Dependency Injection (jakarta.inject:jakarta.inject-api:2.0.1)
   okhttp (com.squareup.okhttp3:okhttp:4.9.0)
