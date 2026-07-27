@@ -5,12 +5,16 @@
 package com.zextras.carbonio.message.dispatcher.auth.config;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zextras.carbonio.user_management.sdk.rest.ApiClient;
 import com.zextras.carbonio.user_management.sdk.rest.api.UserResourceApi;
+import java.lang.reflect.Field;
 import java.net.http.HttpClient;
+import java.time.Duration;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -33,6 +37,13 @@ import org.junit.jupiter.api.Test;
  * which mocks {@link UserResourceApi} directly and therefore never touches this code path), so
  * this test is the only one that would have caught the bug: it must be run with the module's
  * actual runtime classpath, not a mock.
+ *
+ * <p>{@link #moduleProducesUserResourceApiWithFiveSecondTimeouts()} covers the same gap for the
+ * explicit connect/read timeouts: it goes through {@code
+ * MessageDispatcherModule#provideUserResourceApi} itself (not a hand-rolled {@link ApiClient}
+ * like the tests above), because {@link UserResourceApi}'s constructor snapshots the {@link
+ * ApiClient}'s timeouts into {@code final} fields, so a setter called after construction would be
+ * a silent no-op that only a test going through the real production call site would catch.
  */
 class UserManagementApiClientConstructionTest {
 
@@ -66,5 +77,23 @@ class UserManagementApiClientConstructionTest {
     UserResourceApi userResourceApi = assertDoesNotThrow(() -> new UserResourceApi(apiClient));
 
     assertNotNull(userResourceApi);
+  }
+
+  @Test
+  void moduleProducesUserResourceApiWithFiveSecondTimeouts() throws Exception {
+    UserResourceApi userResourceApi =
+        new MessageDispatcherModule().provideUserResourceApi(new MessageDispatcherConfig());
+
+    // UserResourceApi exposes no public getters for the timeouts it snapshots from ApiClient at
+    // construction time, so reflection is the only way to assert on the real, final field values.
+    Field httpClientField = UserResourceApi.class.getDeclaredField("memberVarHttpClient");
+    httpClientField.setAccessible(true);
+    HttpClient httpClient = (HttpClient) httpClientField.get(userResourceApi);
+    assertEquals(Optional.of(Duration.ofSeconds(5)), httpClient.connectTimeout());
+
+    Field readTimeoutField = UserResourceApi.class.getDeclaredField("memberVarReadTimeout");
+    readTimeoutField.setAccessible(true);
+    Duration readTimeout = (Duration) readTimeoutField.get(userResourceApi);
+    assertEquals(Duration.ofSeconds(5), readTimeout);
   }
 }

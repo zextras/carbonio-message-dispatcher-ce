@@ -14,6 +14,7 @@ import com.zextras.carbonio.message.dispatcher.auth.service.impl.AuthenticationS
 import com.zextras.carbonio.user_management.sdk.rest.ApiClient;
 import com.zextras.carbonio.user_management.sdk.rest.api.UserResourceApi;
 import java.net.http.HttpClient;
+import java.time.Duration;
 import javax.sql.DataSource;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.slf4j.Logger;
@@ -22,6 +23,15 @@ import org.slf4j.LoggerFactory;
 public class MessageDispatcherModule extends AbstractModule {
 
   private static final Logger logger = LoggerFactory.getLogger(MessageDispatcherModule.class);
+
+  /**
+   * Connect/read timeout for the user-management REST client. Hardcoded rather than exposed as
+   * config by explicit team decision. 5000ms matches this codebase's existing convention for a
+   * shared client calling another Carbonio service over the mesh: {@code
+   * HttpClientProvider.TIMEOUT_MILLIS} is exactly 5000 in both carbonio-ws-collaboration and
+   * carbonio-notification-push.
+   */
+  private static final Duration USER_MANAGEMENT_TIMEOUT = Duration.ofSeconds(5);
 
   @Override
   protected void configure() {
@@ -61,6 +71,8 @@ public class MessageDispatcherModule extends AbstractModule {
         HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1);
     ApiClient apiClient =
         new ApiClient(httpClientBuilder, ApiClient.createDefaultObjectMapper(), baseUrl);
+    apiClient.setConnectTimeout(USER_MANAGEMENT_TIMEOUT);
+    apiClient.setReadTimeout(USER_MANAGEMENT_TIMEOUT);
     return new UserResourceApi(apiClient);
   }
 }
