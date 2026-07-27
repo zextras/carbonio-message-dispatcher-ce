@@ -30,7 +30,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   @Override
   public Optional<String> validateToken(String token) {
     try {
-      MyselfDto response = userResourceApi.internalUsersMyselfGet(token);
+      MyselfDto response = userResourceApi.internalUsersMyselfGet(null, token);
       String userId = response.getInfo().getUserId();
       LOGGER.debug("Validated user with id: {}", userId);
       return Optional.of(userId);

@@ -31,7 +31,7 @@ class AuthenticationServiceImplTest {
     UserResourceApi userResourceApi = mock(UserResourceApi.class);
     UserInfoDto userInfo = new UserInfoDto().userId("user-123");
     MyselfDto myself = new MyselfDto().info(userInfo);
-    when(userResourceApi.internalUsersMyselfGet("valid-token")).thenReturn(myself);
+    when(userResourceApi.internalUsersMyselfGet(null, "valid-token")).thenReturn(myself);
 
     AuthenticationServiceImpl authenticationService = new AuthenticationServiceImpl(userResourceApi);
 
@@ -44,7 +44,7 @@ class AuthenticationServiceImplTest {
   @Test
   void validateTokenThrowsUnauthorizedOn401() throws Exception {
     UserResourceApi userResourceApi = mock(UserResourceApi.class);
-    when(userResourceApi.internalUsersMyselfGet("bad-token"))
+    when(userResourceApi.internalUsersMyselfGet(null, "bad-token"))
         .thenThrow(new ApiException(401, "Unauthorized"));
 
     AuthenticationServiceImpl authenticationService = new AuthenticationServiceImpl(userResourceApi);
