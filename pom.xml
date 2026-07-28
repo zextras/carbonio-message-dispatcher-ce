@@ -37,6 +37,12 @@ SPDX-License-Identifier: AGPL-3.0-only
       <id>releases-repo</id>
       <url>https://repo.zextras.io/maven/release/</url>
     </repository>
+
+    <repository>
+      <id>zextras-java-sdk</id>
+      <name>Zextras public maven repo</name>
+      <url>https://zextras.jfrog.io/artifactory/java-sdk</url>
+    </repository>
   </repositories>
 
   <profiles>
@@ -67,12 +73,19 @@ SPDX-License-Identifier: AGPL-3.0-only
     <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- Carbonio User Management -->
-    <carbonio-user-management-grpc-sdk.version>1.1.1-1</carbonio-user-management-grpc-sdk.version>
-    <!-- gRPC -->
-    <io.grpc.version>1.82.0</io.grpc.version>
+    <carbonio-user-management-rest-sdk.version>1.3.0-1</carbonio-user-management-rest-sdk.version>
     <!-- Database -->
     <flyway-database-postgresql.version>12.9.0</flyway-database-postgresql.version>
     <jackson-annotations.version>2.22</jackson-annotations.version>
+    <!-- Must stay aligned with jackson-annotations and with the version the
+         carbonio-user-management-rest-sdk was generated against, otherwise the
+         SDK's ApiClient throws NoClassDefFoundError at runtime (e.g. missing
+         com.fasterxml.jackson.databind.ser.std.ToEmptyObjectSerializer, added
+         in jackson-databind 2.16). Without this pin, transitive resolution
+         picks up the much older jackson-databind:2.12.0 pulled in by
+         consul-client's converter-jackson dependency. -->
+    <jackson-databind.version>2.22.0</jackson-databind.version>
+    <jackson-core.version>2.22.0</jackson-core.version>
     <postgresql.version>42.7.11</postgresql.version>
     <!-- Jetty -->
     <org.eclipse.jetty.version>12.1.10</org.eclipse.jetty.version>
@@ -91,6 +104,7 @@ SPDX-License-Identifier: AGPL-3.0-only
     <maven-shade-plugin.version>3.6.2</maven-shade-plugin.version>
     <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
     <maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
+    <sonar-maven-plugin.version>5.5.0.6356</sonar-maven-plugin.version>
     <!-- Test -->
     <junit-jupiter.version>6.1.0</junit-jupiter.version>
     <testcontainers.version>1.21.4</testcontainers.version>
@@ -115,6 +129,18 @@ SPDX-License-Identifier: AGPL-3.0-only
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-annotations</artifactId>
         <version>${jackson-annotations.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson-databind.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson-core.version}</version>
       </dependency>
 
       <dependency>
@@ -145,15 +171,8 @@ SPDX-License-Identifier: AGPL-3.0-only
       <!-- Carbonio User Management -->
       <dependency>
         <groupId>com.zextras.carbonio.user-management</groupId>
-        <artifactId>carbonio-user-management-grpc-sdk</artifactId>
-        <version>${carbonio-user-management-grpc-sdk.version}</version>
-      </dependency>
-
-      <!-- gRPC dependencies -->
-      <dependency>
-        <groupId>io.grpc</groupId>
-        <artifactId>grpc-netty-shaded</artifactId>
-        <version>${io.grpc.version}</version>
+        <artifactId>carbonio-user-management-rest-sdk</artifactId>
+        <version>${carbonio-user-management-rest-sdk.version}</version>
       </dependency>
 
       <!-- Jetty dependencies -->
@@ -241,5 +260,15 @@ SPDX-License-Identifier: AGPL-3.0-only
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <!-- Maven Central dropped the "sonar" prefix from the org.codehaus.mojo group
+           metadata, so mvn sonar:sonar can no longer resolve the plugin prefix on its own.
+           Declaring it here makes the prefix resolvable from the project. -->
+      <plugin>
+        <groupId>org.sonarsource.scanner.maven</groupId>
+        <artifactId>sonar-maven-plugin</artifactId>
+        <version>${sonar-maven-plugin.version}</version>
+      </plugin>
+    </plugins>
   </build>
 </project>
