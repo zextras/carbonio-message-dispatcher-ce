@@ -29,21 +29,21 @@ import org.junit.jupiter.api.Test;
  * carbonio-user-management-rest-sdk is generated/compiled against a much newer jackson-databind
  * (2.22.x), but without an explicit dependency management pin, Maven's "nearest wins" conflict
  * resolution let {@code com.orbitz.consul:consul-client}'s transitive {@code
- * jackson-databind:2.12.0} win over the REST SDK's own {@code jackson-databind:2.22.0}, so the
- * auth fatjar bundled a jackson-databind too old to contain the class the SDK needs.
+ * jackson-databind:2.12.0} win over the REST SDK's own {@code jackson-databind:2.22.0}, so the auth
+ * fatjar bundled a jackson-databind too old to contain the class the SDK needs.
  *
  * <p>{@link com.zextras.carbonio.message.dispatcher.auth.config.MessageDispatcherModule
  * #provideUserResourceApi} builds the real {@link ApiClient} (unlike the rest of the test suite,
- * which mocks {@link UserResourceApi} directly and therefore never touches this code path), so
- * this test is the only one that would have caught the bug: it must be run with the module's
- * actual runtime classpath, not a mock.
+ * which mocks {@link UserResourceApi} directly and therefore never touches this code path), so this
+ * test is the only one that would have caught the bug: it must be run with the module's actual
+ * runtime classpath, not a mock.
  *
  * <p>{@link #moduleProducesUserResourceApiWithFiveSecondTimeouts()} covers the same gap for the
  * explicit connect/read timeouts: it goes through {@code
- * MessageDispatcherModule#provideUserResourceApi} itself (not a hand-rolled {@link ApiClient}
- * like the tests above), because {@link UserResourceApi}'s constructor snapshots the {@link
- * ApiClient}'s timeouts into {@code final} fields, so a setter called after construction would be
- * a silent no-op that only a test going through the real production call site would catch.
+ * MessageDispatcherModule#provideUserResourceApi} itself (not a hand-rolled {@link ApiClient} like
+ * the tests above), because {@link UserResourceApi}'s constructor snapshots the {@link ApiClient}'s
+ * timeouts into {@code final} fields, so a setter called after construction would be a silent no-op
+ * that only a test going through the real production call site would catch.
  */
 class UserManagementApiClientConstructionTest {
 
@@ -62,7 +62,9 @@ class UserManagementApiClientConstructionTest {
         assertDoesNotThrow(
             () ->
                 new ApiClient(
-                    httpClientBuilder, ApiClient.createDefaultObjectMapper(), "http://localhost:20000"));
+                    httpClientBuilder,
+                    ApiClient.createDefaultObjectMapper(),
+                    "http://localhost:20000"));
 
     assertNotNull(apiClient);
   }
@@ -72,7 +74,8 @@ class UserManagementApiClientConstructionTest {
     HttpClient.Builder httpClientBuilder =
         HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1);
     ApiClient apiClient =
-        new ApiClient(httpClientBuilder, ApiClient.createDefaultObjectMapper(), "http://localhost:20000");
+        new ApiClient(
+            httpClientBuilder, ApiClient.createDefaultObjectMapper(), "http://localhost:20000");
 
     UserResourceApi userResourceApi = assertDoesNotThrow(() -> new UserResourceApi(apiClient));
 

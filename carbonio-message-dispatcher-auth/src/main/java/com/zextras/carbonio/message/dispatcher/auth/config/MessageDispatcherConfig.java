@@ -18,7 +18,8 @@ import org.slf4j.LoggerFactory;
 public class MessageDispatcherConfig {
 
   private static final Logger logger = LoggerFactory.getLogger(MessageDispatcherConfig.class);
-  private static final String CONFIG_FILE_PATH = "/etc/carbonio/message-dispatcher/config.properties";
+  private static final String CONFIG_FILE_PATH =
+      "/etc/carbonio/message-dispatcher/config.properties";
 
   private final Properties properties;
 
@@ -27,13 +28,15 @@ public class MessageDispatcherConfig {
   }
 
   public void loadConfig() throws IOException {
-    loadFromEtc().ifPresent(config -> {
-      try {
-        properties.load(config);
-      } catch (IOException e) {
-        logger.warn("Error loading configuration file: {}", e.getMessage());
-      }
-    });
+    loadFromEtc()
+        .ifPresent(
+            config -> {
+              try {
+                properties.load(config);
+              } catch (IOException e) {
+                logger.warn("Error loading configuration file: {}", e.getMessage());
+              }
+            });
     properties.putAll(System.getProperties());
   }
 
@@ -47,44 +50,39 @@ public class MessageDispatcherConfig {
   }
 
   public String getServerHost() {
-    return properties.getProperty(
-        Constants.Server.HOST_PROPERTY,
-        Constants.Server.DEFAULT_HOST);
+    return properties.getProperty(Constants.Server.HOST_PROPERTY, Constants.Server.DEFAULT_HOST);
   }
 
   public int getServerPort() {
-    return Integer.parseInt(properties.getProperty(
-        Constants.Server.PORT_PROPERTY,
-        String.valueOf(Constants.Server.DEFAULT_PORT)));
+    return Integer.parseInt(
+        properties.getProperty(
+            Constants.Server.PORT_PROPERTY, String.valueOf(Constants.Server.DEFAULT_PORT)));
   }
 
   public String getUserManagementHost() {
     return properties.getProperty(
-        Constants.UserManagement.HOST_PROPERTY,
-        Constants.UserManagement.DEFAULT_HOST);
+        Constants.UserManagement.HOST_PROPERTY, Constants.UserManagement.DEFAULT_HOST);
   }
 
   public int getUserManagementPort() {
-    return Integer.parseInt(properties.getProperty(
-        Constants.UserManagement.PORT_PROPERTY,
-        String.valueOf(Constants.UserManagement.DEFAULT_PORT)));
+    return Integer.parseInt(
+        properties.getProperty(
+            Constants.UserManagement.PORT_PROPERTY,
+            String.valueOf(Constants.UserManagement.DEFAULT_PORT)));
   }
 
   public String getDatabaseHost() {
     return properties.getProperty(
-        Constants.Database.HOST_PROPERTY,
-        Constants.Database.DEFAULT_HOST);
+        Constants.Database.HOST_PROPERTY, Constants.Database.DEFAULT_HOST);
   }
 
   public String getDatabasePort() {
     return properties.getProperty(
-        Constants.Database.PORT_PROPERTY,
-        String.valueOf(Constants.Database.DEFAULT_PORT));
+        Constants.Database.PORT_PROPERTY, String.valueOf(Constants.Database.DEFAULT_PORT));
   }
 
   public String getDatabaseName() {
-    return getConsulConfig(Constants.Database.NAME_KEY)
-        .orElse(Constants.Database.DEFAULT_NAME);
+    return getConsulConfig(Constants.Database.NAME_KEY).orElse(Constants.Database.DEFAULT_NAME);
   }
 
   public String getDatabaseUsername() {
@@ -99,22 +97,21 @@ public class MessageDispatcherConfig {
 
   private String getServiceDiscoverHost() {
     return properties.getProperty(
-        Constants.ServiceDiscover.HOST_PROPERTY,
-        Constants.ServiceDiscover.DEFAULT_HOST);
+        Constants.ServiceDiscover.HOST_PROPERTY, Constants.ServiceDiscover.DEFAULT_HOST);
   }
 
   private int getServiceDiscoverPort() {
-    return Integer.parseInt(properties.getProperty(
-        Constants.ServiceDiscover.PORT_PROPERTY,
-        String.valueOf(Constants.ServiceDiscover.DEFAULT_PORT)));
+    return Integer.parseInt(
+        properties.getProperty(
+            Constants.ServiceDiscover.PORT_PROPERTY,
+            String.valueOf(Constants.ServiceDiscover.DEFAULT_PORT)));
   }
 
   private Optional<String> getConsulConfig(String key) {
     try {
-      String consulUrl = MessageFormat.format(
-          "http://{0}:{1}",
-          getServiceDiscoverHost(),
-          String.valueOf(getServiceDiscoverPort()));
+      String consulUrl =
+          MessageFormat.format(
+              "http://{0}:{1}", getServiceDiscoverHost(), String.valueOf(getServiceDiscoverPort()));
       Consul.Builder consulBuilder = Consul.builder().withUrl(consulUrl);
       String consulToken = System.getenv("CONSUL_HTTP_TOKEN");
       if (consulToken != null && !consulToken.isEmpty()) {
