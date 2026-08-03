@@ -4,7 +4,6 @@
 #
 # Local hooks regenerate files but don't `git add` the result — if one changes a
 # tracked file, review the diff, `git add` it, and re-commit.
-exclude: "mvnw|mvnw.cmd"
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
