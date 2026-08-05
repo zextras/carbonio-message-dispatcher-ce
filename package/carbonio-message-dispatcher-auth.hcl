@@ -1,6 +1,5 @@
 services {
   check {
-    id       = "ready"
     http     = "http://127.78.0.23:10000/health/ready"
     method   = "GET"
     timeout  = "1s"

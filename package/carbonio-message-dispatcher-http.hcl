@@ -1,6 +1,5 @@
 services {
   check {
-    id       = "ready"
     http     = "http://127.78.0.10:10000/api/graphql"
     method   = "GET"
     timeout  = "1s"
