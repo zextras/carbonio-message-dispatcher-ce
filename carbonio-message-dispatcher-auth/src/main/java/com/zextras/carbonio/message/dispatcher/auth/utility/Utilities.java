@@ -16,16 +16,16 @@ public class Utilities {
       return map;
     }
 
-    Arrays.stream(queryString.split("&")).forEach(item -> {
-        if (item.contains("=")) {
-          String[] kv = item.split("=", 2);
-          if (!kv[1].equals("undefined")) {
-            map.put(kv[0], kv[1]);
-          }
-        }
-      }
-    );
+    Arrays.stream(queryString.split("&"))
+        .forEach(
+            item -> {
+              if (item.contains("=")) {
+                String[] kv = item.split("=", 2);
+                if (!kv[1].equals("undefined")) {
+                  map.put(kv[0], kv[1]);
+                }
+              }
+            });
     return map;
   }
-
 }

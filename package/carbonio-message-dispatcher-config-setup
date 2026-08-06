@@ -32,9 +32,7 @@ sed "s/<db-password>/$DB_PASSWORD/" "${MONGOOSEIM_TOML}" -i
 # Substitute API username
 get_consul_kv "${MAIN_SERVICE_NAME}/api/username" >/dev/null 2>&1; API_USERNAME=$CONSUL_VALUE
 if [[ "$API_USERNAME" == "" ]]; then
-  consul kv put "${MAIN_SERVICE_NAME}/api/username" "${MAIN_SERVICE_NAME}"
-  # shellcheck disable=SC2181
-  if [[ $? != 0 ]]; then
+  if ! consul kv put "${MAIN_SERVICE_NAME}/api/username" "${MAIN_SERVICE_NAME}"; then
     echo "Cannot put a key value pair in Consul"
     exit 1
   fi
@@ -45,15 +43,12 @@ sed "s/<api-username>/$API_USERNAME/" "${MONGOOSEIM_TOML}" -i
 # Substitute API password
 get_consul_kv "${MAIN_SERVICE_NAME}/api/password" >/dev/null 2>&1; API_PASSWORD=$CONSUL_VALUE
 if [[ "$API_PASSWORD" == "" ]]; then
-  openssl rand -hex 16 | tr -d '\n' | consul kv put "${MAIN_SERVICE_NAME}/api/password" -
-  # shellcheck disable=SC2181
-  if [[ $? != 0 ]]; then
+  if ! (openssl rand -hex 16 | tr -d '\n' | consul kv put "${MAIN_SERVICE_NAME}/api/password" -); then
     echo "Cannot put a key value pair in Consul"
     exit 1
   fi
   get_consul_kv "${MAIN_SERVICE_NAME}/api/password" >/dev/null 2>&1; API_PASSWORD=$CONSUL_VALUE
-  # shellcheck disable=SC2181
-  if [[ $? != 0 ]]; then
+  if [[ "$API_PASSWORD" == "" ]]; then
     echo "Cannot get a key value pair in Consul"
     exit 1
   fi

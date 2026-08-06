@@ -21,8 +21,8 @@ import org.junit.jupiter.api.Test;
 /**
  * Unit tests for {@link AuthenticationServiceImpl}, proving the gRPC to REST SDK swap: {@link
  * UserResourceApi#internalUsersMyselfGet(String)} is called with the auth token as an explicit
- * header param instead of the old blocking stub, and {@link ApiException} status codes are
- * mapped the same way the old {@code StatusRuntimeException} codes were.
+ * header param instead of the old blocking stub, and {@link ApiException} status codes are mapped
+ * the same way the old {@code StatusRuntimeException} codes were.
  */
 class AuthenticationServiceImplTest {
 
@@ -33,7 +33,8 @@ class AuthenticationServiceImplTest {
     MyselfDto myself = new MyselfDto().info(userInfo);
     when(userResourceApi.internalUsersMyselfGet(null, "valid-token")).thenReturn(myself);
 
-    AuthenticationServiceImpl authenticationService = new AuthenticationServiceImpl(userResourceApi);
+    AuthenticationServiceImpl authenticationService =
+        new AuthenticationServiceImpl(userResourceApi);
 
     Optional<String> userId = authenticationService.validateToken("valid-token");
 
@@ -47,8 +48,10 @@ class AuthenticationServiceImplTest {
     when(userResourceApi.internalUsersMyselfGet(null, "bad-token"))
         .thenThrow(new ApiException(401, "Unauthorized"));
 
-    AuthenticationServiceImpl authenticationService = new AuthenticationServiceImpl(userResourceApi);
+    AuthenticationServiceImpl authenticationService =
+        new AuthenticationServiceImpl(userResourceApi);
 
-    assertThrows(UnauthorizedException.class, () -> authenticationService.validateToken("bad-token"));
+    assertThrows(
+        UnauthorizedException.class, () -> authenticationService.validateToken("bad-token"));
   }
 }

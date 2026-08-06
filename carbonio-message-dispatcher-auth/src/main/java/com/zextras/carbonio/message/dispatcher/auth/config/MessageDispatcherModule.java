@@ -51,8 +51,8 @@ public class MessageDispatcherModule extends AbstractModule {
   @Singleton
   public DataSource provideDataSource(MessageDispatcherConfig config) {
     PGSimpleDataSource dataSource = new PGSimpleDataSource();
-    dataSource.setServerNames(new String[]{config.getDatabaseHost()});
-    dataSource.setPortNumbers(new int[]{Integer.parseInt(config.getDatabasePort())});
+    dataSource.setServerNames(new String[] {config.getDatabaseHost()});
+    dataSource.setPortNumbers(new int[] {Integer.parseInt(config.getDatabasePort())});
     dataSource.setDatabaseName(config.getDatabaseName());
     dataSource.setUser(config.getDatabaseUsername());
     dataSource.setPassword(config.getDatabasePassword());

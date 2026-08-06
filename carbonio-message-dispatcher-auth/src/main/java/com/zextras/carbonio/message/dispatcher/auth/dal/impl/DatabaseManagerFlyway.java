@@ -34,15 +34,17 @@ public class DatabaseManagerFlyway implements DatabaseManager {
   public void initialize() {
     Optional<Integer> legacyVersion = getLegacyDatabaseVersion();
 
-    FluentConfiguration config = Flyway.configure()
-        .dataSource(dataSource)
-        .locations("classpath:db/migration")
-        .configuration(Map.of("flyway.postgresql.transactional.lock", "false"));
+    FluentConfiguration config =
+        Flyway.configure()
+            .dataSource(dataSource)
+            .locations("classpath:db/migration")
+            .configuration(Map.of("flyway.postgresql.transactional.lock", "false"));
 
-    legacyVersion.ifPresent(version -> {
-      logger.info("Legacy database version detected: {}. Setting as Flyway baseline.", version);
-      config.baselineVersion(String.valueOf(version)).baselineOnMigrate(true);
-    });
+    legacyVersion.ifPresent(
+        version -> {
+          logger.info("Legacy database version detected: {}. Setting as Flyway baseline.", version);
+          config.baselineVersion(String.valueOf(version)).baselineOnMigrate(true);
+        });
 
     flyway = config.load();
     flyway.migrate();
@@ -52,24 +54,23 @@ public class DatabaseManagerFlyway implements DatabaseManager {
   /**
    * Checks for legacy database_version table and maps version to Flyway integer.
    *
-   * Mapping:
-   *   6.0.0 → 1 (initial schema)
-   *   6.2.0 → 2 (discovery nodes)
-   *   6.2.1 → 3 (roster, mam, caps)
-   *   6.3.2 → 4 (fast auth token)
+   * <p>Mapping: 6.0.0 → 1 (initial schema) 6.2.0 → 2 (discovery nodes) 6.2.1 → 3 (roster, mam,
+   * caps) 6.3.2 → 4 (fast auth token)
    *
    * @return Flyway baseline version, or empty if database is new
    */
   private Optional<Integer> getLegacyDatabaseVersion() {
     String sql = "SELECT version FROM database_version LIMIT 1";
     try (Connection conn = dataSource.getConnection();
-         Statement stmt = conn.createStatement();
-         ResultSet rs = stmt.executeQuery(sql)) {
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(sql)) {
       if (rs.next()) {
         String legacyVersion = rs.getString("version");
         int flywayVersion = mapLegacyVersionToFlyway(legacyVersion);
-        logger.info("Legacy database_version found: {} → Flyway baseline: {}",
-            legacyVersion, flywayVersion);
+        logger.info(
+            "Legacy database_version found: {} → Flyway baseline: {}",
+            legacyVersion,
+            flywayVersion);
         return Optional.of(flywayVersion);
       }
       return Optional.empty();
@@ -79,9 +80,7 @@ public class DatabaseManagerFlyway implements DatabaseManager {
     }
   }
 
-  /**
-   * Maps legacy semantic versions to Flyway integer versions.
-   */
+  /** Maps legacy semantic versions to Flyway integer versions. */
   private int mapLegacyVersionToFlyway(String legacyVersion) {
     return switch (legacyVersion) {
       case "6.0.0" -> 1;

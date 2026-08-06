@@ -47,21 +47,24 @@ public class Boot {
       ContextHandlerCollection handlers = new ContextHandlerCollection();
       ServletContextHandler context = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
 
-      context.addServletContainerInitializer((c, ctx) -> {
-        Dynamic checkPassword = ctx.addServlet(
-            "CheckPasswordServlet", CheckPasswordApi.create(authService));
-        checkPassword.addMapping("/check_password");
-      });
+      context.addServletContainerInitializer(
+          (c, ctx) -> {
+            Dynamic checkPassword =
+                ctx.addServlet("CheckPasswordServlet", CheckPasswordApi.create(authService));
+            checkPassword.addMapping("/check_password");
+          });
 
-      context.addServletContainerInitializer((c, ctx) -> {
-        Dynamic userExists = ctx.addServlet("UserExistsServlet", UserExistsApi.create());
-        userExists.addMapping("/user_exists");
-      });
+      context.addServletContainerInitializer(
+          (c, ctx) -> {
+            Dynamic userExists = ctx.addServlet("UserExistsServlet", UserExistsApi.create());
+            userExists.addMapping("/user_exists");
+          });
 
-      context.addServletContainerInitializer((c, ctx) -> {
-        Dynamic health = ctx.addServlet("HealthServlet", HealthApi.create());
-        health.addMapping("/health/ready");
-      });
+      context.addServletContainerInitializer(
+          (c, ctx) -> {
+            Dynamic health = ctx.addServlet("HealthServlet", HealthApi.create());
+            health.addMapping("/health/ready");
+          });
 
       handlers.addHandler(context);
       server.setHandler(handlers);

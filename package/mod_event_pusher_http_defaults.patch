@@ -4,7 +4,7 @@ diff '--color=auto' -Naur a/src/event_pusher/mod_event_pusher_http_defaults.erl 
 @@ -24,7 +24,7 @@
      Body = exml_query:path(Packet, [{element, <<"body">>}, cdata], <<>>),
      should_make_req_type(Acc, Type, Body, From, To).
- 
+
 -should_make_req_type(_Acc, <<"chat">>, Body, _From, _To) when Body /= <<"">> ->
 +should_make_req_type(_Acc, <<"groupchat">>, Body, _From, _To) when Body /= <<"">> ->
      true;

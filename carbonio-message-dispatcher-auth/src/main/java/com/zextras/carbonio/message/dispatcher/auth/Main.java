@@ -22,7 +22,8 @@ public class Main {
   }
 
   private static void loadLoggingConfigurations() {
-    System.out.printf("Loading logging configurations from file '%s' ...%n", Constants.LOGGER_CONFIG_PATH);
+    System.out.printf(
+        "Loading logging configurations from file '%s' ...%n", Constants.LOGGER_CONFIG_PATH);
     LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
     JoranConfigurator configurator = new JoranConfigurator();
     configurator.setContext(context);
