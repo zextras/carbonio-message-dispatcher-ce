@@ -86,7 +86,7 @@ SPDX-License-Identifier: AGPL-3.0-only
          consul-client's converter-jackson dependency. -->
     <jackson-databind.version>2.22.0</jackson-databind.version>
     <jackson-core.version>2.22.0</jackson-core.version>
-    <postgresql.version>42.7.11</postgresql.version>
+    <postgresql.version>42.7.13</postgresql.version>
     <!-- Jetty -->
     <org.eclipse.jetty.version>12.1.10</org.eclipse.jetty.version>
     <org.eclipse.jetty.servlet.version>12.1.10</org.eclipse.jetty.servlet.version>
