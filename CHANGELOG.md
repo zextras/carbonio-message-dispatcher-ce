@@ -1,3 +1,9 @@
+## [1.4.4](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.4.3...v1.4.4) (2026-09-01)
+
+### Bug Fixes
+
+* **ci:** point semantic-release at main ahead of devel->main rename ([#147](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/147)) ([bc92e64](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/bc92e64c4fccd42b50a276dee9a60591aa30e31e))
+
 ## [1.4.3](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.4.2...v1.4.3) (2026-08-26)
 
 ## [1.4.2](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.4.1...v1.4.2) (2026-08-14)
