@@ -1,6 +1,6 @@
 {
   "branches": [
-    "devel"
+    "main"
   ],
   "repositoryUrl": "https://github.com/zextras/carbonio-message-dispatcher-ce",
   "tagFormat": "v${version}",
