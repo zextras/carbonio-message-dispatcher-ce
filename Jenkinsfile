@@ -103,7 +103,7 @@ pipeline {
             }
             when {
                 allOf {
-                    branch 'devel'
+                    expression { return env.BRANCH_IS_PRIMARY == 'true' }
                     expression { params.PREPARE_RELEASE == true }
                     not {
                         expression {
@@ -127,7 +127,7 @@ pipeline {
         stage('Tag for release') {
             when {
                 allOf {
-                    branch 'devel'
+                    expression { return env.BRANCH_IS_PRIMARY == 'true' }
                     expression {
                         return env.GIT_COMMIT_MSG.contains('chore(release):') &&
                                env.GIT_COMMIT_MSG.contains('[skip ci]')
