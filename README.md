@@ -46,6 +46,17 @@ version.
 Update also docker db part changing init.sql. You can copy and paste from
 `https://github.com/esl/MongooseIM/blob/master/priv/pg.sql`.
 
+### Local package build
+
+```sh
+./build_package.sh ubuntu-jammy
+```
+
+The script builds the Java artifact, injects the public Zextras package
+repository, and builds with YAP 2.6.1 using Docker or Podman. Override the YAP
+version with `YAP_VERSION`; `rocky-8` is also supported. Packages are written to
+`artifacts/<distribution>/`.
+
 ## License 📚
 
 Carbonio Message Dispatcher is the message engine backend service for Zextras
