@@ -1,3 +1,9 @@
+## [1.4.6](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.4.5...v1.4.6) (2026-09-10)
+
+### Bug Fixes
+
+* **CO-4219:** drop repo.zextras.io Maven repositories ([859b3d7](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/859b3d71cb23459c33eede576de90be44974f39a))
+
 ## [1.4.5](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.4.4...v1.4.5) (2026-09-09)
 
 ## [1.4.4](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.4.3...v1.4.4) (2026-09-01)
