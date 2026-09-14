@@ -76,6 +76,13 @@ repos:
 
   - repo: local
     hooks:
+      - id: test-config-setup
+        name: test-config-setup
+        entry: bash .ci/test-config-setup.sh
+        language: system
+        pass_filenames: false
+        files: ^(package/(mongooseim\.toml\.in|carbonio-message-dispatcher-config-setup)|\.ci/test-config-setup\.sh)$
+
       - id: comment-check
         name: comment-check
         description: "Warns on long // comment runs. Never blocks — it always exits 0."

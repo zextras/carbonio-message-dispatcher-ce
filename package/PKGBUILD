@@ -57,7 +57,7 @@ source=(
   "intentions-xmpp.json"
   "logback.xml"
   "mod_event_pusher_http_defaults.patch"
-  "mongooseim.toml"
+  "mongooseim.toml.in"
   "policies.json"
   "service-protocol-auth.json"
   "service-protocol-http.json"
@@ -78,7 +78,7 @@ sha256sums=(
   '5f0ce69d533abefae4924197175e851188b03fb7ca4820d5a2c1a0706c35eec2'
   'd75d76ce603134a8b969cb0223e150208955b47f566203cbd09115f1109c8838'
   'fea6e99ece90763b19f04c73e02f662ce8b89b66a7de90348bac448b27268a16'
-  '5f0bbb3b7d3c14dc1488a176ef1252f85bbb9a195ad4e6fd0de6820422f510b7'
+  '86a9380880309d95c174046b6713e456ebdb945c8a7a9ce0836eba9188ea83c1'
   'ee5731838e73e62ece136f131e532a28adb0985f618b17510f75f1d20239db5e'
   '4c90fd6957d2c8a0c5dd3335b5307c69deb5a7266be08f18a765d0a34947bf34'
   'ec52f336ad1847cc1cbd08d1808354c249a6db6628d7cd0ad4c4023cd9cbb636'
@@ -89,7 +89,7 @@ sha256sums=(
   '7e6167a5a6bae0fdadef2f0990f25b6a52e48917a544545fbb35a45d1b26f734'
   'b11cfce893513ae3c250ff2de11ced3ee8d90263f97b22bd9b473c466dba7225'
   'f10ba88f9bcfff6c174f8527eb264a0ce4d5507c7acf09561cfd331f75bf2726'
-  'c9aad1569fd045fc2e590c59d59e2f331414aaca0aadbd0ca9cdadab9a5d0d91'
+  '8da0312f6ed8ab7314e1d33cdac329683949ceb553fb949bbe0b2fda466ccd93'
   '073efa7ea1a80e06a53c1678d0fa18b81f407a3b08b403adac6a6b4b2906880f'
   '042ab0cb14f9dbad8d9e18200c0577a34d83c866cefadcf5e1fdfe0d74f39f64'
   'caa52813e7e4bbaec26fe2f655585fb19adeef427937bba4a861dcb0729277f6'
@@ -99,7 +99,6 @@ sha256sums=(
 backup=(
   "etc/carbonio/message-dispatcher/app.config"
   "etc/carbonio/message-dispatcher/logback.xml"
-  "etc/carbonio/message-dispatcher/mongooseim.toml"
   "etc/zextras/service-discover/carbonio-message-dispatcher-auth.hcl"
   "etc/zextras/service-discover/carbonio-message-dispatcher-http.hcl"
   "etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.hcl"
@@ -143,9 +142,9 @@ _package_common() {
   install -Dm755 carbonio-message-dispatcher-auth.jar \
     "${pkgdir}/usr/share/carbonio/carbonio-message-dispatcher-auth.jar"
 
-  #Overwriting mongoose files with ours
-  install -Dm644 mongooseim.toml \
-    "${pkgdir}/etc/carbonio/message-dispatcher/mongooseim.toml"
+  # Install an immutable template; setup renders the active configuration from it.
+  install -Dm644 mongooseim.toml.in \
+    "${pkgdir}/etc/carbonio/message-dispatcher/mongooseim.toml.in"
   install -Dm644 app.config \
     "${pkgdir}/etc/carbonio/message-dispatcher/app.config"
 
