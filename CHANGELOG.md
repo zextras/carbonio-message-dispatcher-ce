@@ -1,3 +1,9 @@
+## [1.4.9](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.4.8...v1.4.9) (2026-09-18)
+
+### Bug Fixes
+
+* regenerate mongooseim config from template ([#149](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/149)) ([b283137](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/b283137c71212a43382ac42102d3ff80b04672e2))
+
 ## [1.4.8](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.4.7...v1.4.8) (2026-09-16)
 
 ## [1.4.7](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.4.6...v1.4.7) (2026-09-11)
