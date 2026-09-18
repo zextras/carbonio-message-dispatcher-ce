@@ -13,6 +13,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 ***
 
+## Configuration
+
+`/etc/carbonio/message-dispatcher/mongooseim.toml` is a generated file. Every
+`pending-setups` run re-renders it from the packaged `mongooseim.toml.in`
+template, filling in the credentials held in Consul, so any local edit to it is
+discarded at the next run. Until CO-4228 such edits survived indefinitely: the
+file was shipped as a conffile and patched in place, which is exactly why hosts
+kept a config MongooseIM 6.6.0 refuses to start with. A change that has to
+persist therefore belongs in `package/mongooseim.toml.in` and has to ship in a
+release; the file's mode and owner are the only things carried over from the
+copy being replaced.
+
 ## Upgrade Mongoose
 
 ### Update package version
@@ -45,6 +57,17 @@ While upgrade mongoose in carbonio-message-dispatcher remember to update also do
 version.
 Update also docker db part changing init.sql. You can copy and paste from
 `https://github.com/esl/MongooseIM/blob/master/priv/pg.sql`.
+
+### Local package build
+
+```sh
+./build_package.sh ubuntu-jammy
+```
+
+The script builds the Java artifact, injects the public Zextras package
+repository, and builds with YAP 2.6.1 using Docker or Podman. Override the YAP
+version with `YAP_VERSION`; `rocky-8` is also supported. Packages are written to
+`artifacts/<distribution>/`.
 
 ## License 📚
 

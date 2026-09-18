@@ -13,7 +13,13 @@ set -e
 
 MAIN_SERVICE_NAME="carbonio-message-dispatcher"
 DB_SERVICE_NAME="carbonio-message-dispatcher-db"
-MONGOOSEIM_TOML="/etc/carbonio/message-dispatcher/mongooseim.toml"
+MONGOOSEIM_TOML="${MONGOOSEIM_TOML:-/etc/carbonio/message-dispatcher/mongooseim.toml}"
+MONGOOSEIM_TOML_TEMPLATE="${MONGOOSEIM_TOML}.in"
+
+if [[ ! -r "${MONGOOSEIM_TOML_TEMPLATE}" ]]; then
+  echo "MongooseIM configuration template not found: ${MONGOOSEIM_TOML_TEMPLATE}"
+  exit 1
+fi
 
 get_consul_kv() {
   KEY=$1
@@ -27,7 +33,6 @@ if [[ "$DB_PASSWORD" == "" ]]; then
   echo "Please install carbonio-message-dispatcher-db and run carbonio-message-dispatcher-db-bootstrap command."
   exit 1
 fi
-sed "s/<db-password>/$DB_PASSWORD/" "${MONGOOSEIM_TOML}" -i
 
 # Substitute API username
 get_consul_kv "${MAIN_SERVICE_NAME}/api/username" >/dev/null 2>&1; API_USERNAME=$CONSUL_VALUE
@@ -38,7 +43,6 @@ if [[ "$API_USERNAME" == "" ]]; then
   fi
   API_USERNAME="$MAIN_SERVICE_NAME"
 fi
-sed "s/<api-username>/$API_USERNAME/" "${MONGOOSEIM_TOML}" -i
 
 # Substitute API password
 get_consul_kv "${MAIN_SERVICE_NAME}/api/password" >/dev/null 2>&1; API_PASSWORD=$CONSUL_VALUE
@@ -53,15 +57,45 @@ if [[ "$API_PASSWORD" == "" ]]; then
     exit 1
   fi
 fi
-sed "s/<api-password>/$API_PASSWORD/" "${MONGOOSEIM_TOML}" -i
 
-# Migrate MongooseIM configuration for 6.6.0
-# Remove deprecated rdbms_server_type option (no longer supported)
-sed -i '/^\s*rdbms_server_type\s*=/d' "${MONGOOSEIM_TOML}"
+reject_control_chars() {
+  if [[ "$2" == *[[:cntrl:]]* ]]; then
+    echo "Consul value for $1 contains a control character"
+    exit 1
+  fi
+}
 
-# Rename mod_websockets handler to mongoose_websocket_handler
-sed -i 's/handlers\.mod_websockets/handlers.mongoose_websocket_handler/g' "${MONGOOSEIM_TOML}"
+reject_control_chars "${DB_SERVICE_NAME}/db-password" "$DB_PASSWORD"
+reject_control_chars "${MAIN_SERVICE_NAME}/api/username" "$API_USERNAME"
+reject_control_chars "${MAIN_SERVICE_NAME}/api/password" "$API_PASSWORD"
 
-# Add mod_pin_message module if not present
-grep -qxF '[modules.mod_pin_message]' "${MONGOOSEIM_TOML}" \
-  || echo -e '\n[modules.mod_pin_message]' >> "${MONGOOSEIM_TOML}"
+escape_toml_sed_replacement() {
+  printf '%s' "$1" \
+    | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' \
+    | sed 's/[\\&|]/\\&/g'
+}
+
+DB_PASSWORD=$(escape_toml_sed_replacement "$DB_PASSWORD")
+API_USERNAME=$(escape_toml_sed_replacement "$API_USERNAME")
+API_PASSWORD=$(escape_toml_sed_replacement "$API_PASSWORD")
+
+# GNU stat first, BSD stat second: the test suite runs on macOS too.
+stat_field() {
+  stat -c "$1" "${MONGOOSEIM_TOML}" 2>/dev/null || stat -f "$2" "${MONGOOSEIM_TOML}"
+}
+
+TEMP_TOML=$(mktemp "${MONGOOSEIM_TOML}.tmp.XXXXXX")
+trap 'rm -f "$TEMP_TOML"' EXIT
+sed \
+  -e "s|<db-password>|$DB_PASSWORD|" \
+  -e "s|<api-username>|$API_USERNAME|" \
+  -e "s|<api-password>|$API_PASSWORD|" \
+  "${MONGOOSEIM_TOML_TEMPLATE}" > "${TEMP_TOML}"
+if [[ -e "${MONGOOSEIM_TOML}" ]]; then
+  chmod "$(stat_field '%a' '%Lp')" "${TEMP_TOML}"
+  chown "$(stat_field '%u:%g' '%u:%g')" "${TEMP_TOML}"
+else
+  chmod 644 "${TEMP_TOML}"
+fi
+mv -f "${TEMP_TOML}" "${MONGOOSEIM_TOML}"
+trap - EXIT
