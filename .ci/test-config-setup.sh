@@ -7,11 +7,26 @@
 set -e
 
 REPO_ROOT=$(cd "$(dirname "$0")/.." && pwd)
+CONFIG_SETUP="$REPO_ROOT/package/carbonio-message-dispatcher-config-setup"
 TEST_DIR=$(mktemp -d)
 trap 'rm -rf "$TEST_DIR"' EXIT
 mkdir "$TEST_DIR/bin"
 cp "$REPO_ROOT/package/mongooseim.toml.in" "$TEST_DIR/mongooseim.toml.in"
-echo stale > "$TEST_DIR/mongooseim.toml"
+
+# CO-4228: the config dpkg preserved as a "locally modified" conffile. Every key
+# below is one MongooseIM 6.6.0 refuses to start with.
+cat > "$TEST_DIR/mongooseim.toml" <<'EOF'
+[outgoing_pools.rdbms.default.connection]
+  rdbms_server_type = "pgsql"
+
+[[listen.http.handlers.mongoose_admin_api]]
+  host = "_"
+  path = "/api"
+
+[[listen.http.handlers.mod_websockets]]
+  host = "_"
+  path = "/ws-xmpp"
+EOF
 
 cat > "$TEST_DIR/bin/id" <<'EOF'
 #!/bin/sh
@@ -20,19 +35,41 @@ EOF
 cat > "$TEST_DIR/bin/consul" <<'EOF'
 #!/bin/sh
 case "$3" in
-  carbonio-message-dispatcher-db/db-password) printf '%s\n' 'db\&pass|word' ;;
-  carbonio-message-dispatcher/api/username) printf '%s\n' 'api"user' ;;
-  carbonio-message-dispatcher/api/password) printf '%s\n' 'api&pass|word' ;;
+  carbonio-message-dispatcher-db/db-password) printf '%s\n' "$STUB_DB_PASSWORD" ;;
+  carbonio-message-dispatcher/api/username) printf '%s\n' "$STUB_API_USERNAME" ;;
+  carbonio-message-dispatcher/api/password) printf '%s\n' "$STUB_API_PASSWORD" ;;
   *) exit 1 ;;
 esac
 EOF
 chmod +x "$TEST_DIR/bin/id" "$TEST_DIR/bin/consul"
 
-PATH="$TEST_DIR/bin:$PATH" MONGOOSEIM_TOML="$TEST_DIR/mongooseim.toml" \
-  "$REPO_ROOT/package/carbonio-message-dispatcher-config-setup"
+export PATH="$TEST_DIR/bin:$PATH"
+export MONGOOSEIM_TOML="$TEST_DIR/mongooseim.toml"
+export STUB_DB_PASSWORD='db\&pass|word'
+export STUB_API_USERNAME='api"user'
+export STUB_API_PASSWORD='api&pass|word'
 
-grep -Fq 'password = "db\\&pass|word"' "$TEST_DIR/mongooseim.toml"
-grep -Fq 'username = "api\"user"' "$TEST_DIR/mongooseim.toml"
-grep -Fq 'password = "api&pass|word"' "$TEST_DIR/mongooseim.toml"
-grep -qxF '[modules.mod_pin_message]' "$TEST_DIR/mongooseim.toml"
-! grep -q 'rdbms_server_type\|mod_websockets\|<db-password>\|<api-username>\|<api-password>' "$TEST_DIR/mongooseim.toml"
+assert_absent() {
+  if grep -q "$1" "$MONGOOSEIM_TOML"; then
+    echo "rendered config still contains: $1" >&2
+    exit 1
+  fi
+}
+
+"$CONFIG_SETUP"
+
+grep -Fq 'password = "db\\&pass|word"' "$MONGOOSEIM_TOML"
+grep -Fq 'username = "api\"user"' "$MONGOOSEIM_TOML"
+grep -Fq 'password = "api&pass|word"' "$MONGOOSEIM_TOML"
+grep -qxF '[modules.mod_pin_message]' "$MONGOOSEIM_TOML"
+assert_absent 'mongoose_admin_api\|rdbms_server_type\|mod_websockets'
+assert_absent '<db-password>\|<api-username>\|<api-password>'
+
+# A missing template fails without touching the config already in place.
+mv "$TEST_DIR/mongooseim.toml.in" "$TEST_DIR/template.away"
+if "$CONFIG_SETUP" >/dev/null 2>&1; then
+  echo "config-setup succeeded with no template installed" >&2
+  exit 1
+fi
+grep -Fq 'password = "db\\&pass|word"' "$MONGOOSEIM_TOML"
+mv "$TEST_DIR/template.away" "$TEST_DIR/mongooseim.toml.in"
