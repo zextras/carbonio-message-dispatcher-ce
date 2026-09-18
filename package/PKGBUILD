@@ -265,6 +265,8 @@ prerm() {
 
 postrm() {
   rm -f /etc/carbonio/message-dispatcher/service-discover/token
+  # Rendered by config-setup, so it is no longer a conffile dpkg or rpm cleans up.
+  rm -f /etc/carbonio/message-dispatcher/mongooseim.toml
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload &>/dev/null || :
   fi
