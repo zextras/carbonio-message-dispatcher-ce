@@ -101,7 +101,7 @@
 
 [modules.mod_presence]
 
+[modules.mod_pin_message]
+
 [services.service_mongoose_system_metrics]
   report = false
-
-[modules.mod_pin_message]

@@ -25,7 +25,7 @@ RUN mkdir -p /opt/carbonio-message-dispatcher \
 COPY docker/carbonio-message-dispatcher-auth.jar /opt/carbonio-message-dispatcher/carbonio-message-dispatcher-auth.jar
 
 # Copy configuration files
-COPY docker/mongooseim.toml /usr/lib/mongooseim/etc/mongooseim.toml
+COPY docker/mongooseim.toml.in /usr/lib/mongooseim/etc/mongooseim.toml.in
 COPY docker/logback.xml /etc/carbonio/message-dispatcher/logback.xml
 
 # Copy entrypoint script
