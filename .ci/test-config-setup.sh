@@ -73,3 +73,11 @@ if "$CONFIG_SETUP" >/dev/null 2>&1; then
 fi
 grep -Fq 'password = "db\\&pass|word"' "$MONGOOSEIM_TOML"
 mv "$TEST_DIR/template.away" "$TEST_DIR/mongooseim.toml.in"
+
+# A CR renders as invalid TOML, so it is refused before anything is replaced.
+STUB_DB_PASSWORD=$'db\rpass'
+if "$CONFIG_SETUP" >/dev/null 2>&1; then
+  echo "config-setup accepted a control character in a Consul value" >&2
+  exit 1
+fi
+grep -Fq 'password = "db\\&pass|word"' "$MONGOOSEIM_TOML"

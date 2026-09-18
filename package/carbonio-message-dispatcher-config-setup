@@ -58,6 +58,17 @@ if [[ "$API_PASSWORD" == "" ]]; then
   fi
 fi
 
+reject_control_chars() {
+  if [[ "$2" == *[[:cntrl:]]* ]]; then
+    echo "Consul value for $1 contains a control character"
+    exit 1
+  fi
+}
+
+reject_control_chars "${DB_SERVICE_NAME}/db-password" "$DB_PASSWORD"
+reject_control_chars "${MAIN_SERVICE_NAME}/api/username" "$API_USERNAME"
+reject_control_chars "${MAIN_SERVICE_NAME}/api/password" "$API_PASSWORD"
+
 escape_toml_sed_replacement() {
   printf '%s' "$1" \
     | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' \
