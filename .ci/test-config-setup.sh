@@ -65,6 +65,25 @@ grep -qxF '[modules.mod_pin_message]' "$MONGOOSEIM_TOML"
 assert_absent 'mongoose_admin_api\|rdbms_server_type\|mod_websockets'
 assert_absent '<db-password>\|<api-username>\|<api-password>'
 
+file_mode() {
+  stat -c '%a' "$MONGOOSEIM_TOML" 2>/dev/null || stat -f '%Lp' "$MONGOOSEIM_TOML"
+}
+
+# A mode an operator tightened on a file full of credentials is not reset.
+chmod 600 "$MONGOOSEIM_TOML"
+"$CONFIG_SETUP"
+if [[ "$(file_mode)" != "600" ]]; then
+  echo "re-render reset the mode to $(file_mode)" >&2
+  exit 1
+fi
+
+rm "$MONGOOSEIM_TOML"
+"$CONFIG_SETUP"
+if [[ "$(file_mode)" != "644" ]]; then
+  echo "fresh install produced mode $(file_mode)" >&2
+  exit 1
+fi
+
 # A missing template fails without touching the config already in place.
 mv "$TEST_DIR/mongooseim.toml.in" "$TEST_DIR/template.away"
 if "$CONFIG_SETUP" >/dev/null 2>&1; then

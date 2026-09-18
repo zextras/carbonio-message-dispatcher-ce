@@ -79,6 +79,11 @@ DB_PASSWORD=$(escape_toml_sed_replacement "$DB_PASSWORD")
 API_USERNAME=$(escape_toml_sed_replacement "$API_USERNAME")
 API_PASSWORD=$(escape_toml_sed_replacement "$API_PASSWORD")
 
+# GNU stat first, BSD stat second: the test suite runs on macOS too.
+stat_field() {
+  stat -c "$1" "${MONGOOSEIM_TOML}" 2>/dev/null || stat -f "$2" "${MONGOOSEIM_TOML}"
+}
+
 TEMP_TOML=$(mktemp "${MONGOOSEIM_TOML}.tmp.XXXXXX")
 trap 'rm -f "$TEMP_TOML"' EXIT
 sed \
@@ -86,6 +91,11 @@ sed \
   -e "s|<api-username>|$API_USERNAME|" \
   -e "s|<api-password>|$API_PASSWORD|" \
   "${MONGOOSEIM_TOML_TEMPLATE}" > "${TEMP_TOML}"
-chmod 644 "${TEMP_TOML}"
+if [[ -e "${MONGOOSEIM_TOML}" ]]; then
+  chmod "$(stat_field '%a' '%Lp')" "${TEMP_TOML}"
+  chown "$(stat_field '%u:%g' '%u:%g')" "${TEMP_TOML}"
+else
+  chmod 644 "${TEMP_TOML}"
+fi
 mv -f "${TEMP_TOML}" "${MONGOOSEIM_TOML}"
 trap - EXIT
