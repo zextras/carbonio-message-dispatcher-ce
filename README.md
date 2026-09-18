@@ -13,6 +13,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 ***
 
+## Configuration
+
+`/etc/carbonio/message-dispatcher/mongooseim.toml` is a generated file. Every
+`pending-setups` run re-renders it from the packaged `mongooseim.toml.in`
+template, filling in the credentials held in Consul, so any local edit to it is
+discarded at the next run. Until CO-4228 such edits survived indefinitely: the
+file was shipped as a conffile and patched in place, which is exactly why hosts
+kept a config MongooseIM 6.6.0 refuses to start with. A change that has to
+persist therefore belongs in `package/mongooseim.toml.in` and has to ship in a
+release; the file's mode and owner are the only things carried over from the
+copy being replaced.
+
 ## Upgrade Mongoose
 
 ### Update package version
