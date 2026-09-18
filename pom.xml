@@ -29,16 +29,6 @@ SPDX-License-Identifier: AGPL-3.0-only
     </repository>
 
     <repository>
-      <id>snapshots-repo</id>
-      <url>https://repo.zextras.io/maven/snapshot/</url>
-    </repository>
-
-    <repository>
-      <id>releases-repo</id>
-      <url>https://repo.zextras.io/maven/release/</url>
-    </repository>
-
-    <repository>
       <id>zextras-java-sdk</id>
       <name>Zextras public maven repo</name>
       <url>https://zextras.jfrog.io/artifactory/java-sdk</url>
@@ -65,7 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
   <properties>
     <!-- Maven CI Friendly properties -->
-    <revision>1.4.4</revision>
+    <revision>1.4.8</revision>
     <!-- SonarQube -->
     <sonar.projectKey>com.zextras.carbonio.message.dispatcher:carbonio-message-dispatcher-ce</sonar.projectKey>
     <!-- Dependencies -->
