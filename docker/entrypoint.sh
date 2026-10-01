@@ -3,7 +3,9 @@
 set -e
 
 CONFIG_FILE="/etc/carbonio/message-dispatcher/config.properties"
-MONGOOSEIM_TOML="/usr/lib/mongooseim/etc/mongooseim.toml"
+# The release bakes ETC_DIR=/etc/carbonio/message-dispatcher (mongooseimctl's
+# RUNNER_ETC_DIR), so this is the file MongooseIM actually reads.
+MONGOOSEIM_TOML="/etc/carbonio/message-dispatcher/mongooseim.toml"
 MONGOOSEIM_TOML_TEMPLATE="${MONGOOSEIM_TOML}.in"
 
 # Create config.properties for the auth service
@@ -36,9 +38,9 @@ addEnvToProperties "carbonio.service-discover.port" "${CARBONIO_SERVICE_DISCOVER
 
 # Render mongooseim.toml from the template, so a restart of an existing
 # container substitutes into a pristine copy instead of an already rendered one.
+# MongooseIM doesn't use Consul, so we need to pass all DB config via ENV
 cp "${MONGOOSEIM_TOML_TEMPLATE}" "${MONGOOSEIM_TOML}"
 
-# MongooseIM doesn't use Consul, so we need to pass all DB config via ENV
 if [ -n "${CARBONIO_POSTGRES_HOST}" ]; then
   sed -i "s/<db-host>/${CARBONIO_POSTGRES_HOST}/" "${MONGOOSEIM_TOML}"
 fi

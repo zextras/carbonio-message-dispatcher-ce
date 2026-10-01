@@ -1,0 +1,9 @@
+# Disabled checks (with rationale):
+#   SC2154 - vars referenced but not assigned: PKGBUILD vars (srcdir, pkgdir,
+#            pkgver, CFLAGS, ...) are injected by the yap/makepkg build system.
+#   SC2164 - `cd` without `|| exit`: PKGBUILD build()/package() run under the
+#            packager's `set -e`, so a failed `cd` already aborts the build.
+#   SC2034 - assigned but unused vars: PKGBUILD metadata vars (pkgdesc, arch,
+#            license, ...) are consumed by the build system, not the script.
+disable=SC2154,SC2164,SC2034
+shell=bash
