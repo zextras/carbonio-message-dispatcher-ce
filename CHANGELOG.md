@@ -1,3 +1,5 @@
+## [1.4.12](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.4.11...v1.4.12) (2026-10-02)
+
 ## [1.4.11](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.4.10...v1.4.11) (2026-09-25)
 
 ## [1.4.10](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.4.9...v1.4.10) (2026-09-22)
