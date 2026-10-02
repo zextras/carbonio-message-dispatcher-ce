@@ -2,39 +2,78 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-only
 
-FROM --platform=$BUILDPLATFORM registry.dev.zextras.com/dev/mongooseim:latest
+ARG MONGOOSEIM_IMAGE=registry.dev.zextras.com/dev/mongooseim-ce:6.6.0-2
 
-ARG TARGETPLATFORM
-ARG BUILDPLATFORM
+# Only read for its dpkg status DB.
+FROM --platform=$TARGETPLATFORM ${MONGOOSEIM_IMAGE} AS baserootfs
 
-USER root
+# Unpack the JRE with dpkg -x so no target-arch code runs on the builder.
+FROM --platform=$BUILDPLATFORM docker.io/library/ubuntu:jammy AS installer
 
-# Install OpenJDK 21 and curl for health checks
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        openjdk-21-jre-headless \
-        curl \
-    && rm -rf /var/lib/apt/lists/*
+ARG TARGETARCH
+ARG BUILDARCH=amd64
 
-# Create directories for the auth service
-RUN mkdir -p /opt/carbonio-message-dispatcher \
-             /etc/carbonio/message-dispatcher \
-             /var/log/carbonio/message-dispatcher
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends ca-certificates \
+ && if [ "${TARGETARCH}" != "${BUILDARCH}" ]; then \
+      dpkg --add-architecture ${TARGETARCH} \
+      && sed -i 's|^deb |deb [arch='"${BUILDARCH}"'] |' /etc/apt/sources.list \
+      && printf 'Types: deb\nURIs: http://ports.ubuntu.com/ubuntu-ports/\nSuites: jammy jammy-updates jammy-security\nComponents: main restricted universe multiverse\nArchitectures: %s\nSigned-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg\n' "${TARGETARCH}" \
+         > /etc/apt/sources.list.d/ports-${TARGETARCH}.sources; \
+    fi \
+ && printf 'deb [arch=%s trusted=yes] https://repo.zextras.tools/repository/ubuntu-devel-jammy jammy main\n' "${TARGETARCH}" \
+    > /etc/apt/sources.list.d/zextras.list \
+ && apt-get update
 
-# Copy the auth service JAR
+# Resolve against the target image's dpkg DB and arch, so both arches ship the same closure.
+COPY --from=baserootfs /var/lib/dpkg/status /tmp/target-status
+
+RUN set -e; \
+    mkdir -p /staging /tmp/debs; \
+    apt-get install -y --no-install-recommends --print-uris \
+        -o Dir::State::status=/tmp/target-status \
+        -o APT::Architecture=${TARGETARCH} \
+        -o APT::Architectures=${TARGETARCH} \
+        openjdk-21-jre-headless curl \
+      | grep -oP "^'\K[^']+" > /tmp/uris.txt; \
+    [ -s /tmp/uris.txt ] || { echo "no URIs resolved for TARGETARCH=${TARGETARCH}" >&2; exit 1; }
+
+# cacerts is arch-independent; build it natively since dpkg -x skips postinst.
+RUN apt-get install -y --no-install-recommends curl ca-certificates-java
+
+RUN set -e; \
+    cd /tmp/debs && while read -r url; do curl -fsSLO "$url"; done < /tmp/uris.txt; \
+    for deb in /tmp/debs/*.deb; do dpkg -x "$deb" /staging; done; \
+    rm -rf /tmp/debs /tmp/uris.txt /var/lib/apt/lists/*
+
+# A real /lib dir would shadow the usr-merge /lib symlink.
+RUN if [ -d /staging/lib ] && [ ! -L /staging/lib ]; then rm -rf /staging/lib; fi
+
+# Not /var/log/carbonio/message-dispatcher: the base ships it chowned, a root-owned copy breaks MongooseIM.
+RUN mkdir -p /staging/opt/carbonio-message-dispatcher \
+             /staging/etc/carbonio/message-dispatcher
+
+# The JRE dir is arch-suffixed and update-alternatives never ran.
+RUN jvmdir="$(basename "$(ls -d /staging/usr/lib/jvm/java-21-openjdk-*)")" \
+ && ln -s "${jvmdir}" /staging/usr/lib/jvm/default-jvm
+
+RUN mkdir -p /staging/etc/ssl/certs/java \
+ && cp /etc/ssl/certs/java/cacerts /staging/etc/ssl/certs/java/cacerts
+
+FROM --platform=$TARGETPLATFORM ${MONGOOSEIM_IMAGE}
+
+COPY --from=installer /staging/ /
+
 COPY docker/carbonio-message-dispatcher-auth.jar /opt/carbonio-message-dispatcher/carbonio-message-dispatcher-auth.jar
 
-# Copy configuration files
-COPY docker/mongooseim.toml.in /usr/lib/mongooseim/etc/mongooseim.toml.in
+COPY docker/mongooseim.toml.in /etc/carbonio/message-dispatcher/mongooseim.toml.in
 COPY docker/logback.xml /etc/carbonio/message-dispatcher/logback.xml
 
-# Copy entrypoint script
-COPY docker/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+ENV JAVA_HOME="/usr/lib/jvm/default-jvm" \
+    PATH="/usr/lib/jvm/default-jvm/bin:${PATH}"
 
-# Expose ports:
-# 10000 - GraphQL Admin API
-# 10001 - XMPP C2S
+COPY --chmod=755 docker/entrypoint.sh /entrypoint.sh
+
 EXPOSE 10000 10001
 
 ENTRYPOINT ["/entrypoint.sh"]

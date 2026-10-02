@@ -3,7 +3,7 @@ pkgver="1.4.11"
 pkgrel="1"
 pkgdesc="Carbonio Message Dispatcher component"
 maintainer="Zextras <packages@zextras.com>"
-arch=('x86_64')
+arch=('aarch64' 'x86_64')
 license=("AGPL-3.0-only")
 section="admin"
 priority="optional"
@@ -116,6 +116,42 @@ build() {
   export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
   export CFLAGS="-I/opt/zextras/common/include"
 
+  if [ -n "${CROSS_COMPILE}" ]; then
+    if [ -z "${YAP_CROSS_SYSROOT}" ] || [ ! -d "${YAP_CROSS_SYSROOT}" ]; then
+      echo "YAP_CROSS_SYSROOT must be set to an existing directory for cross builds"
+      return 1
+    fi
+    _sysroot="${YAP_CROSS_SYSROOT}"
+
+    _target_erl_root=$(dirname "$(find "${_sysroot}" -maxdepth 6 -type d -name 'erts-*' -print -quit)")
+    if [ -z "${_target_erl_root}" ] || [ "${_target_erl_root}" = "." ]; then
+      echo "Could not find erts-* under ${_sysroot} (expected ${_sysroot}/opt/zextras/common/lib/erlang)"
+      return 1
+    fi
+
+    _target_machine=$(_elf_machine \
+      "$(find "${_target_erl_root}" -maxdepth 3 -type f -name beam.smp -print -quit)")
+    if [ -z "${_target_machine}" ]; then
+      echo "Could not read target machine from ${_target_erl_root}"
+      return 1
+    fi
+
+    # The target erl_interface must precede the host one rebar3 appends.
+    export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L${_sysroot}/opt/zextras/common/lib -L${_target_erl_root}/usr/lib"
+    export CFLAGS="-I${_sysroot}/opt/zextras/common/include"
+    export CXXFLAGS="-I${_sysroot}/opt/zextras/common/include"
+
+    export CC="${CROSS_COMPILE}gcc"
+    export CXX="${CROSS_COMPILE}g++"
+    export AR="${CROSS_COMPILE}ar"
+    export RANLIB="${CROSS_COMPILE}ranlib"
+    export STRIP="${CROSS_COMPILE}strip"
+    export PKG_CONFIG_LIBDIR="/usr/lib/${CROSS_COMPILE_HOST}/pkgconfig:/usr/share/pkgconfig"
+    if [ -d "${_sysroot}/opt/zextras/common/lib/pkgconfig" ]; then
+      export PKG_CONFIG_PATH="${_sysroot}/opt/zextras/common/lib/pkgconfig"
+    fi
+  fi
+
   cp ../configure.vars.config rel
 
   {
@@ -134,6 +170,81 @@ build() {
     echo "export LOCK_DIR=${pkgdir}/var/lock/carbonio/message-dispatcher"
   } >>configure.out
   make install
+
+  if [ -n "${CROSS_COMPILE}" ]; then
+    _swap_cross_otp_payload
+    _assert_target_arch
+  fi
+}
+
+_swap_cross_otp_payload() {
+  _rel_dir="${pkgdir}/opt/zextras/common/lib/mongooseim"
+
+  _host_erts_dir=$(find "${_rel_dir}" -maxdepth 1 -type d -name 'erts-*' -print -quit)
+  if [ -z "${_host_erts_dir}" ]; then
+    echo "Could not find erts-* under ${_rel_dir}"
+    return 1
+  fi
+
+  _erts_name=$(basename "${_host_erts_dir}")
+  _target_erts_dir="${_target_erl_root}/${_erts_name}"
+  if [ ! -d "${_target_erts_dir}/bin" ]; then
+    echo "Missing ${_target_erts_dir}/bin in cross sysroot"
+    return 1
+  fi
+  rm -rf "${_host_erts_dir:?}/bin"
+  cp -a "${_target_erts_dir}/bin" "${_host_erts_dir}/bin"
+
+  for _host_lib_dir in "${_rel_dir}"/lib/*; do
+    [ -d "${_host_lib_dir}" ] || continue
+    _lib_name=$(basename "${_host_lib_dir}")
+    _target_lib_dir="${_target_erl_root}/lib/${_lib_name}"
+    if [ -d "${_target_lib_dir}" ]; then
+      rm -rf "${_host_lib_dir}"
+      cp -a "${_target_lib_dir}" "${_host_lib_dir}"
+    fi
+  done
+
+  # carbonio-erlang's aarch64 build can drop crypto.so's RPATH; fail here, not at runtime.
+  _readelf="${CROSS_COMPILE}readelf"
+  command -v "${_readelf}" >/dev/null 2>&1 || _readelf="readelf"
+  if command -v "${_readelf}" >/dev/null 2>&1; then
+    _crypto_so=$(find "${_rel_dir}/lib" -maxdepth 4 -type f -path '*/crypto-*/priv/lib/crypto.so' -print -quit)
+    if [ -n "${_crypto_so}" ] && ! "${_readelf}" -d "${_crypto_so}" | grep -E 'R(UN)?PATH' | grep -q '/opt/zextras/common/lib'; then
+      echo "carbonio-erlang aarch64 shipped crypto.so without an rpath to /opt/zextras/common/lib (fix belongs in carbonio-erlang): ${_crypto_so}"
+      return 1
+    fi
+  fi
+}
+
+# Reads the ELF header directly: readelf/file output is localized.
+_elf_machine() {
+  _elf=$1
+
+  [ "$(od -An -tx1 -N4 "${_elf}" | tr -d ' \n')" = "7f454c46" ] || return 1
+
+  # e_machine: two little-endian bytes at offset 18.
+  read -r _b0 _b1 <<<"$(od -An -tu1 -j18 -N2 "${_elf}")"
+  echo "$((_b0 + _b1 * 256))"
+}
+
+_assert_target_arch() {
+  _bad_files="${srcdir}/foreign-elf.list"
+  rm -f "${_bad_files}"
+
+  find "${pkgdir}" -type f | while IFS= read -r _f; do
+    _machine=$(_elf_machine "${_f}") || continue
+    [ "${_machine}" = "${_target_machine}" ] \
+      || printf '%s: e_machine=%s\n' "${_f}" "${_machine}" >>"${_bad_files}"
+  done
+
+  if [ -s "${_bad_files}" ]; then
+    echo "ELF files not built for target e_machine=${_target_machine}:"
+    cat "${_bad_files}"
+    return 1
+  fi
+
+  rm -f "${_bad_files}"
 }
 
 _package_common() {

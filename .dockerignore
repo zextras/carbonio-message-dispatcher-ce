@@ -1,0 +1,12 @@
+.git
+.idea
+.project
+.settings
+**/.classpath
+**/.project
+**/.settings
+**/target
+docker/docker-builder
+m2
+.mvn
+*.iml
