@@ -116,7 +116,6 @@ build() {
   export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib"
   export CFLAGS="-I/opt/zextras/common/include"
 
-  # Handle cross-compilation (arm64 on amd64 host)
   if [ -n "${CROSS_COMPILE}" ]; then
     if [ -z "${YAP_CROSS_SYSROOT}" ] || [ ! -d "${YAP_CROSS_SYSROOT}" ]; then
       echo "YAP_CROSS_SYSROOT must be set to an existing directory for cross builds"
@@ -137,9 +136,7 @@ build() {
       return 1
     fi
 
-    # rebar3's port compiler appends -L<host erlang>/lib/erl_interface-*/lib
-    # -lei from the running amd64 Erlang; the target ei/erl_interface archives
-    # must precede it on the command line to win the search.
+    # The target erl_interface must precede the host one rebar3 appends.
     export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L${_sysroot}/opt/zextras/common/lib -L${_target_erl_root}/usr/lib"
     export CFLAGS="-I${_sysroot}/opt/zextras/common/include"
     export CXXFLAGS="-I${_sysroot}/opt/zextras/common/include"
@@ -149,8 +146,6 @@ build() {
     export AR="${CROSS_COMPILE}ar"
     export RANLIB="${CROSS_COMPILE}ranlib"
     export STRIP="${CROSS_COMPILE}strip"
-    # rebar3 picks up CC for NIF compilation automatically
-    # Point pkg-config at cross-compiled dependency .pc files
     export PKG_CONFIG_LIBDIR="/usr/lib/${CROSS_COMPILE_HOST}/pkgconfig:/usr/share/pkgconfig"
     if [ -d "${_sysroot}/opt/zextras/common/lib/pkgconfig" ]; then
       export PKG_CONFIG_PATH="${_sysroot}/opt/zextras/common/lib/pkgconfig"
@@ -210,12 +205,7 @@ _swap_cross_otp_payload() {
     fi
   done
 
-  # carbonio-erlang's aarch64 cross build has a known configure.ac bug
-  # (empty --with-ssl sysroot arg -> SSL_RUNTIME_LIBDIR empty -> bare "-R"
-  # swallows the next -R arg) that drops /opt/zextras/common/lib from
-  # crypto.so's RPATH; at runtime it then binds the distro libcrypto and
-  # MongooseIM dies with "OPENSSL_3.4.0 not found". Catch it here instead
-  # of in a container CrashLoop; the real fix belongs in carbonio-erlang.
+  # carbonio-erlang's aarch64 build can drop crypto.so's RPATH; fail here, not at runtime.
   _readelf="${CROSS_COMPILE}readelf"
   command -v "${_readelf}" >/dev/null 2>&1 || _readelf="readelf"
   if command -v "${_readelf}" >/dev/null 2>&1; then
@@ -227,9 +217,7 @@ _swap_cross_otp_payload() {
   fi
 }
 
-# Echoes the ELF e_machine of $1, or fails if $1 is not an ELF file. Reads the
-# header bytes directly: readelf/file output is localized, so parsing it would
-# silently match nothing under a non-C locale.
+# Reads the ELF header directly: readelf/file output is localized.
 _elf_machine() {
   _elf=$1
 

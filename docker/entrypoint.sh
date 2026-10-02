@@ -3,8 +3,7 @@
 set -e
 
 CONFIG_FILE="/etc/carbonio/message-dispatcher/config.properties"
-# The release bakes ETC_DIR=/etc/carbonio/message-dispatcher (mongooseimctl's
-# RUNNER_ETC_DIR), so this is the file MongooseIM actually reads.
+# mongooseimctl reads ETC_DIR, not the release's own etc dir.
 MONGOOSEIM_TOML="/etc/carbonio/message-dispatcher/mongooseim.toml"
 MONGOOSEIM_TOML_TEMPLATE="${MONGOOSEIM_TOML}.in"
 

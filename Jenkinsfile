@@ -26,14 +26,7 @@ dt3_pipeline(
             cp -a carbonio-message-dispatcher-auth/target/carbonio-message-dispatcher-auth-*-fatjar.jar docker/carbonio-message-dispatcher-auth.jar
         ''',
     ],
-    // dockerPreScript runs inside the dt3 daemonless 'buildah' container, which
-    // has buildah only — NO docker CLI / Docker daemon / podman. With
-    // packaging.artifactsForDocker: true above, the packaging stage's
-    // cross-compiled MongooseIM .deb (built by yap, no QEMU/binfmt) is already
-    // unstashed into artifacts/ before this script runs; the buildah build below
-    // unpacks it with `dpkg -x` (docker/mongooseim-base/Dockerfile). dockerStage
-    // already ran `buildah login` for this registry, so the manifest push below
-    // authenticates without an extra login.
+    // Runs in the buildah-only container; artifacts/ already holds the packaging stage's .debs.
     dockerPreScript: '''
         cp -a carbonio-message-dispatcher-auth/target/carbonio-message-dispatcher-auth-*-fatjar.jar docker/carbonio-message-dispatcher-auth.jar
         for a in amd64 arm64; do
