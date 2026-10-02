@@ -1,4 +1,5 @@
-FROM registry.dev.zextras.com/dev/carbonio-sidecar:devel
+ARG SIDECAR_IMAGE=registry.dev.zextras.com/dev/carbonio-sidecar:main
+FROM ${SIDECAR_IMAGE}
 
 # Service registration
 COPY package/carbonio-message-dispatcher-http.hcl /consul/config/
