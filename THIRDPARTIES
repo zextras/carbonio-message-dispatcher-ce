@@ -20,13 +20,13 @@ List of third-party dependencies grouped by their license type.
 
     Apache-2.0:
 
-        * Core :: HTTP (org.eclipse.jetty:jetty-http:12.1.10 - https://jetty.org/jetty-core/jetty-http)
-        * Core :: IO (org.eclipse.jetty:jetty-io:12.1.10 - https://jetty.org/jetty-core/jetty-io)
-        * Core :: Security (org.eclipse.jetty:jetty-security:12.1.10 - https://jetty.org/jetty-core/jetty-security)
-        * Core :: Server (org.eclipse.jetty:jetty-server:12.1.10 - https://jetty.org/jetty-core/jetty-server)
-        * Core :: Sessions (org.eclipse.jetty:jetty-session:12.1.10 - https://jetty.org/jetty-core/jetty-session)
-        * Core :: Utilities (org.eclipse.jetty:jetty-util:12.1.10 - https://jetty.org/jetty-core/jetty-util)
-        * EE10 :: Servlet (org.eclipse.jetty.ee10:jetty-ee10-servlet:12.1.10 - https://jetty.org/jetty-ee10/jetty-ee10-servlet)
+        * Core :: HTTP (org.eclipse.jetty:jetty-http:12.1.13 - https://jetty.org/jetty-core/jetty-http)
+        * Core :: IO (org.eclipse.jetty:jetty-io:12.1.13 - https://jetty.org/jetty-core/jetty-io)
+        * Core :: Security (org.eclipse.jetty:jetty-security:12.1.13 - https://jetty.org/jetty-core/jetty-security)
+        * Core :: Server (org.eclipse.jetty:jetty-server:12.1.13 - https://jetty.org/jetty-core/jetty-server)
+        * Core :: Sessions (org.eclipse.jetty:jetty-session:12.1.13 - https://jetty.org/jetty-core/jetty-session)
+        * Core :: Utilities (org.eclipse.jetty:jetty-util:12.1.13 - https://jetty.org/jetty-core/jetty-util)
+        * EE10 :: Servlet (org.eclipse.jetty.ee10:jetty-ee10-servlet:12.1.13 - https://jetty.org/jetty-ee10/jetty-ee10-servlet)
 
     BSD-2-Clause:
 
@@ -39,13 +39,13 @@ List of third-party dependencies grouped by their license type.
 
     EPL-2.0:
 
-        * Core :: HTTP (org.eclipse.jetty:jetty-http:12.1.10 - https://jetty.org/jetty-core/jetty-http)
-        * Core :: IO (org.eclipse.jetty:jetty-io:12.1.10 - https://jetty.org/jetty-core/jetty-io)
-        * Core :: Security (org.eclipse.jetty:jetty-security:12.1.10 - https://jetty.org/jetty-core/jetty-security)
-        * Core :: Server (org.eclipse.jetty:jetty-server:12.1.10 - https://jetty.org/jetty-core/jetty-server)
-        * Core :: Sessions (org.eclipse.jetty:jetty-session:12.1.10 - https://jetty.org/jetty-core/jetty-session)
-        * Core :: Utilities (org.eclipse.jetty:jetty-util:12.1.10 - https://jetty.org/jetty-core/jetty-util)
-        * EE10 :: Servlet (org.eclipse.jetty.ee10:jetty-ee10-servlet:12.1.10 - https://jetty.org/jetty-ee10/jetty-ee10-servlet)
+        * Core :: HTTP (org.eclipse.jetty:jetty-http:12.1.13 - https://jetty.org/jetty-core/jetty-http)
+        * Core :: IO (org.eclipse.jetty:jetty-io:12.1.13 - https://jetty.org/jetty-core/jetty-io)
+        * Core :: Security (org.eclipse.jetty:jetty-security:12.1.13 - https://jetty.org/jetty-core/jetty-security)
+        * Core :: Server (org.eclipse.jetty:jetty-server:12.1.13 - https://jetty.org/jetty-core/jetty-server)
+        * Core :: Sessions (org.eclipse.jetty:jetty-session:12.1.13 - https://jetty.org/jetty-core/jetty-session)
+        * Core :: Utilities (org.eclipse.jetty:jetty-util:12.1.13 - https://jetty.org/jetty-core/jetty-util)
+        * EE10 :: Servlet (org.eclipse.jetty.ee10:jetty-ee10-servlet:12.1.13 - https://jetty.org/jetty-ee10/jetty-ee10-servlet)
         * Logback Classic Module (ch.qos.logback:logback-classic:1.6.0 - http://logback.qos.ch/logback-classic)
         * Logback Core Module (ch.qos.logback:logback-core:1.6.0 - http://logback.qos.ch/logback-core)
 
