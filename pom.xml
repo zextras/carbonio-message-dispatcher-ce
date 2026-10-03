@@ -90,7 +90,7 @@ SPDX-License-Identifier: AGPL-3.0-only
     <org.slf4j-api.version>2.0.18</org.slf4j-api.version>
     <logback-classic.version>1.6.0</logback-classic.version>
     <!-- Plugins -->
-    <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
+    <maven-compiler-plugin.version>3.16.0</maven-compiler-plugin.version>
     <maven-shade-plugin.version>3.6.2</maven-shade-plugin.version>
     <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
     <maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
