@@ -1,103 +1,18 @@
-<!--
-SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
-SPDX-License-Identifier: AGPL-3.0-only
--->
+# Carbonio Message Dispatcher CE
 
-<div align="center">
-  <h1>Carbonio Message Dispatcher</h1>
-</div>
+[![Contributors][contributors-badge]][contributors]
+[![Activity][activity-badge]][activity]
+[![License][license-badge]](COPYING)
+[![Project][project-badge]][project]
 
-<div align="center">
-  Message Dispatcher service for Zextras Carbonio  
-</div>
+Delivers the chat messages of Carbonio Workstream Collaboration. Community edition.
 
-***
+- Installation: [Carbonio CE guide](https://docs.zextras.com/carbonio-ce/html/install/toc.html)
 
-## Configuration
-
-`/etc/carbonio/message-dispatcher/mongooseim.toml` is a generated file. Every
-`pending-setups` run re-renders it from the packaged `mongooseim.toml.in`
-template, filling in the credentials held in Consul, so any local edit to it is
-discarded at the next run. Until CO-4228 such edits survived indefinitely: the
-file was shipped as a conffile and patched in place, which is exactly why hosts
-kept a config MongooseIM 6.6.0 refuses to start with. A change that has to
-persist therefore belongs in `package/mongooseim.toml.in` and has to ship in a
-release; the file's mode and owner are the only things carried over from the
-copy being replaced.
-
-## Upgrade Mongoose
-
-### Update package version
-
-In order to properly update package version follow these steps:
-
-- modify reference in source about the new archive to download like
-  `http://github.com/esl/MongooseIM/archive/{VERSION}.tar.gz`
-- modify prepare() function in PKGBUILD:
-    - ```
-  prepare() {
-  cd "${srcdir}/MongooseIM-{VERSION}"
-  ...
-  }
-    ```
-- modify build() function in PKGBUILD:
-    - ```
-  build() {
-  cd "${srcdir}/MongooseIM-{VERSION}"
-  ...
-  }
-    ```
-- modify path for vm.args file in package function in PKGBUILD file like
-    -
-    `cp "${pkgdir}/opt/zextras/common/lib/mongooseim/releases/{VERSION}/vm.args" "${pkgdir}/etc/carbonio/message-dispatcher/vm.args"`
-
-### Docker
-
-While upgrade mongoose in carbonio-message-dispatcher remember to update also docker image in Dockerfile with same
-version.
-Update also docker db part changing init.sql. You can copy and paste from
-`https://github.com/esl/MongooseIM/blob/master/priv/pg.sql`.
-
-### Local package build
-
-```sh
-./build_package.sh ubuntu-jammy
-```
-
-The script builds the Java artifact, injects the public Zextras package
-repository, and builds with YAP 2.6.1 using Docker or Podman. Override the YAP
-version with `YAP_VERSION`; `rocky-8` is also supported. Packages are written to
-`artifacts/<distribution>/`.
-
-## License 📚
-
-Carbonio Message Dispatcher is the message engine backend service for Zextras
-Carbonio Workstream collaboration.
-
-Copyright (C) 2023 Zextras <https://www.zextras.com>
-
-> This program is free software: you can redistribute it and/or modify
-> it under the terms of the GNU Affero General Public License as published by
-> the Free Software Foundation, version 3 only of the License.
->
-> This program is distributed in the hope that it will be useful,
-> but WITHOUT ANY WARRANTY; without even the implied warranty of
-> MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-> GNU Affero General Public License for more details.
->
-> You should have received a copy of the GNU Affero General Public License
-> along with this program. If not, see <https://www.gnu.org/licenses/>.
-
-See [COPYING](COPYING) file for the project license details
-
-See [THIRDPARTIES](THIRDPARTIES) file for other licenses details
-
-## Copyright and Licensing notices
-
-All non-software material (such as, for example, names, images, logos,
-sounds) is owned by Zextras and is licensed under CC-BY-NC-SA
-https://creativecommons.org/licenses/by-nc-sa/4.0/.
-Where not specified, all source files owned by Zextras are licensed
-under AGPL-3.0-only.
-
-***
+[contributors-badge]: https://img.shields.io/github/contributors/zextras/carbonio-message-dispatcher-ce "Contributors"
+[contributors]: https://github.com/zextras/carbonio-message-dispatcher-ce/graphs/contributors "Contributors"
+[activity-badge]: https://img.shields.io/github/commit-activity/m/zextras/carbonio-message-dispatcher-ce "Activity"
+[activity]: https://github.com/zextras/carbonio-message-dispatcher-ce/pulse "Activity"
+[license-badge]: https://img.shields.io/badge/license-AGPL--3.0--only-blue "License"
+[project-badge]: https://img.shields.io/badge/project-carbonio-informational "Project Carbonio"
+[project]: https://www.zextras.com/carbonio/ "Project Carbonio"
