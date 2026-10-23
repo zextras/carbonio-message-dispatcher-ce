@@ -5,7 +5,7 @@
 ARG MONGOOSEIM_IMAGE=registry.dev.zextras.com/dev/mongooseim-ce:6.6.0-2
 FROM --platform=$TARGETPLATFORM ${MONGOOSEIM_IMAGE}
 
-COPY --from=docker.io/hashicorp/consul:2.0 /bin/consul /usr/local/bin/consul
+COPY --from=docker.io/hashicorp/consul:2.1 /bin/consul /usr/local/bin/consul
 
 # The package/ template has the sidecar addresses pre-filled.
 COPY package/mongooseim.toml.in /etc/carbonio/message-dispatcher/mongooseim.toml.in
