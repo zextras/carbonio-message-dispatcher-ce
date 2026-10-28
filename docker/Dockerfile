@@ -8,7 +8,7 @@ ARG MONGOOSEIM_IMAGE=registry.dev.zextras.com/dev/mongooseim-ce:6.6.0-2
 FROM --platform=$TARGETPLATFORM ${MONGOOSEIM_IMAGE} AS baserootfs
 
 # Unpack the JRE with dpkg -x so no target-arch code runs on the builder.
-FROM --platform=$BUILDPLATFORM docker.io/library/ubuntu:jammy AS installer
+FROM --platform=$BUILDPLATFORM docker.io/library/ubuntu:noble AS installer
 
 ARG TARGETARCH
 ARG BUILDARCH=amd64
