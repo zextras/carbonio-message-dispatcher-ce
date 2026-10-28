@@ -89,7 +89,7 @@ SPDX-License-Identifier: AGPL-3.0-only
     <maven-shade-plugin.version>3.6.2</maven-shade-plugin.version>
     <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
     <maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
-    <sonar-maven-plugin.version>5.5.0.6356</sonar-maven-plugin.version>
+    <sonar-maven-plugin.version>5.8.0.7211</sonar-maven-plugin.version>
     <!-- Test -->
     <junit-jupiter.version>6.1.0</junit-jupiter.version>
     <testcontainers.version>1.21.4</testcontainers.version>
