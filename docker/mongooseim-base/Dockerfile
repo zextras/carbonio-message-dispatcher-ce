@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 # Unpack the per-arch .deb with dpkg -x so no maintainer scripts or target-arch code run.
-FROM --platform=$BUILDPLATFORM docker.io/library/ubuntu:jammy AS installer
+FROM --platform=$BUILDPLATFORM docker.io/library/ubuntu:noble AS installer
 
 ARG TARGETARCH
 ARG BUILDARCH=amd64
@@ -61,7 +61,7 @@ RUN mkdir -p /staging/var/lib/carbonio/message-dispatcher \
       /staging/var/lock/carbonio/message-dispatcher \
       /staging/var/log/carbonio/message-dispatcher
 
-FROM --platform=$TARGETPLATFORM docker.io/library/ubuntu:jammy
+FROM --platform=$TARGETPLATFORM docker.io/library/ubuntu:noble
 
 COPY --from=installer /staging/ /
 
