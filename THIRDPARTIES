@@ -46,8 +46,8 @@ List of third-party dependencies grouped by their license type.
         * Core :: Sessions (org.eclipse.jetty:jetty-session:12.1.10 - https://jetty.org/jetty-core/jetty-session)
         * Core :: Utilities (org.eclipse.jetty:jetty-util:12.1.10 - https://jetty.org/jetty-core/jetty-util)
         * EE10 :: Servlet (org.eclipse.jetty.ee10:jetty-ee10-servlet:12.1.10 - https://jetty.org/jetty-ee10/jetty-ee10-servlet)
-        * Logback Classic Module (ch.qos.logback:logback-classic:1.6.0 - http://logback.qos.ch/logback-classic)
-        * Logback Core Module (ch.qos.logback:logback-core:1.6.0 - http://logback.qos.ch/logback-core)
+        * Logback Classic Module (ch.qos.logback:logback-classic:1.6.6 - http://logback.qos.ch/logback-classic)
+        * Logback Core Module (ch.qos.logback:logback-core:1.6.6 - http://logback.qos.ch/logback-core)
 
     GPL2 w/ CPE:
 
@@ -56,8 +56,8 @@ List of third-party dependencies grouped by their license type.
 
     LGPL-2.1-only:
 
-        * Logback Classic Module (ch.qos.logback:logback-classic:1.6.0 - http://logback.qos.ch/logback-classic)
-        * Logback Core Module (ch.qos.logback:logback-core:1.6.0 - http://logback.qos.ch/logback-core)
+        * Logback Classic Module (ch.qos.logback:logback-classic:1.6.6 - http://logback.qos.ch/logback-classic)
+        * Logback Core Module (ch.qos.logback:logback-core:1.6.6 - http://logback.qos.ch/logback-core)
 
     MIT:
 
