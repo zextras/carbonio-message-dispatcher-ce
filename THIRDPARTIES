@@ -12,8 +12,9 @@ List of third-party dependencies grouped by their license type.
     Apache License, Version 2.0:
 
         * Apache Commons Lang (org.apache.commons:commons-lang3:3.11 - https://commons.apache.org/proper/commons-lang/)
-        * flyway-core (org.flywaydb:flyway-core:12.9.0 - https://flywaydb.org/flyway-core)
-        * flyway-database-postgresql (org.flywaydb:flyway-database-postgresql:12.9.0 - https://flywaydb.org/flyway-database-postgresql)
+        * flyway-core (org.flywaydb:flyway-core:13.12.0 - https://flywaydb.org/flyway-core)
+        * flyway-database-cockroachdb (org.flywaydb:flyway-database-cockroachdb:13.12.0 - https://flywaydb.org/flyway-database-cockroachdb)
+        * flyway-database-postgresql (org.flywaydb:flyway-database-postgresql:13.12.0 - https://flywaydb.org/flyway-database-postgresql)
         * Guava InternalFutureFailureAccess and InternalFutures (com.google.guava:failureaccess:1.0.3 - https://github.com/google/guava/failureaccess)
         * Guava: Google Core Libraries for Java (com.google.guava:guava:33.6.0-jre - https://github.com/google/guava)
         * J2ObjC Annotations (com.google.j2objc:j2objc-annotations:3.1 - https://github.com/google/j2objc/)
@@ -86,9 +87,7 @@ List of third-party dependencies grouped by their license type.
         * Jackson datatype: JSR310 (com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.22.0 - https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310)
         * Jackson-annotations (com.fasterxml.jackson.core:jackson-annotations:2.22 - https://github.com/FasterXML/jackson)
         * Jackson-core (com.fasterxml.jackson.core:jackson-core:2.22.0 - https://github.com/FasterXML/jackson-core)
-        * Jackson-core (tools.jackson.core:jackson-core:3.1.1 - https://github.com/FasterXML/jackson-core)
         * jackson-databind (com.fasterxml.jackson.core:jackson-databind:2.22.0 - https://github.com/FasterXML/jackson)
-        * jackson-databind (tools.jackson.core:jackson-databind:3.1.1 - https://github.com/FasterXML/jackson)
         * Jakarta Dependency Injection (jakarta.inject:jakarta.inject-api:2.0.1 - https://github.com/eclipse-ee4j/injection-api)
         * okhttp (com.squareup.okhttp3:okhttp:4.9.0 - https://square.github.io/okhttp/)
         * Okio (com.squareup.okio:okio:2.8.0 - https://github.com/square/okio/)
