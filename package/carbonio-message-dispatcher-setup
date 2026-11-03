@@ -51,46 +51,34 @@ config_variant "auth"
 config_variant "http"
 config_variant "xmpp"
 
-if [[ ! -f "/etc/carbonio/message-dispatcher/service-discover/token" ]]; then
-    # Create the token, this is unique for every variant
-    consul acl token create -format json -policy-name "${POLICY_NAME}" -description "Token for
-    carbonio-message-dispatcher/$(hostname -A)" |
-      jq -r '.SecretID' > /etc/carbonio/message-dispatcher/service-discover/token;
-    chown carbonio-message-dispatcher:carbonio-message-dispatcher /etc/carbonio/message-dispatcher/service-discover/token
-    chmod 0600 /etc/carbonio/message-dispatcher/service-discover/token
+service-discover service-token ensure --service carbonio-message-dispatcher --policy "${POLICY_NAME}" \
+  --token-file /etc/carbonio/message-dispatcher/service-discover/token --owner carbonio-message-dispatcher
 
-    # To pass the token to consul we need to inject it to a env. variable
-    # since it doesn't accept a file as an argument
+# To pass the token to consul we need to inject it to a env. variable
+# since it doesn't accept a file as an argument
 
-    # Override for main service
-    mkdir -p /etc/systemd/system/carbonio-message-dispatcher.service.d/
-    cat >/etc/systemd/system/carbonio-message-dispatcher.service.d/override.conf <<EOF
+# Override for main service
+mkdir -p /etc/systemd/system/carbonio-message-dispatcher.service.d/
+cat >/etc/systemd/system/carbonio-message-dispatcher.service.d/override.conf <<EOF
 [Service]
 Environment="CONSUL_HTTP_TOKEN=$(cat /etc/carbonio/message-dispatcher/service-discover/token)"
 EOF
-    chmod 0600 /etc/systemd/system/carbonio-message-dispatcher.service.d/override.conf
+chmod 0600 /etc/systemd/system/carbonio-message-dispatcher.service.d/override.conf
 
-    systemctl daemon-reload
-fi
+systemctl daemon-reload
 
-if [[ -f "/etc/carbonio/message-dispatcher/service-discover/token" ]] && \
-   [[ ! -f "/etc/systemd/system/carbonio-message-dispatcher-auth.service.d/override.conf" ]]; then
-    mkdir -p /etc/systemd/system/carbonio-message-dispatcher-auth.service.d/
-    cat >/etc/systemd/system/carbonio-message-dispatcher-auth.service.d/override.conf <<EOF
+mkdir -p /etc/systemd/system/carbonio-message-dispatcher-auth.service.d/
+cat >/etc/systemd/system/carbonio-message-dispatcher-auth.service.d/override.conf <<EOF
 [Service]
 Environment="CONSUL_HTTP_TOKEN=$(cat /etc/carbonio/message-dispatcher/service-discover/token)"
 EOF
-    chmod 0600 /etc/systemd/system/carbonio-message-dispatcher-auth.service.d/override.conf
+chmod 0600 /etc/systemd/system/carbonio-message-dispatcher-auth.service.d/override.conf
 
-    systemctl daemon-reload
-fi
+systemctl daemon-reload
 
 carbonio-message-dispatcher-config-setup
 
 consul reload
-
-# Limit token visibility as much as possible
-export -n CONSUL_HTTP_TOKEN
 
 echo "==========================================================================================="
 echo "Carbonio Message Dispatcher correctly set!"
@@ -102,4 +90,10 @@ systemctl restart carbonio-message-dispatcher.service
 systemctl restart carbonio-message-dispatcher-auth-sidecar.service
 systemctl restart carbonio-message-dispatcher-http-sidecar.service
 systemctl restart carbonio-message-dispatcher-xmpp-sidecar.service
+
+# Remove tokens created by previous versions of this script (needs the bootstrap token)
+service-discover service-token prune-legacy --service carbonio-message-dispatcher --policy "${POLICY_NAME}"
+
+# Limit token visibility as much as possible
+export -n CONSUL_HTTP_TOKEN
 trap - EXIT
