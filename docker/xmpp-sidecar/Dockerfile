@@ -1,6 +1,8 @@
 ARG SIDECAR_IMAGE=registry.dev.zextras.com/dev/carbonio-sidecar:main
 FROM ${SIDECAR_IMAGE}
 
+RUN useradd -r -U carbonio-message-dispatcher
+
 COPY package/carbonio-message-dispatcher-xmpp.hcl /consul/config/
 
 COPY package/service-protocol-xmpp.json /etc/carbonio/message-dispatcher/service-discover/service-protocol.json
