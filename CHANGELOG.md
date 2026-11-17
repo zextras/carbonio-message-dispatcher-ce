@@ -1,3 +1,10 @@
+## [1.4.19](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.4.18...v1.4.19) (2026-11-17)
+
+### Bug Fixes
+
+* **docker:** create the carbonio-message-dispatcher sidecar system user ([#181](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/181)) ([b2b533a](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/b2b533ad99a887e14df562be53a1292f7d9e0d85))
+* **setup:** reuse a deterministic Consul token per node - CO-3612 ([#179](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/179)) ([78f0573](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/78f0573a43cf6c0feeda74f5f683c0db5611fe7b))
+
 ## [1.4.18](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.4.17...v1.4.18) (2026-10-28)
 
 ## [1.4.17](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.4.16...v1.4.17) (2026-10-23)
