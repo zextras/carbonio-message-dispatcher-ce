@@ -1,3 +1,9 @@
+## [1.4.20](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.4.19...v1.4.20) (2026-11-17)
+
+### Bug Fixes
+
+* [CO-3502] start carbonio-message-dispatcher.service and carbonio-message-dispatcher-auth.service with carbonio.target ([#183](https://github.com/zextras/carbonio-message-dispatcher-ce/issues/183)) ([4b0e2c5](https://github.com/zextras/carbonio-message-dispatcher-ce/commit/4b0e2c5fd45e103c391705c40eef26018b058bbc))
+
 ## [1.4.19](https://github.com/zextras/carbonio-message-dispatcher-ce/compare/v1.4.18...v1.4.19) (2026-11-17)
 
 ### Bug Fixes
