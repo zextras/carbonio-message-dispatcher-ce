@@ -30,7 +30,7 @@ List of third-party dependencies grouped by their license type.
 
     BSD-2-Clause:
 
-        * PostgreSQL JDBC Driver (org.postgresql:postgresql:42.7.11 - https://jdbc.postgresql.org)
+        * PostgreSQL JDBC Driver (org.postgresql:postgresql:42.7.14 - https://jdbc.postgresql.org)
 
     EPL 2.0:
 
@@ -93,3 +93,7 @@ List of third-party dependencies grouped by their license type.
         * okhttp (com.squareup.okhttp3:okhttp:4.9.0 - https://square.github.io/okhttp/)
         * Okio (com.squareup.okio:okio:2.8.0 - https://github.com/square/okio/)
         * Retrofit (com.squareup.retrofit2:retrofit:2.9.0 - https://github.com/square/retrofit)
+
+    The MIT License:
+
+        * Checker Qual (org.checkerframework:checker-qual:3.55.1 - https://checkerframework.org/)
