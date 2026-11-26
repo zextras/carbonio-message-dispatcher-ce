@@ -99,9 +99,6 @@ sha256sums=(
 backup=(
   "etc/carbonio/message-dispatcher/app.config"
   "etc/carbonio/message-dispatcher/logback.xml"
-  "etc/zextras/service-discover/carbonio-message-dispatcher-auth.hcl"
-  "etc/zextras/service-discover/carbonio-message-dispatcher-http.hcl"
-  "etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.hcl"
 )
 
 prepare() {
