@@ -18,6 +18,12 @@ config_variant() {
   consul config write /etc/carbonio/message-dispatcher/service-discover/intentions-"${VARIANT}".json
 }
 
+carbonio-message-dispatcher-hcl migrate || :
+if ! carbonio-message-dispatcher-hcl render; then
+  echo "Cannot render /etc/zextras/service-discover/carbonio-message-dispatcher-auth.hcl, /etc/zextras/service-discover/carbonio-message-dispatcher-http.hcl and /etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.hcl; leaving pending-setup to be retried."
+  exit 1
+fi
+
 # Decrypt the bootstrap token, asking the password to the sys admin
 # --setup check for SETUP_CONSUL_TOKEN env. variable and uses it
 # to avoid re-asking for the password
@@ -97,3 +103,6 @@ service-discover service-token prune-legacy --service carbonio-message-dispatche
 # Limit token visibility as much as possible
 export -n CONSUL_HTTP_TOKEN
 trap - EXIT
+rc=$?
+carbonio-message-dispatcher-hcl show || :
+exit "${rc}"

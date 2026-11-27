@@ -1,9 +1,15 @@
 ARG SIDECAR_IMAGE=registry.dev.zextras.com/dev/carbonio-sidecar:main
+FROM --platform=$BUILDPLATFORM docker.io/library/alpine:3.20 AS hcl
+COPY package/carbonio-message-dispatcher-xmpp-template.hcl /carbonio-message-dispatcher-xmpp-template.hcl
+RUN sed -E 's/\{\{ or \(env "[A-Z0-9_]+"\) "([^"]*)" \}\}/\1/g' \
+    /carbonio-message-dispatcher-xmpp-template.hcl > /carbonio-message-dispatcher-xmpp.hcl \
+    && ! grep -q '{{' /carbonio-message-dispatcher-xmpp.hcl
+
 FROM ${SIDECAR_IMAGE}
 
 RUN useradd -r -U carbonio-message-dispatcher
 
-COPY package/carbonio-message-dispatcher-xmpp.hcl /consul/config/
+COPY --from=hcl /carbonio-message-dispatcher-xmpp.hcl /consul/config/
 
 COPY package/service-protocol-xmpp.json /etc/carbonio/message-dispatcher/service-discover/service-protocol.json
 COPY package/service-protocol-auth.json /etc/carbonio/message-dispatcher/service-discover/service-protocol-auth.json

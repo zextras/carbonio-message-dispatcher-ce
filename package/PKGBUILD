@@ -16,6 +16,7 @@ depends=(
   "pending-setups"
   "service-discover"
   "service-discover-base"
+  "service-discover-template"
 )
 makedepends__apt=(
   "carbonio-elixir"
@@ -40,16 +41,17 @@ source=(
   "carbonio-message-dispatcher-auth.jar"
   "carbonio-message-dispatcher-auth-sidecar.service"
   "carbonio-message-dispatcher-auth-sidecar-legacy.service"
-  "carbonio-message-dispatcher-auth.hcl"
+  "carbonio-message-dispatcher-auth-template.hcl"
   "carbonio-message-dispatcher-auth.service"
   "carbonio-message-dispatcher-http-sidecar.service"
   "carbonio-message-dispatcher-http-sidecar-legacy.service"
-  "carbonio-message-dispatcher-http.hcl"
+  "carbonio-message-dispatcher-http-template.hcl"
   "carbonio-message-dispatcher-setup"
+  "carbonio-message-dispatcher-hcl"
   "carbonio-message-dispatcher-config-setup"
   "carbonio-message-dispatcher-xmpp-sidecar.service"
   "carbonio-message-dispatcher-xmpp-sidecar-legacy.service"
-  "carbonio-message-dispatcher-xmpp.hcl"
+  "carbonio-message-dispatcher-xmpp-template.hcl"
   "carbonio-message-dispatcher.service"
   "configure.vars.config"
   "intentions-auth.json"
@@ -72,16 +74,17 @@ sha256sums=(
   'SKIP'
   'f6c1f97cb284dfb2d7503a15ecde0b75494abce77f10e1b6b1b7fc686390e0de'
   '41eafacc3b18a418d60234c71edddd24ed65faef4686f17762bca19c55906c5c'
-  'e2dc002e1645ff32758977f134417c82d98bdfaef3bb5e7c50089b7460cb73a0'
+  'e9361e92bb61c212997f65a20f737cd1d1d2a08d768bc44fb55cde9f9c371660'
   'b73ad1a622167e9d51dd53bb9088ee3df0a53c530259c1a609bd4a201cbb4107'
   'cd90dbf036636ac65d42f8dc50d0e16c0967b087d6f93bad576a95c276063706'
   '5f0ce69d533abefae4924197175e851188b03fb7ca4820d5a2c1a0706c35eec2'
-  'd75d76ce603134a8b969cb0223e150208955b47f566203cbd09115f1109c8838'
-  'aae13abeb448b74bcac6678d03c1919076ec7e318376c0acf6fdd038bbbc0c02'
+  'bdf6aea1cddc202ba4674f1cedb2b874b21f698565949dcb07581c7748ea8c6b'
+  '2944bc0436ba78e1b0ec178a80518d407b5f6019c3e317901bad56d26a571708'
+  'e0411129643f5356e4536e75fdea906165b6781de71328967dce7edf97d8e716'
   '3fec8ebfdf41e0ea3ddcc6764f194d74b6b23e5806a193b4b4c457555759e616'
   'ee5731838e73e62ece136f131e532a28adb0985f618b17510f75f1d20239db5e'
   '4c90fd6957d2c8a0c5dd3335b5307c69deb5a7266be08f18a765d0a34947bf34'
-  'ec52f336ad1847cc1cbd08d1808354c249a6db6628d7cd0ad4c4023cd9cbb636'
+  '1a2af19817ffcc30fad05573c818857062b8efa00c0f4aa26c3027439afe27e5'
   '558c6af9f3ad6f20dae7e425a395b518f56d422605f1edfce9cf4c7bc952af66'
   'a55ee89a02e901831baf61faa3b22127ae93e4cccac8d6f1032bfa4202985089'
   '81f6a739f1f23b557e51b5a97d6696807e29df1c89c75fb1a5fca6bf5d649ab1'
@@ -272,18 +275,20 @@ _package_common() {
     "${pkgdir}/usr/bin/carbonio-message-dispatcher-setup"
   install -Dm755 carbonio-message-dispatcher-config-setup \
     "${pkgdir}/usr/bin/carbonio-message-dispatcher-config-setup"
+  install -Dm755 carbonio-message-dispatcher-hcl \
+    "${pkgdir}/usr/bin/carbonio-message-dispatcher-hcl"
   install -Dm644 611-carbonio-message-dispatcher.sh \
     "${pkgdir}/etc/zextras/pending-setups.d/611-carbonio-message-dispatcher.sh"
   install -Dm644 carbonio-message-dispatcher.service \
     "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher.service"
   install -Dm644 carbonio-message-dispatcher-auth.service \
     "${pkgdir}/lib/systemd/system/carbonio-message-dispatcher-auth.service"
-  install -Dm644 carbonio-message-dispatcher-http.hcl \
-    "${pkgdir}/etc/zextras/service-discover/carbonio-message-dispatcher-http.hcl"
-  install -Dm644 carbonio-message-dispatcher-xmpp.hcl \
-    "${pkgdir}/etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.hcl"
-  install -Dm644 carbonio-message-dispatcher-auth.hcl \
-    "${pkgdir}/etc/zextras/service-discover/carbonio-message-dispatcher-auth.hcl"
+  install -Dm644 carbonio-message-dispatcher-http-template.hcl \
+    "${pkgdir}/etc/zextras/service-discover/templates/carbonio-message-dispatcher-http-template.hcl"
+  install -Dm644 carbonio-message-dispatcher-xmpp-template.hcl \
+    "${pkgdir}/etc/zextras/service-discover/templates/carbonio-message-dispatcher-xmpp-template.hcl"
+  install -Dm644 carbonio-message-dispatcher-auth-template.hcl \
+    "${pkgdir}/etc/zextras/service-discover/templates/carbonio-message-dispatcher-auth-template.hcl"
   install -Dm644 logback.xml \
     "${pkgdir}/etc/carbonio/message-dispatcher/logback.xml"
   install -Dm644 intentions-http.json \
@@ -355,10 +360,20 @@ postinst() {
     systemctl enable carbonio-message-dispatcher-xmpp-sidecar.service &>/dev/null || :
   fi
 
+  if [ "$1" = "configure" ]; then
+    carbonio-message-dispatcher-hcl migrate || :
+    carbonio-message-dispatcher-hcl render || echo "WARNING: hcl render failed, run carbonio-message-dispatcher-setup"
+  fi
+
   echo "======================================================"
   echo "Carbonio Message Dispatcher installed successfully!"
   echo "You must run pending-setups to configure it correctly."
   echo "======================================================"
+}
+
+posttrans() {
+  carbonio-message-dispatcher-hcl migrate || :
+  carbonio-message-dispatcher-hcl render || echo "WARNING: hcl render failed, run carbonio-message-dispatcher-setup"
 }
 
 prerm() {
@@ -375,6 +390,13 @@ postrm() {
   rm -f /etc/carbonio/message-dispatcher/service-discover/token
   # Rendered by config-setup, so it is no longer a conffile dpkg or rpm cleans up.
   rm -f /etc/carbonio/message-dispatcher/mongooseim.toml
+  rm -f /etc/zextras/service-discover/carbonio-message-dispatcher-auth.hcl
+  rm -f /etc/zextras/service-discover/carbonio-message-dispatcher-http.hcl
+  rm -f /etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.hcl
+  if [ "$1" = "purge" ]; then
+    rm -f /etc/zextras/service-discover/carbonio-message-dispatcher-auth.env /etc/zextras/service-discover/carbonio-message-dispatcher-http.env /etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.env \
+      /etc/zextras/service-discover/carbonio-message-dispatcher-auth.hcl.bak /etc/zextras/service-discover/carbonio-message-dispatcher-http.hcl.bak /etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.hcl.bak
+  fi
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload &>/dev/null || :
   fi
