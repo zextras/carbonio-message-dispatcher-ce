@@ -79,8 +79,8 @@ sha256sums=(
   'cd90dbf036636ac65d42f8dc50d0e16c0967b087d6f93bad576a95c276063706'
   '5f0ce69d533abefae4924197175e851188b03fb7ca4820d5a2c1a0706c35eec2'
   'bdf6aea1cddc202ba4674f1cedb2b874b21f698565949dcb07581c7748ea8c6b'
-  'fba4bbdfe8235a3d38ad1692acee594b4bdf405726704cf20d07b64c5ba27571'
-  '0ca6750d4218aa4f115a9e0154878455366c33a0ab1bdfad8f1dc8945c8c772c'
+  '3742ddfcb5cc87a2a91862064b4f8a00678c23a04a8334a879516ae71ae7ee59'
+  '685571e04a912c90dcac65f4c7e12162fd1122d8ac0d53802a55ed93d46208db'
   '3fec8ebfdf41e0ea3ddcc6764f194d74b6b23e5806a193b4b4c457555759e616'
   'ee5731838e73e62ece136f131e532a28adb0985f618b17510f75f1d20239db5e'
   '4c90fd6957d2c8a0c5dd3335b5307c69deb5a7266be08f18a765d0a34947bf34'
@@ -361,7 +361,6 @@ postinst() {
   fi
 
   if [ "$1" = "configure" ]; then
-    carbonio-message-dispatcher-hcl migrate || :
     carbonio-message-dispatcher-hcl render || echo "WARNING: hcl render failed, run carbonio-message-dispatcher-setup"
   fi
 
@@ -372,7 +371,6 @@ postinst() {
 }
 
 posttrans() {
-  carbonio-message-dispatcher-hcl migrate || :
   carbonio-message-dispatcher-hcl render || echo "WARNING: hcl render failed, run carbonio-message-dispatcher-setup"
 }
 

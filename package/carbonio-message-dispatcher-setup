@@ -19,7 +19,6 @@ config_variant() {
 }
 
 if command -v carbonio-message-dispatcher-hcl > /dev/null; then
-  carbonio-message-dispatcher-hcl migrate || :
   if ! carbonio-message-dispatcher-hcl render; then
     echo "Cannot render /etc/zextras/service-discover/carbonio-message-dispatcher-auth.hcl, /etc/zextras/service-discover/carbonio-message-dispatcher-http.hcl and /etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.hcl; leaving pending-setup to be retried."
     exit 1
