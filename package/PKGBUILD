@@ -356,46 +356,10 @@ postinst() {
     systemctl enable carbonio-message-dispatcher-xmpp-sidecar.service &>/dev/null || :
   fi
 
-  if [ "$1" = "configure" ]; then
-    env -i PATH=/usr/bin:/bin bash -c 'set -a; [ -r "$1" ] && . "$1"; exec consul-template -once -template "$2:$3"' _ \
-      /etc/zextras/service-discover/carbonio-message-dispatcher-auth.env \
-      /etc/zextras/service-discover/templates/carbonio-message-dispatcher-auth-template.hcl \
-      /etc/zextras/service-discover/carbonio-message-dispatcher-auth.hcl > /dev/null \
-      || echo "WARNING: cannot render /etc/zextras/service-discover/carbonio-message-dispatcher-auth.hcl, run carbonio-message-dispatcher-setup"
-    env -i PATH=/usr/bin:/bin bash -c 'set -a; [ -r "$1" ] && . "$1"; exec consul-template -once -template "$2:$3"' _ \
-      /etc/zextras/service-discover/carbonio-message-dispatcher-http.env \
-      /etc/zextras/service-discover/templates/carbonio-message-dispatcher-http-template.hcl \
-      /etc/zextras/service-discover/carbonio-message-dispatcher-http.hcl > /dev/null \
-      || echo "WARNING: cannot render /etc/zextras/service-discover/carbonio-message-dispatcher-http.hcl, run carbonio-message-dispatcher-setup"
-    env -i PATH=/usr/bin:/bin bash -c 'set -a; [ -r "$1" ] && . "$1"; exec consul-template -once -template "$2:$3"' _ \
-      /etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.env \
-      /etc/zextras/service-discover/templates/carbonio-message-dispatcher-xmpp-template.hcl \
-      /etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.hcl > /dev/null \
-      || echo "WARNING: cannot render /etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.hcl, run carbonio-message-dispatcher-setup"
-  fi
-
   echo "======================================================"
   echo "Carbonio Message Dispatcher installed successfully!"
   echo "You must run pending-setups to configure it correctly."
   echo "======================================================"
-}
-
-posttrans() {
-  env -i PATH=/usr/bin:/bin bash -c 'set -a; [ -r "$1" ] && . "$1"; exec consul-template -once -template "$2:$3"' _ \
-    /etc/zextras/service-discover/carbonio-message-dispatcher-auth.env \
-    /etc/zextras/service-discover/templates/carbonio-message-dispatcher-auth-template.hcl \
-    /etc/zextras/service-discover/carbonio-message-dispatcher-auth.hcl > /dev/null \
-    || echo "WARNING: cannot render /etc/zextras/service-discover/carbonio-message-dispatcher-auth.hcl, run carbonio-message-dispatcher-setup"
-  env -i PATH=/usr/bin:/bin bash -c 'set -a; [ -r "$1" ] && . "$1"; exec consul-template -once -template "$2:$3"' _ \
-    /etc/zextras/service-discover/carbonio-message-dispatcher-http.env \
-    /etc/zextras/service-discover/templates/carbonio-message-dispatcher-http-template.hcl \
-    /etc/zextras/service-discover/carbonio-message-dispatcher-http.hcl > /dev/null \
-    || echo "WARNING: cannot render /etc/zextras/service-discover/carbonio-message-dispatcher-http.hcl, run carbonio-message-dispatcher-setup"
-  env -i PATH=/usr/bin:/bin bash -c 'set -a; [ -r "$1" ] && . "$1"; exec consul-template -once -template "$2:$3"' _ \
-    /etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.env \
-    /etc/zextras/service-discover/templates/carbonio-message-dispatcher-xmpp-template.hcl \
-    /etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.hcl > /dev/null \
-    || echo "WARNING: cannot render /etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.hcl, run carbonio-message-dispatcher-setup"
 }
 
 prerm() {
