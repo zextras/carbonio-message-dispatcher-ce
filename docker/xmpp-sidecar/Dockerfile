@@ -1,9 +1,20 @@
 ARG SIDECAR_IMAGE=registry.dev.zextras.com/dev/carbonio-sidecar:main
+FROM --platform=$BUILDPLATFORM docker.io/library/alpine:3.23 AS consul-template
+ARG TARGETARCH
+ARG CONSUL_TEMPLATE_VERSION=0.42.1
+RUN apk add --no-cache curl unzip && \
+    curl -fsSL -o /tmp/ct.zip "https://releases.hashicorp.com/consul-template/${CONSUL_TEMPLATE_VERSION}/consul-template_${CONSUL_TEMPLATE_VERSION}_linux_${TARGETARCH}.zip" && \
+    curl -fsSL -o /tmp/ct.sums "https://releases.hashicorp.com/consul-template/${CONSUL_TEMPLATE_VERSION}/consul-template_${CONSUL_TEMPLATE_VERSION}_SHA256SUMS" && \
+    echo "$(grep "_linux_${TARGETARCH}.zip" /tmp/ct.sums | cut -d' ' -f1)  /tmp/ct.zip" | sha256sum -c - && \
+    unzip -j /tmp/ct.zip consul-template -d /out && \
+    chmod +x /out/consul-template
+
 FROM ${SIDECAR_IMAGE}
 
 RUN useradd -r -U carbonio-message-dispatcher
 
-COPY package/carbonio-message-dispatcher-xmpp.hcl /consul/config/
+COPY --from=consul-template /out/consul-template /usr/local/bin/consul-template
+COPY package/carbonio-message-dispatcher-xmpp-template.hcl /consul/templates/carbonio-message-dispatcher-xmpp-template.hcl
 
 COPY package/service-protocol-xmpp.json /etc/carbonio/message-dispatcher/service-discover/service-protocol.json
 COPY package/service-protocol-auth.json /etc/carbonio/message-dispatcher/service-discover/service-protocol-auth.json
@@ -20,3 +31,6 @@ COPY --chmod=755 package/carbonio-message-dispatcher-setup /usr/local/bin/carbon
 ENV SERVICE_NAME=carbonio-message-dispatcher-xmpp
 ENV SETUP_SCRIPT="carbonio-message-dispatcher-setup"
 ENV TOKEN_FILE=/etc/carbonio/message-dispatcher/service-discover/token
+
+COPY --chmod=755 docker/xmpp-sidecar/carbonio-message-dispatcher-xmpp-hcl-entrypoint /usr/local/bin/carbonio-message-dispatcher-xmpp-hcl-entrypoint
+ENTRYPOINT ["carbonio-message-dispatcher-xmpp-hcl-entrypoint"]
