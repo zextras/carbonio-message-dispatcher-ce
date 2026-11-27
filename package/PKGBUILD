@@ -80,7 +80,7 @@ sha256sums=(
   '5f0ce69d533abefae4924197175e851188b03fb7ca4820d5a2c1a0706c35eec2'
   'bdf6aea1cddc202ba4674f1cedb2b874b21f698565949dcb07581c7748ea8c6b'
   '3742ddfcb5cc87a2a91862064b4f8a00678c23a04a8334a879516ae71ae7ee59'
-  '685571e04a912c90dcac65f4c7e12162fd1122d8ac0d53802a55ed93d46208db'
+  'd4929c67f3de839d6a3015e48b28c9b7559af924fb618aaf0dfa9866f87b0cb0'
   '3fec8ebfdf41e0ea3ddcc6764f194d74b6b23e5806a193b4b4c457555759e616'
   'ee5731838e73e62ece136f131e532a28adb0985f618b17510f75f1d20239db5e'
   '4c90fd6957d2c8a0c5dd3335b5307c69deb5a7266be08f18a765d0a34947bf34'
@@ -392,8 +392,7 @@ postrm() {
   rm -f /etc/zextras/service-discover/carbonio-message-dispatcher-http.hcl
   rm -f /etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.hcl
   if [ "$1" = "purge" ]; then
-    rm -f /etc/zextras/service-discover/carbonio-message-dispatcher-auth.env /etc/zextras/service-discover/carbonio-message-dispatcher-http.env /etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.env \
-      /etc/zextras/service-discover/carbonio-message-dispatcher-auth.hcl.bak /etc/zextras/service-discover/carbonio-message-dispatcher-http.hcl.bak /etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.hcl.bak
+    rm -f /etc/zextras/service-discover/carbonio-message-dispatcher-auth.env /etc/zextras/service-discover/carbonio-message-dispatcher-http.env /etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.env
   fi
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload &>/dev/null || :
