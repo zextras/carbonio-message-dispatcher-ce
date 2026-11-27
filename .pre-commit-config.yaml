@@ -83,14 +83,6 @@ repos:
         pass_filenames: false
         files: ^(package/(mongooseim\.toml\.in|carbonio-message-dispatcher-config-setup)|\.ci/test-config-setup\.sh)$
 
-      - id: test-hcl-template
-        name: test-hcl-template
-        description: Tests the hcl template render and migration script.
-        entry: bash .ci/test-hcl-template.sh
-        language: system
-        pass_filenames: false
-        files: ^(package/(carbonio-message-dispatcher-(hcl|(auth|http|xmpp)-template\.hcl|setup|config-setup))|\.ci/test-hcl-template\.sh)$
-
       - id: comment-check
         name: comment-check
         description: "Warns on long // comment runs. Never blocks — it always exits 0."

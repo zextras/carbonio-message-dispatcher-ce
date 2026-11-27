@@ -18,9 +18,33 @@ config_variant() {
   consul config write /etc/carbonio/message-dispatcher/service-discover/intentions-"${VARIANT}".json
 }
 
-if command -v carbonio-message-dispatcher-hcl > /dev/null; then
-  if ! carbonio-message-dispatcher-hcl render; then
-    echo "Cannot render /etc/zextras/service-discover/carbonio-message-dispatcher-auth.hcl, /etc/zextras/service-discover/carbonio-message-dispatcher-http.hcl and /etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.hcl; leaving pending-setup to be retried."
+if [ -f /etc/zextras/service-discover/templates/carbonio-message-dispatcher-auth-template.hcl ]; then
+  # shellcheck disable=SC2016
+  if ! env -i PATH=/usr/bin:/bin bash -c 'set -a; [ -r "$1" ] && . "$1"; exec consul-template -once -template "$2:$3"' _ \
+    /etc/zextras/service-discover/carbonio-message-dispatcher-auth.env \
+    /etc/zextras/service-discover/templates/carbonio-message-dispatcher-auth-template.hcl \
+    /etc/zextras/service-discover/carbonio-message-dispatcher-auth.hcl > /dev/null; then
+    echo "Cannot render /etc/zextras/service-discover/carbonio-message-dispatcher-auth.hcl; leaving pending-setup to be retried."
+    exit 1
+  fi
+fi
+if [ -f /etc/zextras/service-discover/templates/carbonio-message-dispatcher-http-template.hcl ]; then
+  # shellcheck disable=SC2016
+  if ! env -i PATH=/usr/bin:/bin bash -c 'set -a; [ -r "$1" ] && . "$1"; exec consul-template -once -template "$2:$3"' _ \
+    /etc/zextras/service-discover/carbonio-message-dispatcher-http.env \
+    /etc/zextras/service-discover/templates/carbonio-message-dispatcher-http-template.hcl \
+    /etc/zextras/service-discover/carbonio-message-dispatcher-http.hcl > /dev/null; then
+    echo "Cannot render /etc/zextras/service-discover/carbonio-message-dispatcher-http.hcl; leaving pending-setup to be retried."
+    exit 1
+  fi
+fi
+if [ -f /etc/zextras/service-discover/templates/carbonio-message-dispatcher-xmpp-template.hcl ]; then
+  # shellcheck disable=SC2016
+  if ! env -i PATH=/usr/bin:/bin bash -c 'set -a; [ -r "$1" ] && . "$1"; exec consul-template -once -template "$2:$3"' _ \
+    /etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.env \
+    /etc/zextras/service-discover/templates/carbonio-message-dispatcher-xmpp-template.hcl \
+    /etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.hcl > /dev/null; then
+    echo "Cannot render /etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.hcl; leaving pending-setup to be retried."
     exit 1
   fi
 fi
@@ -105,7 +129,34 @@ service-discover service-token prune-legacy --service carbonio-message-dispatche
 export -n CONSUL_HTTP_TOKEN
 trap - EXIT
 rc=$?
-if command -v carbonio-message-dispatcher-hcl > /dev/null; then
-  carbonio-message-dispatcher-hcl show || :
-fi
+cat << 'EOF'
+
+Sidecar Config (overridable by /etc/zextras/service-discover/carbonio-message-dispatcher-auth.env, apply with carbonio-message-dispatcher-setup)
+
+┌────────────────┬─────────┐
+│ Key            │ Default │
+├────────────────┼─────────┤
+│ CHECK_TIMEOUT  │ 1s      │
+│ CHECK_INTERVAL │ 5s      │
+└────────────────┴─────────┘
+
+Sidecar Config (overridable by /etc/zextras/service-discover/carbonio-message-dispatcher-http.env, apply with carbonio-message-dispatcher-setup)
+
+┌────────────────┬─────────┐
+│ Key            │ Default │
+├────────────────┼─────────┤
+│ CHECK_TIMEOUT  │ 1s      │
+│ CHECK_INTERVAL │ 5s      │
+└────────────────┴─────────┘
+
+Sidecar Config (overridable by /etc/zextras/service-discover/carbonio-message-dispatcher-xmpp.env, apply with carbonio-message-dispatcher-setup)
+
+┌────────────────┬─────────┐
+│ Key            │ Default │
+├────────────────┼─────────┤
+│ CHECK_TIMEOUT  │ 1s      │
+│ CHECK_INTERVAL │ 5s      │
+└────────────────┴─────────┘
+
+EOF
 exit "${rc}"
